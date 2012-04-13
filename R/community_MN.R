@@ -1,0 +1,316 @@
+# Community functions that operate on M and/or N
+Log10MNBiomass <- function(community)
+{
+    # A matrix containing columns 'Log10M', 'Log10N' and 'Log10Biomass'
+    np <- NPS(community, c('M','N'))
+    res <- cbind(Log10M=log10(np$M), Log10N=log10(np$N), 
+                 Log10Biomass=log10(np$M * np$N))
+    rownames(res) <- np$node
+    return (res)
+}
+
+Log10M <- function(community)
+{
+    # Returns a vector of log10-transformed. All elements are NA if 'M' is 
+    # not a node property. Community() does not allow M==0. 
+    return (log10(NP(community, 'M')))
+}
+
+Log10N <- function(community)
+{
+    # Returns a vector of log10-transformed. All elements are NA if 'N' is 
+    # not a node property. Community() does not allow N==0. 
+    return (log10(NP(community, 'N')))
+}
+
+Biomass <- function(community)
+{
+    # Returns a vector of biomasses. All elements are NA if 'M' or 'N' are 
+    # not node properties. Elements are NA for nodes that have N and/or M of 
+    # NA or N of 0.
+    return (NP(community, 'M') * NP(community, 'N'))
+}
+
+Log10Biomass <- function(community)
+{
+    # Returns a vector of log10-transformmed biomasses. All elements are NA 
+    # if 'M' or 'N' are not node properties.
+    return (log10(Biomass(community)))
+}
+
+RCMRatio <- function(community)
+{
+    # Returns a vector containing the M of the resource divided by the M of the 
+    # consumer for every consumer. All elements are NA if 'M' is not a node 
+    # property.
+    tlps <- TLPS(community, node.properties='M')
+    return (tlps$resource.M / tlps$consumer.M)
+}
+
+Log10RCMRatio <- function(community)
+{
+    # log10(RCMRatio)
+    return (log10(RCMRatio(community)))
+}
+
+CRMRatio <- function(community)
+{
+    # Returns a vector containin the M of the resource divided by the M of the 
+    # consumer for every consumer. All elements are NA if 'M' is not a node 
+    # property.
+    tlps <- TLPS(community, node.properties='M')
+    return (tlps$consumer.M / tlps$resource.M)
+}
+
+Log10CRMRatio <- function(community)
+{
+    # log10(CRMRatio)
+    return (log10(CRMRatio(community)))
+}
+
+.NodesWithoutMOrN <- function(community)
+{
+    # Returns the names of nodes that have a M or N of NA
+    return (names(which(is.na(NP(community, 'M')) | is.na(NP(community, 'N')))))
+}
+
+BodyMassBins <- function(community, 
+                         lower=min(NP(community,'M'), na.rm=TRUE), 
+                         upper=max(NP(community,'M'), na.rm=TRUE), 
+                         n.bins=10)
+{
+    if(!is.Community(community)) stop('Not a Community')
+
+    stopifnot(n.bins>2)
+    stopifnot(upper>lower)
+
+    np <- NPS(community)
+
+    stopifnot(all(is.na(np$M) | (np$M>=lower & np$M<=upper)))
+
+    # Bins
+    breaks <- seq(log10(lower), log10(upper), length.out=1+n.bins)
+    bin.centres <- head(breaks, -1) + diff(breaks)[1]/2
+    binned <- cut(log10(np$M), breaks=breaks, labels=FALSE, include.lowest=TRUE)
+    names(binned) <- np$node
+    attr(binned, 'bin.centres') <- bin.centres
+    attr(binned, 'breaks') <- breaks
+    return (binned)
+}
+
+ResourceLargerThanConsumer <- function(community)
+{
+    # A matrix of consumer-resource pairs in which the resource has a larger 
+    # body mass than the consumer. Columns are the same as 
+    # those returned by LinkProperties().
+    # Returns NULL if community does not have either M or trophic links
+    if(!is.Community(community)) stop('Not a Community')
+
+    if('M' %in% colnames(NPS(community)) && !is.null(TLPS(community)))
+    {
+        tlp <- TLPS(community, 'M')
+        return (tlp[!is.na(tlp[,'resource.M']) & !is.na(tlp[,'consumer.M']) & 
+                tlp[,'resource.M']>tlp[,'consumer.M'],,drop=FALSE])
+    }
+    else
+    {
+        return (NULL)
+    }
+}
+
+SumMByClass <- function(community, class)
+{
+    return (ApplyByClass(community, 'M', class, sum, na.rm=TRUE))
+}
+
+SumNByClass <- function(community, class)
+{
+    return (ApplyByClass(community, 'N', class, sum, na.rm=TRUE))
+}
+
+SumBiomassByClass <- function(community, class)
+{
+    return (ApplyByClass(community, 'Biomass', class, sum, na.rm=TRUE))
+}
+
+NvMLinearRegressions <- function(community, class)
+{
+    # Returns a list of linear regressions through all data and per category. 
+    # Nodes with M=NA, N=NA or N=0 are ignored
+
+    # Similar check in LinearRegressionByClass() but the call to missing() in 
+    # LinearRegressionByClass() won't work
+    if(!is.Community(community)) stop('Not a Community')
+
+    if(missing(class))
+    {
+        if('category' %in% NodePropertyNames(community))
+        {
+            class <- 'category'
+        }
+        else 
+        {
+            class <- NULL
+        }
+    }
+
+    LinearRegressionByClass(community, 'Log10M', 'Log10N', class)
+}
+
+NvMSlope <- function(community)
+{
+    # The slope of a line through log10(N) versus log10(M) data
+    model <- NvMLinearRegressions(community, class=NULL)
+    return (unname(coef(model)[2]))
+}
+
+NvMTriTrophicStatistics <- function(community)
+{
+    # Exclude cannibals and all nodes with missing M and/or N
+    if(!is.Community(community)) stop('Not a Community')
+
+    community <- RemoveNodes(community, remove=with(NPS(community), 
+                                                    node[is.na(M) | is.na(N)]))
+    community <- RemoveCannibalisticLinks(community)
+
+    lp <- TLPS(community, link.properties='.NvMTrophicLinkProperties')
+    tnc <- ThreeNodeChains(community, 
+                           chain.properties='.NvMThreeNodeChainProperties')
+    tc <- TrophicChains(community, 
+                        chain.properties='.NvMTrophicChainProperties')
+    return (list(links=lp, three.node.chains=tnc, trophic.chains=tc))
+}
+
+.NvMTrophicLinkProperties <- function(community)
+{
+    # Returns a data.frame containing columns resource and consumer, one row 
+    # for each link in the food web for which resource and consumer have both 
+    # M and N.
+    # The returned data.frame contains columns length, angle and 
+    # slope, as defined by Cohen et al 2010 PNAS, p 22335-22336.
+
+    # Cohen et al 2010 PNAS, p 22335 and 22336
+    # The angle of a link (or link angle) was the counter-
+    # clockwise angle to the link from a horizontal arrow starting from R
+    # and pointing right parallel to the positive log(M)-axis, and took
+    # values in the interval [-180°, 180°) (Fig. 2A)]. (The angle is not
+    # defined when MR = MC and NR = NC, as in cannibalism, for
+    # example.) If the link angle equaled -45°, then the link had slope -1
+    # because tan(-45°) = tan(-pi/4 radians) = -1
+
+    chains <- TLPS(community)
+    log10M <- Log10M(community)
+    log10N <- Log10N(community)
+    x <- log10M[chains[,'consumer']] - log10M[chains[,'resource']]
+    y <- log10N[chains[,'consumer']] - log10N[chains[,'resource']]
+
+    # Link lengths
+    length <- abs(x) + abs(y)
+
+    # Link angles
+    # Cohen et al 2010 PNAS, Fig 2 A
+    UnsafeArg <- function(n)
+    {
+        # Like Arg() but returns NA for complex numbers with 0==real and 
+        # 0==imag 
+        r <- Arg(n)
+        r[0==Re(n) & 0==Im(n)] <- NA
+        return (r)
+    }
+
+    angle <- UnsafeArg(complex(real=x, imaginary=y)) * 360 / (2*pi)
+    angle[180==angle] <- -180
+    stopifnot(all( (angle>=-180 & angle<180) | is.na(angle)))
+
+    res <- cbind(length=length, angle=angle, slope=y/x)
+    rownames(res) <- NULL
+    return (res)
+}
+
+.NvMThreeNodeChainProperties <- function(community, chains)
+{
+    # Returns a matrix containing columns bottom, intermediate, top, one row 
+    # for each three-species chain in the food web. Also contains the 
+    # columns Llower, Lupper, two.span, Alower, Aupper and Abetween as 
+    # defined by Cohen et al 2010 PNAS, Fig 2 B/C and p 22336-22337
+    # Cohen et al 2010 PNAS, Fig 2 B/C and p 22336 - 22337
+
+    # chains should be a data.frame containing columns 'resource' and 'consumer'
+ 
+    # B -> I -> T
+
+    log10M <- Log10M(community)
+    log10N <- Log10N(community)
+
+    # Lengths
+    Llower <- abs(log10M[chains[,1]] - log10M[chains[,2]]) +
+              abs(log10N[chains[,1]] - log10N[chains[,2]])
+    Lupper <- abs(log10M[chains[,2]] - log10M[chains[,3]]) +
+              abs(log10N[chains[,2]] - log10N[chains[,3]])
+
+    # 2 span - distance from R to C
+    two.span <- abs(log10N[chains[,3]] - log10N[chains[,1]]) +
+                abs(log10M[chains[,3]] - log10M[chains[,1]])
+
+    # Angles
+    lower <- complex(     real=log10M[chains[,2]] - log10M[chains[,1]], 
+                     imaginary=log10N[chains[,2]] - log10N[chains[,1]])
+    upper <- complex(     real=log10M[chains[,3]] - log10M[chains[,2]], 
+                     imaginary=log10N[chains[,3]] - log10N[chains[,2]])
+
+    UnsafeArg <- function(n)
+    {
+        # Like Arg() but returns NA for complex numbers with 0==real and 
+        # 0==imag 
+        r <- Arg(n)
+        r[0==Re(n) & 0==Im(n)] <- NA
+        return (r)
+    }
+
+    Alower <- UnsafeArg(lower) * 360/(2*pi)
+    Alower[180==Alower] <- -180
+    Aupper <- UnsafeArg(upper) * 360/(2*pi)
+    Aupper[180==Aupper] <- -180
+    Abetween <- UnsafeArg(upper * Conj(lower)) * 360/(2*pi)
+    Abetween[180==Abetween] <- -180
+
+    stopifnot(all( (Abetween>=-180 & Abetween<180) | is.na(Abetween)))
+    x <- which(chains[,1]==chains[,3])
+
+    stopifnot(all.equal(Abetween[x], rep(-180, length(x))))
+
+    res <- cbind(Llower, Lupper, two.span, Alower, Aupper, Abetween)
+    rownames(res) <- NULL
+    return (res)
+}
+
+.NvMTrophicChainProperties <- function(community, chains)
+{
+    # Properties by Cohen et al 2010 PNAS, p 22337, of all the trophic chains 
+    # through the food web
+
+    # chains should be a data.frame containing columns 'resource' and 'consumer'
+
+    log10M <- Log10M(community)
+    log10N <- Log10N(community)
+
+    rchains <- .ReverseChains(chains)
+    chain.span <- abs(log10N[chains[,1]] - log10N[rchains[,1]]) +
+                  abs(log10M[chains[,1]] - log10M[rchains[,1]])
+
+    count.chain.length <- ChainLength(chains)
+
+    # Link lengths
+    chains.log10M <- sapply(chains, function(col) log10M[col])
+    dim(chains.log10M) <- dim(chains)
+    chains.log10N <- sapply(chains, function(col) log10N[col])
+    dim(chains.log10N) <- dim(chains)
+    l <- abs(chains.log10M[,2:ncol(chains)]-chains.log10M[,1:(ncol(chains)-1)])+
+         abs(chains.log10N[,2:ncol(chains)]-chains.log10N[,1:(ncol(chains)-1)])
+    sum.chain.length <- apply(l, 1, sum, na.rm=TRUE)
+
+    res <- cbind(chain.span, count.chain.length, sum.chain.length)
+    rownames(res) <- NULL
+    return (res)
+}
+

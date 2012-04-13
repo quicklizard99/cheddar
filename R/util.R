@@ -1,0 +1,316 @@
+# Stuff that is useful and doesn't belong anywhere else
+FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE, 
+                     r=FALSE, r.squared=TRUE, model.var.names=TRUE)
+{
+    # A textual representation of a linear model
+    if(TRUE)
+    {
+        variables <- as.character(attr(terms(model), 'variables'))
+        # variables is in the form "list" "response name" "x name"
+        y.name <- variables[1+attr(terms(model), 'response')]
+        x.name <- names(model$coefficients)[2]
+
+        co <- model$coefficients
+        a <- sprintf('%.2f', co[1])
+
+        b <- co[2]
+        # Put space after '+' or '-'
+        if(b>=0)     b <- paste('+', sprintf('%.2f', b))
+        else if(b<0) b <- paste('-', sprintf('%.2f', abs(b)))
+
+        if(model.var.names)
+        {
+            l <- paste(y.name, ' = ', a, ' ', b, x.name, sep='')
+        }
+        else
+        {
+            l <- paste('y = ', a, ' ', b, 'x', sep='')
+        }
+    }
+
+    # Slope confidence interavals
+    if(slope.95.ci && !ci.plus.minus.style)
+    {
+        ci <- confint(model, level=0.95)[x.name,]
+        l <- paste(l, ' (95% CI ', sprintf('%.2f', ci[1]), ',', 
+                   sprintf('%.2f', ci[2]), ')',sep='')
+    }
+    else if(slope.95.ci && ci.plus.minus.style)
+    {
+        ci <- diff(as.vector(confint(model, x.name, level=0.95)))/2
+        n <- nrow(model$model)
+        plus.minus <- list(as.raw(c(0xc2, 0xb1)))  # The UTF-8 encoding of ±
+        l <- paste(l, ' ', iconv(plus.minus, 'utf-8', ''), ' ', 
+                   sprintf('%.2f', ci), '(95% CI, n=', n, ')', sep='')
+    }
+
+    # Correlation coefficient
+    if(r)
+    {
+        r <- sign(model$coefficients[x.name]) * summary(model)$r.squared^0.5
+        l <- paste(l, ', r = ', sprintf('%.2f', r), sep='')
+    }
+
+    # Coefficient of determination
+    if(r.squared)
+    {
+        r.squared <- sprintf('%.2f', summary(model)$r.squared)
+        squared <- list(as.raw(c(0xc2, 0xb2)))   # The UTF-8 encoding of ²
+        l <- paste(l, ', r', iconv(squared, 'utf-8', ''), ' = ', r.squared, 
+                   sep='')
+    }
+
+    return (l)
+}
+
+.StripWhitespace <- function(v)
+{
+    # Returns v with leading and trailing whitespace removed
+    return (sub("^[[:space:]]*(.*?)[[:space:]]*$", "\\1", v, perl=TRUE))
+}
+
+.SimpleRBindFill <- function(...)
+{
+    # A quick and dirty wrapper around rbind.data.frame() that fills 
+    # missing columns with NA.
+    allargs <- list(...)
+    stopifnot(all(sapply(allargs, is.data.frame)))
+
+    allcnames <- unique(unlist(sapply(allargs, colnames)))
+
+    # Add columns as required
+    for(d in 1:length(allargs))
+    {
+        missing <- setdiff(allcnames, colnames(allargs[[d]]))
+        allargs[[d]][,missing] <- NA
+    }
+
+    res <- do.call('rbind.data.frame', allargs)
+
+    return (res)
+}
+
+PredationMatrixToLinks <- function(pm)
+{
+    # Returns a data.frame containing columns resource and consumer. 
+    # pm should be a matrix or data.frame containing 0 or 1. 
+    # 1 indicates a trophic link between a consumer (column) and a resource 
+    # (row). 
+
+    # The same names must appear in both rows and cols but need not be sorted 
+    # the same, i.e. all(sort(colnames) == sort(rownames)) should be TRUE.
+    if(!ncol(pm)>0)
+    {
+        stop('pm has no columns')
+    }
+
+    if(ncol(pm)!=nrow(pm))
+    {
+        stop('pm is not square')
+    }
+
+    if(any(is.na(pm) | (pm!=0 & pm!=1)))
+    {
+        stop('pm contains some values that are not 0 or 1')
+    }
+
+    # Check names
+    if(is.null(colnames(pm)) || is.null(rownames(pm)))
+    {
+        stop('pm is missing either rownames or colnames')
+    }
+
+    if(any(sort(colnames(pm))!=sort(rownames(pm))))
+    {
+        stop('pm colnames and rownames not matching')
+    }
+
+    resource <- which(pm>0) %% nrow(pm)
+    consumer <- 1+(which(pm>0) %/% nrow(pm))
+
+    # Fix the last row
+    last.row <- which(resource==0)
+    consumer[last.row] <- consumer[last.row]-1
+    resource[last.row] <- nrow(pm)
+
+    names(resource) <- NULL
+    names(consumer) <- NULL
+
+    return (data.frame(resource=rownames(pm)[resource], 
+                       consumer=colnames(pm)[consumer], 
+                       stringsAsFactors=FALSE))
+}
+
+.CallAssemblePropertiesFunction <- function(f, expected.size, args, 
+                                            user.args=NULL)
+{
+    # Private helper for assembling computed properties
+    # f - name of function
+    # expected.size - if > 1, f should return either vector of length 
+    #                 expected.size or a matrix / data.frame with 
+    #                 expected.size rows. if == 1, f should return a vector 
+    #                 of at least length 1
+    # args - list of arguments
+    # user.args - list of optional extra args provided by the user
+    
+    bad <- names(user.args) %in% names(args)
+    if(any(bad))
+    {
+        stop(paste('The names [', 
+                   paste(names(user.args)[bad], collapse=','), 
+                   '] are not allowed in the call to', 
+                   '[', f, ']', sep=''))
+    }
+
+    v <- do.call(f, args=c(user.args, args))
+
+    # Convert results where length(v)>1 into a data.frame
+    if(1==expected.size && is.null(dim(v)) && length(v)>1)
+    {
+        v <- t(v)
+    }
+
+    # Check sizes
+    v.length <- ifelse(is.null(dim(v)), length(v), nrow(v))
+    if(expected.size!=v.length)
+    {
+        stop(paste('The function [', f, '] returned a vector, data.frame ', 
+                   'or matrix of the incorrect size', sep=''))
+    }
+
+    return (as.data.frame(v, stringsAsFactors=FALSE, check.names=FALSE))
+}
+
+.AssembleProperties <- function(first.class, properties, ...)
+{
+    # Returns a data.frame of nrow(first.class) rows. 
+    # first.class - a data.frame of the first-class properties 
+    # properties - either a vector of characters or a list. 
+    # If a vector of character, properties should contain the names of 
+    # first-class properties or the names of functions that take a single 
+    # community and return either a vector of length nrow(first.class) or a 
+    # matrix of nrow nrow(first.class). 
+
+    # If a list, elements should be either characters or lists. 
+    # If a character, elements are treated as above. If a list, 
+    # the first element be the name of a function and the following elements 
+    # should be arguments to the function given in the first element.
+
+    # Column names of the returned data.frame are taken from names(properties), 
+    # if set, for first.class properties and functions that return vectors.
+
+    # Functions should return either vectors of length expected.size or 
+    # matrices / data.frames with expected.size rows.
+    expected.size <- nrow(first.class)
+
+    res <- as.data.frame(matrix(NA, ncol=0, nrow=expected.size), 
+                         stringsAsFactors=FALSE)
+
+    for(index in 1:length(properties))
+    {
+        if(is.list(properties)) p <- properties[[index]]
+        else                    p <- properties[index]
+
+        if(is.list(p))
+        {
+            # A function + args
+            if(length(p)>1 && is.character(p[[1]]))
+            {
+                f <- p[[1]]
+                args <- p[2:length(p)]
+                v <- .CallAssemblePropertiesFunction(f, expected.size, 
+                                                     list(...), args)
+            }
+            else
+            {
+                stop(paste('Badly formed computed property given in [', index, 
+                           ']', sep=''))
+            }
+        }
+        else if(p %in% colnames(first.class))
+        {
+            # A first-class property
+            v <- first.class[,p,drop=FALSE]
+        }
+        else if(tryCatch(is.function(eval(parse(text=p))),
+                         error=function(e) FALSE) && 'category'!=p)
+        {
+            # A function
+
+            # WARNING: Nasty hack in the above test
+            # category is a defunct R function. 'category' is a 
+            # commonly-requested node property. If this community does not 
+            # have a first-class property called 'category', we avoid 
+            # the nasty error message raised by trying to call the defunct 
+            # category function.
+            v <- .CallAssemblePropertiesFunction(p, expected.size, list(...))
+        }
+        else
+        {
+            # A bad name - use NA
+            v <- as.data.frame(rep(NA, expected.size))
+        }
+
+        # Set results name(s)
+        # Use the function or property name as the column name
+        if(is.list(p))
+        {
+            v.name <- p[1]
+        }
+        else
+        {
+            v.name <- p
+        }
+
+        if(!is.null(names(properties)) && ''!=names(properties)[index])
+        {
+            v.name <- names(properties)[index]
+            if(1<ncol(v))  colnames(v) <- paste(v.name, colnames(v), sep='.')
+        }
+
+        if(1==ncol(v)) colnames(v) <- v.name
+
+        res <- cbind(res, v)
+    }
+    rownames(res) <- rownames(first.class)
+    return (res)
+}
+
+.CAdjacencyList <- function(community, values)
+{
+    # Returns an adjacency list suitable for passing to C functions. 
+    # values should be a list like those returned by ConsumersByNode() and 
+    # ResourcesByNode().
+
+    # The returned matrix will have NumberOfNodes() rows in which first col is 
+    # number of consumers (resources) of that node and subsequent cols are ids 
+    # of consumers (resource). Elements are 0-indexed node indices.
+    # Returns an adjacency list. 
+    # values should be a list like those returned by ConsumersByNode() and 
+    # ResourcesByNode().
+
+    # The returned matrix will have NumberOfNodes() rows in which first col is 
+    # number of consumers (resources) of that node and subsequent cols are ids 
+    # of consumers (resource).
+    values <- lapply(values, NodeNameIndices, community=community)
+    values <- lapply(values, unname)
+    a <- matrix(NA, nrow=NumberOfNodes(community), 
+                    ncol=1+max(sapply(values, length)))
+    for(i in 1:length(values))
+    {
+        n <- length(values[[i]])
+        a[i,1] <- n
+        if(n>0)
+        {
+            a[i, 2:(1+n)] <- values[[i]] - 1
+        }
+    }
+
+    rownames(a) <- unname(NP(community, 'node'))
+    return (a)
+}
+
+.StringStartsWith <- function(string, starts.with)
+{
+    return (starts.with==substr(string, 1, nchar(starts.with)))
+}

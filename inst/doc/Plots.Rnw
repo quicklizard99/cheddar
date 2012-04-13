@@ -1,0 +1,898 @@
+\documentclass[11pt]{article}
+\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
+\usepackage[utf8]{inputenc}
+\usepackage{natbib}
+\usepackage{amsmath}            % /eqref
+\usepackage{booktabs}           % Some macros to improve tables
+\usepackage{amsfonts}           % /checkmark
+
+%\VignetteIndexEntry{Cheddar graphs}
+%\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
+
+\bibpunct{(}{)}{;}{a}{}{,}
+
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\R}{\textsf{R} }
+
+\begin{document}
+
+\title{Cheddar plots
+       (\Sexpr{packageDescription('cheddar', fields='Version')})}
+\author{Lawrence Hudson}
+\date{\Sexpr{packageDescription('cheddar', fields='Date')}}
+\maketitle
+
+\tableofcontents
+
+<<echo=FALSE>>=
+options(warn=2)
+
+library(cheddar)
+
+# Makes copy-paste much less painful
+options(continue=' ')
+options(width=90)
+options(prompt='> ')
+
+options(SweaveHooks = list(fig=function() par(mgp=c(2.5,1,0), 
+                                              mar=c(4,4,2,1),
+                                              oma=c(0,0,1,0),
+                                              cex.main=0.8)))
+@
+
+\section{Introduction}
+This vignette describes Cheddar's flexible system for plotting properties of 
+ecological communities. You should read the `Community' vignette before 
+reading this one. 
+Cheddar's plotting system is built upon two general-purpose functions: 
+\code{PlotNPS} (for \textbf{Plot} \textbf{N}ode \textbf{P}ropertie\textbf{S}) 
+and \code{PlotTLPS} (\textbf{Plot} \textbf{T}rophic-\textbf{L}ink 
+\textbf{P}ropertie\textbf{S}), which allow a range of properties, first-class 
+and computed, Cheddar-provided and user-defined, to be plotted in a variety of 
+ways. \code{PlotNPS} and \code{PlotTLPS} are used by a large number of 
+convenience `wrapper' functions that provide different views of a community, 
+focussing on food web data that are augmented with estimates of body mass, $M$, 
+and/or numerical abundance, $N$, following \cite{CohenEtAl2003PNAS} 
+(Table \ref{tab:plot_functions}). 
+\begin{table}[h!]
+  \begin{center}
+    \begin{tabular}{cccll}
+      \toprule
+      Trophic links & $M$      & $N$          & Plot function                 & Description                                                    \\
+      \midrule
+                    & \checkmark &            & \code{PlotMvRankM}            & $\log_{10} (M)$ versus rank $(M)$                              \\
+                    & \checkmark &            & \code{PlotMDistribution}      & Distribution of $\log_{10} (M)$                                \\
+                    &            & \checkmark & \code{PlotNvRankN}            & $\log_{10} (N)$ versus rank $N$                                \\
+                    &            & \checkmark & \code{PlotNDistribution}      & Distribution of $\log_{10} (N)$                                \\
+                    & \checkmark & \checkmark & \code{PlotBvRankB}            & $\log_{10} (B)$ versus rank $B$                                \\
+                    & \checkmark & \checkmark & \code{PlotBDistribution}      & Distribution of $\log_{10} (B)$                                \\
+                    & \checkmark & \checkmark & \code{PlotNSpectrum}          & Approximate numerical abundance spectrum                       \\
+                    & \checkmark & \checkmark & \code{PlotNvM} *              & $\log_{10} (N)$ versus $\log_{10} M$                           \\
+                    & \checkmark & \checkmark & \code{PlotBSpectrum}          & Approximate biomass abundance spectrum                         \\
+                    & \checkmark & \checkmark & \code{PlotBvM} *              & $\log_{10} (B)$ versus $\log_{10} (M)$                         \\
+      \checkmark    &            &            & \code{PlotPredationMatrix}    & Predation matrix                                               \\
+      \checkmark    &            &            & \code{PlotWebByLevel}         & Food web plotted vertically by trophic level                   \\
+      \checkmark    &            &            & \code{PlotDegreeDistribution} & Histogram of node degree                                       \\
+      \checkmark    &            &            & \code{PlotCircularWeb}        & An overview of complexity                                      \\
+      \checkmark    & \checkmark &            & \code{PlotMRvMC} *            & $\log_{10} (M)$ of resource versus $\log_{10} (M)$ of consumer \\
+      \checkmark    &            & \checkmark & \code{PlotNRvNC} *            & $\log_{10} (N)$ of resource versus $\log_{10} (N)$ of consumer \\
+      \checkmark    &            & \checkmark & \code{PlotNTrophicPyramid}    & $\sum(\log_{10} (N))$ by trophic level                         \\
+      \checkmark    & \checkmark & \checkmark & \code{PlotBRvBC} *            & $\log_{10} (B)$ of resource versus $\log_{10} (B)$ of consumer \\
+      \checkmark    & \checkmark & \checkmark & \code{PlotBTrophicPyramid}    & $\sum(\log_{10} (B))$ by trophic level                         \\
+      \checkmark    & \checkmark & \checkmark & \code{PlotAlowervAupper}      & Upper link-angle against lower link angle                      \\
+      \bottomrule 
+    \end{tabular} 
+    \caption{Cheddar's high-level plot functions.}
+    \label{tab:plot_functions}
+  \end{center}
+\end{table}
+You can use whatever mixture of \code{PlotNPS}, \code{PlotTLPS} and the 
+functions in Table \ref{tab:plot_functions} that meets your needs and fits your 
+data. 
+The examples below use the datasets from the two pelagic epilimnion 
+communities of Tuesday Lake, Michigan, USA \citep{CarpenterAndKitchell1996, 
+CohenEtAl2003PNAS, JonssonEtAl2005AER} and the community of 
+Ythan Estuary in north Scotland \citep{HallAndRaffaelli1991JAnimEcol, 
+EmmersonAndRaffaelli2004}.
+
+\section{Plotting node properties}
+\subsection{\code{PlotNPS}}
+\code{PlotNPS} plots one node property against another. Every Cheddar function 
+that plots one point per node delegates the job of plotting to \code{PlotNPS} 
+and all of it's power and flexibility are available to all of the functions 
+discussed in this section. \code{PlotNPS} function accepts the names of 
+properties to plot on the x and y axes. These can be either `first-class' 
+properties, such as body mass, $M$, and numerical abundance, $N$, or they can 
+be the names of functions that compute and return node properties. 
+
+The relationship between species-level log-transformed $N$ and $M$ has 
+implications for \cite{ReumanEtAl2008EcolLett} and ecosystem-level 
+\cite{BrownEtAl2004Ecology} theories. We can plot 
+$\log_{10}(N)$ against $\log_{10}(M)$ by using \code{PlotNPS} together with the 
+\code{Log10M} and \code{Log10N} functions. 
+
+\begin{center}
+<<fig=TRUE>>=
+data(TL84)
+PlotNPS(TL84, 'Log10M', 'Log10N')
+@
+\end{center}
+
+\code{PlotNPS} uses the `category' node property, if present, to 
+decide plotting colours and symbols. Producers are shown by green circles, 
+invertebrates by blue squares and vertebrate ectotherms by purple diamonds. 
+This is explored more in Section \ref{sec:nps_colours and symbols}. 
+The \code{TL84} datasets include trophic links so the \code{PlotNPS} 
+plots the food web and highlights cannibals by plotting them in a 
+light-coloured circle with a dark border. We could turn off these behaviours.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'Log10N', show.web=FALSE, highlight.nodes=NULL)
+@
+\end{center}
+
+We can plots labels rather than points. When plotting labels, nodes given by 
+`highlight.nodes' (by default, those nodes that are cannibals) are shown in a 
+darker colour.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'Log10N', show.nodes.as='labels', show.web=FALSE)
+@
+\end{center}
+
+In the above example, labels are taken from the order of the nodes in the 
+\code{TL84} community. We can plot a different label by setting the 
+`node.labels' property. The example below plots node names.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'Log10N', show.nodes.as='labels', show.web=FALSE, 
+        node.labels='node', cex=0.5)
+@
+\end{center}
+
+\code{node.labels} also accepts a vector of labels, so we could use 
+letters to label the nodes.
+
+\begin{center}
+<<fig=TRUE>>=
+lots.of.letters <- c(letters, LETTERS, paste(LETTERS,letters,sep=''))
+PlotNPS(TL84, 'Log10M', 'Log10N', show.nodes.as='labels', show.web=FALSE, 
+        node.labels=lots.of.letters[1:NumberOfNodes(TL84)])
+@
+\end{center}
+
+\code{PlotNPS} can plot both symbols and labels. 
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'Log10N', show.nodes.as='both', show.web=FALSE, cex=2)
+@
+\end{center}
+
+When \code{show.nodes.as} is `both', the size and colours of labels are 
+goverened by \code{label.cex} and \code{label.colour}, the latter discussed 
+further in Section \ref{sec:nps_colours and symbols}. 
+
+The axes titles in the above examples are taken from the names of the 
+properties. Cheddar provides some functions for producing nicely-formatted 
+labels, shown below.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'Log10N', xlab=Log10MLabel(TL84), 
+        ylab=Log10NLabel(TL84))
+@
+\end{center}
+
+\code{PlotNPS} can plot any computed node property. For example, we can examine 
+allometric degree distributions \citep{JonssonEtAl2005AER, OttoEtAl2007Nature, 
+DigelEtAl2011Oikos}, which describe how species' numbers of trophic links 
+scale with their log-transformed body masses.
+
+\begin{center}
+\SweaveOpts{width=8,height=3}
+\setkeys{Gin}{width=\textwidth}
+<<fig=TRUE>>=
+par(mfrow=c(1,3))
+PlotNPS(TL84, 'Log10M', 'OutDegree', show.web=FALSE)
+abline(lm(OutDegree(TL84) ~ Log10M(TL84)))
+
+PlotNPS(TL84, 'Log10M', 'InDegree', show.web=FALSE)
+abline(lm(InDegree(TL84) ~ Log10M(TL84)))
+
+PlotNPS(TL84, 'Log10M', 'Degree', show.web=FALSE)
+abline(lm(Degree(TL84) ~ Log10M(TL84)))
+@
+\end{center}
+
+To examine the relationship between trophic structure and body mass 
+\citep{JonssonEtAl2005AER} we can plot trophic level against log-transformed 
+body mass. The \code{PreyAveragedTrophicLevel} uses the matrix-inversion method 
+of \cite{Levine1980JTheorBiol} to compute trophic levels.
+
+\begin{center}
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.8\textwidth}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'PreyAveragedTrophicLevel')
+@
+\end{center}
+
+An alternative measure of trophic level is provided by 
+\code{ChainAveragedTrophicLevel}, which computes the mean position of each 
+node in every chain in the food web.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPS(TL84, 'Log10M', 'ChainAveragedTrophicLevel')
+@
+\end{center}
+
+Cheddar offers the six different measures of trophic level described by 
+\cite{WilliamsAndMartinez2004AmNat}; see the help page for 
+\code{TrophicLevels} for details.
+\code{PlotNPS} accepts the range of graphical parameters provided by \R's 
+plotting system, such as \code{ylim} and \code{main}. To directly compare 
+prey-averaged and chain-averaged trophic level we can produce side-by-side 
+plots with the same y-axis limits.
+
+\begin{center}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=\textwidth}
+<<fig=TRUE>>=
+par(mfrow=c(1,2))
+PlotNPS(TL84, 'Log10M', 'PreyAveragedTrophicLevel', ylim=c(1, 6), 
+        main='Prey-averaged')
+PlotNPS(TL84, 'Log10M', 'ChainAveragedTrophicLevel', ylim=c(1, 6), 
+        main='Chain-averaged')
+@
+\end{center}
+
+It is common to plot some combination of $\log_{10}$-transformed body mass, 
+$M$, numerical abundance, $N$, or biomass, $B$ (e.g.\ 
+\citealp{CohenEtAl2003PNAS, JonssonEtAl2005AER, 
+WoodwardEtAl2005AER}). The convenience functions \code{PlotMvN}, 
+\code{PlotNvM}, \code{PlotBvM} and \code{PlotMvB} are `wrappers' around 
+\code{PlotNPS} that create these plots.
+
+\begin{center}
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.8\textwidth}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+PlotMvN(TL84)
+PlotNvM(TL84)
+PlotBvM(TL84)
+PlotMvB(TL84)
+@
+\end{center}
+
+\subsection{Rank of properties}
+\code{PlotRankNPS} plots the rank of a property. As with \code{PlotNPS}, 
+properties can be either first-class or computed. To plot $\log_{10}(N)$ 
+against the rank of $N$ \citep{JonssonEtAl2005AER}.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotRankNPS(TL84, 'Log10N')
+@
+\end{center}
+
+To plot $\log_{10}(N)$ against the rank of $M$.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotRankNPS(TL84, 'Log10N', rank.by='M')
+@
+\end{center}
+
+\code{PlotRankNPS} uses \code{PlotNPS} to do the actual plotting so 
+all of \code{PlotNPS}'s power and parameters available. For example, the 
+default behaviour of \code{PlotRankNPS} is to not show the food web. We can 
+use \code{PlotNPS}'s `show.web' parameter to show the food web.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotRankNPS(TL84, 'Log10N', rank.by='M', show.web=TRUE)
+@
+\end{center}
+
+To plot trophic level against rank of $M$ \citep{JonssonEtAl2005AER}.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotRankNPS(TL84, 'PreyAveragedTrophicLevel', rank.by='M')
+@
+\end{center}
+
+The \code{PlotRankNPS} function can log-transform the rank values shown on 
+the x axis \citep{JonssonEtAl2005AER}.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotRankNPS(TL84, 'PreyAveragedTrophicLevel', rank.by='M', log10.rank=TRUE)
+@
+\end{center}
+
+The convenience functions \code{PlotMvRankM}, \code{PlotNvRankN} and 
+\code{PlotBvRankB} are `wrappers' around \code{PlotRankNPS} that plot rank 
+$\log_{10}$-transformed body mass, $M$, numerical abundance, $N$, or biomass, 
+$B$ \citep{JonssonEtAl2005AER}.
+
+\begin{center}
+\SweaveOpts{width=8,height=3}
+\setkeys{Gin}{width=\textwidth}
+<<fig=TRUE>>=
+par(mfrow=c(1,3))
+PlotMvRankM(TL84)
+PlotNvRankN(TL84)
+PlotBvRankB(TL84)
+@
+\end{center}
+
+\subsection{Distribution of a property}
+\begin{center}
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.8\textwidth}
+<<fig=TRUE>>=
+PlotNPSDistribution(TL84, 'Log10M')
+@
+\end{center}
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNPSDistribution(TL84, 'PreyAveragedTrophicLevel')
+@
+\end{center}
+
+\subsection{Colours and symbols}
+\label{sec:nps_colours and symbols}
+Cheddar builds on \R's highly flexible plotting mechanisms. Symbol, outline 
+colour, fill colour and symbol size can controlled either by a first-class 
+property, such as `category' or taxonomic resolution, or by a computed property 
+such as trophic species numbers. As with any \R plot, you can set directly set 
+colours, symbols, a graph title etc.
+
+If the community being plotted has a node property called `category' the 
+function uses `category' to decide plotting colours and symbols using 
+the specifications given in \code{DefaultCategoryColours} and 
+\code{DefaultCategorySymbols}.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, col=1, pch=1, highlight.nodes=NULL)
+@
+\end{center}
+
+Plot each node in different colour by providing a vector of colours.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, col=1:56, pch=19, highlight.nodes=NULL)
+@
+\end{center}
+
+Plot each level of taxonomic resolution in a different colour. In this example, 
+a value of `colour.spec' is not given so \code{PlotNPS} converts the values 
+of the first-class node property `resolved.to' to a factor and uses the 
+factor levels to colour each node. This is a `quick and dirty' way to set node 
+colours.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, colour.by='resolved.to', pch=19, highlight.nodes=NULL)
+@
+\end{center}
+
+We can improve on this by showing each level of taxonomic resolution in a 
+specific colour by providing the `colour.spec' parameter.
+
+\begin{center}
+<<fig=TRUE>>=
+colour.spec <- c(Species='purple3', Genus='green3', Group='red3')
+PlotNvM(TL84, colour.by='resolved.to', colour.spec=colour.spec, pch=19, 
+        highlight.nodes=NULL)
+legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
+@
+\end{center}
+
+The more complex example below uses the `kingdom' level of classification with 
+a different colour and symbol.
+
+\begin{center}
+<<fig=TRUE>>=
+symbol.spec = c(5, Bacteria=19, Plantae=1, Chromista=2, Protozoa=3, 
+                Animalia=4)
+colour.spec = c('black', Bacteria='pink2', Plantae='green2', 
+                Chromista='blue3', Protozoa='yellow2', Animalia='red3')
+PlotNvM(TL84, 
+        symbol.by='kingdom', symbol.spec=symbol.spec, 
+        colour.by='kingdom', colour.spec=colour.spec, 
+        highlight.nodes=NULL)
+legend("topright", legend=names(colour.spec), pch=symbol.spec, col=colour.spec)
+@
+\end{center}
+
+You can use \code{pch=NA} to turn off symbols and just show the food web.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, pch=NA, highlight.nodes=NULL)
+@
+\end{center}
+
+\subsection{Highlights and lowlights}
+\code{PlotNPS} (and by extension all of the other node plotting functions) 
+allow nodes individual nodes to be highlighted or lowlighted using the 
+\code{highlight.nodes} and \code{lowlight.nodes} parameters. These 
+parameters accept functions. Functions should take a single \code{Community} 
+object and return node names. Cheddar provides many such functions, 
+such as \code{Cannibals}, which returns the names of all nodes that 
+consume themselves.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, highlight.nodes=Cannibals)
+@
+\end{center}
+
+To highlight nodes without trophic-links to any other nodes we can use the 
+\code{IsolatedNodes} function.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, highlight.nodes=IsolatedNodes)
+@
+\end{center}
+
+These parameters also accept the names or IDs of nodes. We can highlight an 
+individual node.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, highlight.nodes='Chaoborus punctipennis')
+@
+\end{center}
+
+\code{PlotNPS} also allows trophic links to be highlighted. The 
+\code{highlight.links} parameter accepts either a \code{data.frame} with 
+the columns `resource' and `consumer' or a function that accepts a single 
+community as its only parameters and returns such a \code{data.frame}. 
+One such function is \code{ResourceLargerThanConsumer}, 
+which returns a \code{data.frame} containing trophic links in which the 
+resource has a larger body mass, $M$, than its consumer. To highlight these 
+links we would simply pass this function as the \code{highlight.links} 
+parameter.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, highlight.links=ResourceLargerThanConsumer)
+@
+\end{center}
+
+The example below uses the helper function \code{TrophicLinksForNodes} to 
+highlight all links in-to and out-of \textit{Chaoborus punctipennis}.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(TL84, highlight.nodes='Chaoborus punctipennis', 
+        highlight.links=TrophicLinksForNodes(TL84, 'Chaoborus punctipennis'))
+@
+\end{center}
+
+\subsection{Nodes that lack properties}
+Communities are never completely sampled and some species may be 
+represented by too few individuals for properties such as $M$ and $N$ to be 
+accurately estimated. Other resources such as detritus, commonly eaten by 
+primary consumers in many communities, have no clearly-defined $M$ 
+or $N$. Many datasets will therefore contain food-web nodes that lack 
+one or more properties, for example Ythan Estuary dataset has a large 
+number of primary consumers that depend upon detritus, which has no $M$ or $N$. 
+\code{PlotNPS} (and hence all the high-level functions that use it) places 
+nodes without a property at the lowest extent of the relevant axis. The plot 
+of $\log_{10}(N)$-versus=$\log_{10}(M)$ below shows detritus at the 
+bottom-left of the plot.
+
+\begin{center}
+<<fig=TRUE>>=
+data(YthanEstuary)
+PlotNvM(YthanEstuary)
+@
+\end{center}
+
+The location of the detritus node is determined by the extent of the data, 
+or by the axes limits, if given.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotNvM(YthanEstuary, xlim=c(-10, 4), ylim=c(-10, 13))
+@
+\end{center}
+
+The example below shows how \code{PlotNPS} behaves in four different cases - 
+node lacks x property, node lacks y property, node lacks both x and y 
+properties and many nodes lack both x and y properties. 
+\code{lowlight.nodes} defaults to nodes that lack either one of the 
+properties being plotted, so the plots below lowlight the node(s) lacking 
+$M$ and/or $N$.
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+np <- NPS(TL84)
+np[1,'M'] <- NA
+PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
+        main='Node 1 M=NA', show.nodes.as='both',cex=2)
+
+np <- NPS(TL84)
+np[1,'N'] <- NA
+PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
+        main='Node 1 N=NA', show.nodes.as='both',cex=2)
+
+np <- NPS(TL84)
+np[1,'M'] <- NA
+np[1,'N'] <- NA
+PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
+        main='Node 1 M=NA and N=NA', show.nodes.as='both',cex=2)
+
+np <- NPS(TL84)
+np[c(10, 20, 30, 40),'M'] <- NA
+np[c(10, 20, 30, 40),'N'] <- NA
+PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
+        main='Nodes 10, 20, 30 and 40 M=NA and N=NA', show.nodes.as='both', 
+        cex=2)
+@
+\end{center}
+
+\section{Plotting trophic-link properties}
+\subsection{\code{PlotTLPS}}
+\code{PlotTLPS} (for Plot Trophic-Link PropertieS) plots one node property 
+against another. Every Cheddar function that plots a point per trophic link 
+delegates the job of plotting to \code{PlotTLPS} and all of it's power and 
+flexibility are available to all of the functions discussed in this section.
+
+\code{PlotTLPS} accepts the names of properties to plot on the x and 
+y axes. These can be both `first-class' and computed properties of trophic 
+links or nodes. If a property name begins with either `resource.' or 
+`consumer.' then the remainder of the name is assumed to be a node property. 
+For example, to plot $\log_{10}(M)$ of consumers against $\log_{10}(M)$ of 
+consumers we can use the helper function \code{Log10M}.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M')
+@
+\end{center}
+
+We can make the plot more informative if the the limits of both the x and y 
+axes are the same. Setting the `axes.limits.equal' parameter to \code{TRUE} 
+instructs \code{PlotTLPS} to do just that, as shown below.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M', axes.limits.equal=TRUE)
+@
+\end{center}
+
+\code{PlotTLPS} uses the \code{TLPS} function to assemble data for 
+plotting. \code{PlotTLPS} uses the \code{category} node property, if 
+present, of resources to decide plotting colours and symbols. Resources that 
+are producers are shown by green circles, invertebrates by blue squares and 
+vertebrate ectotherms by purple diamonds. This is explored more in 
+Section \ref{sec:nps_colours and symbols}.
+
+The example below plots a resource's trophic level against it's 
+$\log_{10}$-transformed body mass.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotTLPS(TL84, 'resource.Log10M', 'resource.PreyAveragedTrophicLevel')
+@
+\end{center}
+
+The convenience functions \code{PlotPredationMatrix}, \code{PlotMRvMC}, 
+\code{PlotMCvMR}, \code{PlotNRvNC}, \code{PlotNCvNR}, \code{PlotBRvBC}, 
+\code{PlotBCvBR} are `wrappers' around \code{PlotTLPS} that plot a 
+predation matrix (a binary matrix with species shown in node order, starting 
+at the top-left, points on the dashed line are cannibals) or 
+$\log_{10}$-transformed body mass, $M$, numerical abundance, $N$, or biomass, 
+$B$.
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+PlotPredationMatrix(TL84)
+PlotMRvMC(TL84)
+PlotNCvNR(TL84)
+PlotBRvBC(TL84)
+@
+\end{center}
+
+\subsection{Colours and symbols}
+\label{sec:tlps_colours and symbols}
+\code{PlotTLPS} uses a similar mechanism to \code{PlotNPS}. If the 
+community being plotted has a node property called `category' the function 
+uses `resource.category' to decide plotting colours and symbols using 
+the specifications given in \code{DefaultCategoryColours} and 
+\code{DefaultCategorySymbols}, as shown by this plot of 
+consumer-versus-resource $\log_{10}$-transormed body mass.
+
+\begin{center}
+<<fig=TRUE>>=
+PlotMRvMC(TL84)
+@
+\end{center}
+
+To plot the same data using the consumer's category to decide colours and 
+symbols.
+\begin{center}
+<<fig=TRUE>>=
+PlotMRvMC(TL84, colour.by='consumer.category', bg.by='consumer.category', 
+          symbol.by='consumer.category')
+@
+\end{center}
+
+\section{Recreating figures from published articles}
+The following sections show how to use Cheddar to recreate some published 
+figures.
+
+\subsection{\cite{JonssonEtAl2005AER}}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 3 (p 30)}
+
+\SweaveOpts{width=4,height=8}
+\setkeys{Gin}{width=4in}
+\begin{center}
+<<fig=TRUE>>=
+data(TL84, TL86)
+par(mfrow=c(2,1))
+PlotMvN(TL84, show.nodes.as='both', cex=2, xlim=c(-2, 10), ylim=c(-14, 0), 
+        highlight.nodes=NULL, highlight.links=NULL, main='')
+PlotMvN(TL86, show.nodes.as='both', cex=2, xlim=c(-2, 10), ylim=c(-14, 0), 
+        highlight.nodes=NULL, highlight.links=NULL, main='')
+title(main='Jonsson et al. (2005) AER, Fig. 3 (p 30)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 4 (p 33)}
+
+\SweaveOpts{width=4,height=8}
+\setkeys{Gin}{width=4in}
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,1))
+PlotMCvMR(TL84, xlim=c(-14, 0), ylim=c(-14, 0), main='')
+abline(a=0, b=1, lty=2)
+PlotMCvMR(TL86, xlim=c(-14, 0), ylim=c(-14, 0), main='')
+abline(a=0, b=1, lty=2)
+title(main='Jonsson et al. (2005) AER, Fig. 4 (p 33)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 5 (p 37)}
+
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.8\textwidth}
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+PlotNvM(TL84, xlim=c(-14, 0), ylim=c(-2,10), show.web=FALSE, main='')
+PlotNvM(TL86, xlim=c(-14, 0), ylim=c(-2,10), show.web=FALSE, main='')
+PlotBvM(TL84, xlim=c(-14, 0), ylim=c(-8,2), show.web=FALSE, main='')
+PlotBvM(TL86, xlim=c(-14, 0), ylim=c(-8,2), show.web=FALSE, main='')
+title(main='Jonsson et al. (2005) AER, Fig. 5 (p 37)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 7 (p 47)}
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+PlotNCvNR(TL84, xlim=c(0, 10), ylim=c(-2,10), main='')
+abline(a=0, b=1, lty=2)
+PlotNCvNR(TL86, xlim=c(0, 10), ylim=c(-2,10), main='')
+abline(a=0, b=1, lty=2)
+PlotBCvBR(TL84, xlim=c(-8, -2), ylim=c(-8, -2), main='')
+abline(a=0, b=1, lty=2)
+PlotBCvBR(TL86, xlim=c(-8, -2), ylim=c(-8, -2), main='')
+abline(a=0, b=1, lty=2)
+title(main='Jonsson et al. (2005) AER, Fig. 7 (p 47)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 8 (p 49)}
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+tl84.levels <- floor(TrophicHeight(TL84))
+tl86.levels <- floor(TrophicHeight(TL86))
+PlotNPyramid(TL84, level=tl84.levels, main='', ylab='Trophic height')
+PlotNPyramid(TL86, level=tl86.levels, main='')
+PlotBPyramid(TL84, level=tl84.levels, main='', ylab='Trophic height')
+PlotBPyramid(TL86, level=tl86.levels, main='')
+title(main='Jonsson et al. (2005) AER, Fig. 8 (p 49)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 10 (p 57)}
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+PlotNvRankN(TL84, xlim=c(0,60), ylim=c(-2, 10), main='')
+PlotNvRankN(TL86, xlim=c(0,60), ylim=c(-2, 10), main='')
+PlotBvRankB(TL84, xlim=c(0,60), ylim=c(-8, -2), main='')
+PlotBvRankB(TL86, xlim=c(0,60), ylim=c(-8, -2), main='')
+title(main='Jonsson et al. (2005) AER, Fig. 10 (p 57)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 11 (p 60)}
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+PlotRankNPS(TL84, property='Log10N', rank.by='M', log10.rank=TRUE, 
+            xlim=c(0,2), ylim=c(-2, 10), ylab=Log10NLabel(TL84), main='')
+PlotRankNPS(TL86, property='Log10N', rank.by='M', log10.rank=TRUE, 
+            xlim=c(0,2), ylim=c(-2, 10), ylab=Log10NLabel(TL84), main='')
+PlotRankNPS(TL84, property='Log10Biomass', rank.by='M', 
+            log10.rank=TRUE, xlim=c(0,2), ylim=c(-8, -2), 
+            ylab=Log10BLabel(TL84), main='')
+PlotRankNPS(TL86, property='Log10Biomass', rank.by='M', 
+            log10.rank=TRUE, xlim=c(0,2), ylim=c(-8, -2), 
+            ylab=Log10BLabel(TL84), main='')
+title(main='Jonsson et al. (2005) AER, Fig. 11 (p 60)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 12 (p 61)}
+In this example, we write a small function that plots one community against 
+another.
+
+\SweaveOpts{width=4,height=8}
+\setkeys{Gin}{width=4in}
+\begin{center}
+<<fig=TRUE>>=
+PlotCommunityVCommunity <- function(a, b, property, xlim=NULL, ylim=NULL, ...)
+{
+    a.nodes <- NP(a, 'node')
+    b.nodes <- NP(b, 'node')
+    all.nodes <- union(a.nodes, b.nodes)
+
+    a.values <- NPS(a, property)[,property]
+    names(a.values) <- a.nodes
+    b.values <- NPS(b, property)[,property]
+    names(b.values) <- b.nodes
+    points <- PlaceMissingPoints(a.values[all.nodes], xlim,
+                                 b.values[all.nodes], ylim)
+    plot(points[,1], points[,2], xlim=xlim, ylim=ylim, ...)
+
+    abline(a=0, b=1, lty=2)
+}
+
+par(mfrow=c(2,1))
+PlotCommunityVCommunity(TL84, TL86, 'Log10N', xlim=c(-2,10), ylim=c(-2,10), 
+                        xlab=~log[10]~(N~of~84), ylab=~log[10]~(N~of~86))
+PlotCommunityVCommunity(TL84, TL86, 'Log10Biomass', 
+                        xlim=c(-8,-2), ylim=c(-8,-2), 
+                        xlab=~log[10]~(B~of~84), ylab=~log[10]~(B~of~86))
+title(main='Jonsson et al. (2005) AER, Fig. 12 (p 61)', outer=TRUE)
+@
+\end{center}
+
+\subsection{\cite{CohenEtAl2009PNAS}}
+
+\subsubsection{\cite{CohenEtAl2009PNAS}, Fig.\ 1, p 22336}
+
+\SweaveOpts{width=6,height=8}
+\setkeys{Gin}{width=6in}
+\begin{center}
+<<fig=TRUE>>=
+data(TL84, TL86, YthanEstuary)
+par(mfrow=c(3,2))
+for(community in list(TL84, TL86, YthanEstuary))
+{
+    community <- RemoveIsolatedNodes(community)
+    pch <- rep(1, NumberOfNodes(community))
+    pch[IsIntermediateNode(community)] <- 20
+    pch[IsTopLevelNode(community)] <- 8
+    PlotNvM(community, col=1, highlight.nodes=NULL, show.web=FALSE, 
+            main='', pch=pch)
+    PlotAuppervAlower(community, main='')
+}
+title(main='Cohen et al. (2009) PNAS, Fig. 1 (p 22336)', outer=TRUE)
+@
+\end{center}
+
+\subsection{\cite{LayerEtAl2011AER}}
+
+\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 4 (p 280)}
+
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.8\textwidth}
+\begin{center}
+<<fig=TRUE>>=
+data(pHWebs)
+cps <- CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
+plot(cps$pH, cps$S, xlab='pH', ylab='S')
+m1 <- lm(cps$S ~ cps$pH)
+abline(m1)
+title(main='Layer et al. (2011) AER, Fig. 4 (p 280)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 5 (p 281)}
+
+\begin{center}
+<<fig=TRUE>>=
+plot(NA, NA, xlim=c(-15,10), ylim=c(-5,15), xlab=Log10MLabel(units='mg'), 
+     ylab=Log10NLabel(units='m^-2'), type='n', main='')
+
+# A list of list of lm models
+models <- lapply(pHWebs, NvMLinearRegressions, class=NULL)
+PlotLinearModels(models, col=1)
+title(main='Layer et al. (2011) AER, Fig. 5 (p 281)', outer=TRUE)
+@
+\end{center}
+
+\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 6 (p 282)}
+The first four panels from this figure.
+
+\begin{center}
+<<fig=TRUE>>=
+par(mfrow=c(2,2))
+for(community in pHWebs[1:2])
+{
+    PlotNvM(community, xlim=c(-15, 10), ylim=c(-5,15), main='', 
+            highlight.nodes=NULL)
+    text(-15, 13, with(CPS(community), paste(title, ', pH ', pH, sep='')), 
+         adj=0, cex=1.5)
+    tlps <- TLPS(community, node.properties='M')
+    tlps <- tlps[!is.na(tlps$resource.M) & !is.na(tlps$consumer.M),]
+    interaction.strength <- log10( (tlps$consumer.M / tlps$resource.M)^0.75 )
+    plot(density(interaction.strength), xlim=c(-4,14), ylim=c(0,0.6), 
+         main='', xlab=~log[10]((M[C]/M[R])^0.75))
+    rug(interaction.strength)
+}
+title(main='Layer et al. (2011) AER, Fig. 6 (p 282)', outer=TRUE)
+@
+\end{center}
+
+\subsection{\cite{WoodwardEtAl2005AER}}
+\subsubsection{\cite{WoodwardEtAl2005AER}, Fig.\ 4. (p 108)}
+The top panel shows all trophic links. The bottom panel shows just links for 
+which the resource has a larger body mass than the consumer.
+
+\begin{center}
+\SweaveOpts{width=4,height=8}
+\setkeys{Gin}{width=4in}
+<<fig=TRUE>>=
+data(BroadstoneStream)
+par(mfrow=c(2,1))
+PlotMvN(BroadstoneStream, show.nodes.as='labels', cex=1, label.cex=1, 
+        xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
+        highlight.links=NULL)
+abline(a=0, b=-1)
+
+tlps <- TLPS(BroadstoneStream, node.properties='M')
+lty <- rep(0, NumberOfTrophicLinks(BroadstoneStream))
+lty[tlps$resource.M > tlps$consumer.M] <- 1
+PlotMvN(BroadstoneStream, show.nodes.as='labels', cex=1, label.cex=1, 
+        xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
+        highlight.links=NULL, link.lty=lty)
+abline(a=0, b=-1)
+title(main='Woodward et al. (2005) AER, Fig. 4 (p 108)', outer=TRUE)
+@
+\end{center}
+
+%\bibliographystyle{cheddar}
+\bibliography{cheddar} 
+
+\end{document}
+
