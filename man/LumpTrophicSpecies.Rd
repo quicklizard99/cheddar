@@ -1,9 +1,8 @@
-\name{CollapseTrophicSpecies}
-\alias{CollapseTrophicSpecies}
-\title{Collapse trophic species}
-\description{Collapse trophic species.}
-\usage{CollapseTrophicSpecies(community, include.isolated=TRUE, title=NULL, 
-                              \dots)}
+\name{LumpTrophicSpecies}
+\alias{LumpTrophicSpecies}
+\title{Lump trophic species}
+\description{Lump trophic species.}
+\usage{LumpTrophicSpecies(community, include.isolated=TRUE, title=NULL, \dots)}
 
 \arguments{
   \item{community}{an object of class \code{Community}.}
@@ -31,7 +30,7 @@ description. Advances in Ecological Research \bold{36}, 1--84.}
 \examples{
 data(TL84)
 
-TL84.ts <- CollapseTrophicSpecies(TL84)
+TL84.ts <- LumpTrophicSpecies(TL84)
 TrophicSpecies(TL84.ts)
 }
 \keyword{utilities}

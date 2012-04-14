@@ -25,7 +25,7 @@ description. Advances in Ecological Research \bold{36}, 1--84.}
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{Community}}, \code{\link{IsIsolatedNode}}, 
-         \code{\link{NPS}}, \code{\link{CollapseTrophicSpecies}}, 
+         \code{\link{NPS}}, \code{\link{LumpTrophicSpecies}}, 
          \code{\link{NumberOfNodes}}}
 
 \examples{

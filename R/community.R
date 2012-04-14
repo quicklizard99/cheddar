@@ -937,17 +937,14 @@ LumpNodes <- function(community, lump, lumped.names=NULL, title=NULL,
                       properties=new.properties))
 }
 
-CollapseTrophicSpecies <- function(community, include.isolated=TRUE, 
-                                   title=NULL, ...)
+LumpTrophicSpecies <- function(community, include.isolated=TRUE, title=NULL,...)
 {
-    # Returns a community in which species are merged into trophic species
-    # Numeric node properties are averaged
-    # Other node properties are joined using paste
+    # Returns a community in which nodes are lumped into trophic species.
     if(!is.Community(community)) stop('Not a Community')
 
     if(is.null(title))
     {
-       title <- paste(CP(community, 'title'), '(trophic species collapsed)')
+       title <- paste(CP(community, 'title'), '(trophic species lumped)')
     }
 
     # TrophicSpecies assigns isolated species a trophic species of NA if 

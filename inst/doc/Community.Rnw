@@ -226,8 +226,9 @@ demonstrated using the \code{TrophicSpecies} function: in order to account for
 different levels of taxonomic resolution and other biases, researchers often 
 lump biological species together. Species in the food web that have the same 
 resources and consumers are the same `trophic species' 
-\citep{PimmEtAl1991Nature}. The \code{TrophicSpecies} function assigns these 
-IDs to each node.
+\citep{BriandAndCohen1984Nature, PimmEtAl1991Nature, 
+WilliamsAndMartinez2000Nature}. The \code{TrophicSpecies} function computes 
+these IDs.
 <<>>=
 tail(TrophicSpecies(TL84))
 @
@@ -242,9 +243,9 @@ head(NPS(TL84, list(TS.iso='TrophicSpecies',
                     TS.no.iso=list('TrophicSpecies', include.isolated=FALSE))))
 @
 \textit{Asterionella formosa} is an isolated species so has been given a 
-trophic species of \code{NA} in the `TS.no.iso' column. 
-\code{CollapseTrophicSpecies} function lumps nodes together using these IDs, 
-discussed futher in Section \ref{sec:collapse_trophic_species}.
+trophic species of \code{NA} in the `TS.no.iso' column. The 
+\code{LumpTrophicSpecies} function lumps nodes together using these IDs 
+(Section \ref{sec:lump_trophic_species}).
 
 \code{NPS} therefore makes it very easy to assemble tables of properties either 
 for analysis or for presentation in a manuscript. We example below recreates 
@@ -744,11 +745,12 @@ plot(YE.merged, highlight.nodes=c(merged1,merged2))
 @
 \end{center}
 
-\subsection{\code{CollapseTrophicSpecies}}
-\label{sec:collapse_trophic_species}
-The \code{NumberOfTrophicLinks} function returns a new \code{Community} object; 
-nodes that have the same trophic species ID (\code{TrophicSpecies}) are 
-merged.
+\subsection{Lumping trophic species}
+\label{sec:lump_trophic_species}
+Species that share the same resources and consumers are said to be the same 
+`trophic species' \citep{BriandAndCohen1984Nature, PimmEtAl1991Nature, 
+WilliamsAndMartinez2000Nature}. The \code{LumpTrophicSpecies} function returns 
+a new \code{Community} object with trophic species merged. 
 <<>>=
 NumberOfNodes(TL84)
 NumberOfTrophicLinks(TL84)
@@ -756,10 +758,21 @@ NumberOfTrophicLinks(TL84)
 # There are 22 different trophic species
 length(unique(TrophicSpecies(TL84)))
 
-TL84.ts <- CollapseTrophicSpecies(TL84)
-NumberOfNodes(TL84.ts)  # 22 species
-NumberOfTrophicLinks(TL84.ts)
+TL84.lumped <- LumpTrophicSpecies(TL84)
+NumberOfNodes(TL84.lumped)  # 22 species
+NumberOfTrophicLinks(TL84.lumped)   # 71 links
 @
+The plot below shows the lumped and unlumped webs.
+
+\begin{center}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=\textwidth}
+<<fig=TRUE>>=
+par(mfrow=c(1,2))
+plot(TL84)
+plot(TL84.lumped, xlim=range(Log10M(TL84)), ylim=range(Log10N(TL84)))
+@
+\end{center}
 
 %\bibliographystyle{cheddar}
 \bibliography{cheddar} 

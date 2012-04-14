@@ -578,30 +578,30 @@ TestRemoveIsolatedNodes <- function()
     stopifnot(identical(TLPS(TL84), TLPS(TL84.no.iso)))
 }
 
-TestCollapseTrophicSpecies <- function()
+TestLumpTrophicSpecies <- function()
 {
     stopifnot(1==NumberOfNodes(c1))
-    stopifnot(1==NumberOfNodes(CollapseTrophicSpecies(c1)))
+    stopifnot(1==NumberOfNodes(LumpTrophicSpecies(c1)))
     stopifnot(1==NumberOfNodes(c2))
-    stopifnot(1==NumberOfNodes(CollapseTrophicSpecies(c2)))
+    stopifnot(1==NumberOfNodes(LumpTrophicSpecies(c2)))
     stopifnot(2==NumberOfNodes(c3))
-    stopifnot(2==NumberOfNodes(CollapseTrophicSpecies(c3)))
+    stopifnot(2==NumberOfNodes(LumpTrophicSpecies(c3)))
     stopifnot(3==NumberOfNodes(c4))
-    stopifnot(3==NumberOfNodes(CollapseTrophicSpecies(c4)))
+    stopifnot(3==NumberOfNodes(LumpTrophicSpecies(c4)))
     stopifnot(3==NumberOfNodes(c5))
-    stopifnot(3==NumberOfNodes(CollapseTrophicSpecies(c5)))
+    stopifnot(3==NumberOfNodes(LumpTrophicSpecies(c5)))
     stopifnot(3==NumberOfNodes(c6))
-    stopifnot(3==NumberOfNodes(CollapseTrophicSpecies(c6)))
+    stopifnot(3==NumberOfNodes(LumpTrophicSpecies(c6)))
     stopifnot(all(c('Inferred','Known') == 
-                  TLPS(CollapseTrophicSpecies(c6))[,'link.evidence']))
+                  TLPS(LumpTrophicSpecies(c6))[,'link.evidence']))
     stopifnot(all(c(0.5,0.2) == 
-                  TLPS(CollapseTrophicSpecies(c6))[,'link.strength']))
+                  TLPS(LumpTrophicSpecies(c6))[,'link.strength']))
 
     stopifnot(56==NumberOfNodes(TL84))
 
     # Exclude isolated species.
-    collapsed <- CollapseTrophicSpecies(TL84, include.isolated=FALSE)
-    stopifnot(21==NumberOfNodes(collapsed))
+    lumped <- LumpTrophicSpecies(TL84, include.isolated=FALSE)
+    stopifnot(21==NumberOfNodes(lumped))
 
     # From Jonsson et al 2005 AER. Isolated species assigned NA.
     trophic.species <- c(1,2,NA,3,4,3,5,NA,6,1,1,NA,4,7,4,8,6,7,2,3,6,7,
@@ -615,15 +615,15 @@ TestCollapseTrophicSpecies <- function()
     # Check M and N have been averaged correctly
     for(ts in unique(trophic.species[!is.na(trophic.species)]))
     {
-        stopifnot(identical(unname(NP(collapsed,'M')[ts]), 
+        stopifnot(identical(unname(NP(lumped,'M')[ts]), 
                             mean(NP(TL84,'M')[which(ts==trophic.species)])))
-        stopifnot(identical(unname(NP(collapsed,'N')[ts]), 
+        stopifnot(identical(unname(NP(lumped,'N')[ts]), 
                             mean(NP(TL84,'N')[which(ts==trophic.species)])))
     }
 
     # Include isolated species.
-    collapsed <- CollapseTrophicSpecies(TL84, include.isolated=TRUE)
-    stopifnot(22==NumberOfNodes(collapsed))
+    lumped <- LumpTrophicSpecies(TL84, include.isolated=TRUE)
+    stopifnot(22==NumberOfNodes(lumped))
 
     trophic.species <- c(1,2,3,4,5,4,6,3,7,1,1,3,5,8,5,9,7,8,2,4,7,8,5,7,
                          4,3,4,3,3,7,4,10,10,11,12,13,14,15,16,12,16,17,16,
@@ -636,9 +636,9 @@ TestCollapseTrophicSpecies <- function()
     # Check M and N have been averaged correctly
     for(ts in unique(trophic.species[!is.na(trophic.species)]))
     {
-        stopifnot(identical(unname(NP(collapsed,'M')[ts]), 
+        stopifnot(identical(unname(NP(lumped,'M')[ts]), 
                             mean(NP(TL84,'M')[which(ts==trophic.species)])))
-        stopifnot(identical(unname(NP(collapsed,'N')[ts]), 
+        stopifnot(identical(unname(NP(lumped,'N')[ts]), 
                             mean(NP(TL84,'N')[which(ts==trophic.species)])))
     }
 }
