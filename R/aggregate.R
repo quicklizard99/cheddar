@@ -82,6 +82,14 @@ ExpectSingleUniqueEmptyRm <- function(x)
 .AggregateDataFrame <- function(data, aggregate.by, column.behaviour, 
                                 class.behaviour)
 {
+    if(is.character(aggregate.by))
+    {
+        # tapply converts aggregate.by to a factor. If aggregate.by is a 
+        # character, is will be sorted alphabetically. 
+        # This code retains the existing ordering.
+        aggregate.by <- factor(aggregate.by, levels=unique(aggregate.by))
+    }
+    
     new.data <- lapply(colnames(data), function(n) 
     {
         fn <- column.behaviour[[n]]

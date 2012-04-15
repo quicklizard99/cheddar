@@ -319,7 +319,7 @@ AggregateCommunities <- function(collection,
     node.properties <- node.properties[rows.to.keep,]
 
     # A union of all nodes in aggregate
-    new.nodes <- data.frame(node=sort(unique(node.properties$node)), 
+    new.nodes <- data.frame(node=unique(node.properties$node), 
                             stringsAsFactors=FALSE)
 
     # Aggregate node properties

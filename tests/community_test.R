@@ -578,6 +578,21 @@ TestRemoveIsolatedNodes <- function()
     stopifnot(identical(TLPS(TL84), TLPS(TL84.no.iso)))
 }
 
+TestLumpNodes <- function()
+{
+    # TODO Test values
+    stopifnot(1==NumberOfNodes(LumpNodes(TL84, paste('S', rep(1, 56)))))
+
+    lump <- NP(TL84, 'node')
+    stopifnot(identical(TL84, LumpNodes(TL84, lump, title=CP(TL84, 'title'))))
+
+    stopifnot(56==NumberOfNodes(TL84))
+    stopifnot(6==length(IsolatedNodes(TL84)))
+    lump <- NP(TL84, 'node')
+    lump[IsolatedNodes(TL84)] <- 'Isolated nodes lumped together'
+    stopifnot(51==NumberOfNodes(LumpNodes(TL84, lump)))
+}
+
 TestLumpTrophicSpecies <- function()
 {
     stopifnot(1==NumberOfNodes(c1))

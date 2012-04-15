@@ -818,61 +818,26 @@ RemoveIsolatedNodes <- function(community, title=NULL)
     return (RemoveNodes(community, isolated, title))
 }
 
-MergeNodes <- function(community, merge, merged.name, title=NULL, ...)
-{
-    # Merges the nodes given in merge to a node name merged.name.
-    if(!is.Community(community)) stop('Not a Community')
-    if(is.null(title))
-    {
-        title <- paste(CP(community, 'title'), '(nodes merged)')
-    }
-
-    if(is.character(merge))
-    {
-        merge <- NodeNameIndices(community, merge)
-    }
-
-    stopifnot(all(0<merge & merge<=NumberOfNodes(community)))
-    stopifnot(all(!duplicated(merge)))
-    stopifnot(length(merge)>=2)
-    stopifnot(length(merged.name)==1)
-
-    # Delegate to LumpNodes()
-    # Entries in lump that are the same will result in these nodes being lumped
-    lump <- 1:NumberOfNodes(community)
-    lump[merge] <- merge[1]
-
-    # Take 1 off the lump of every node with an index greater than those 
-    # being merged. This ensures that the lump values are continuous
-    lump[lump>merge[1]] <- lump[lump>merge[1]]-1
-
-    lumped.names <- NP(community, 'node')
-    lumped.names[merge] <- merged.name
-    lumped.names <- lumped.names[-merge[2:length(merge)]]
-
-    return (LumpNodes(community, lump, lumped.names=lumped.names, 
-                      title=title, ...))
-}
-
-LumpNodes <- function(community, lump, lumped.names=NULL, title=NULL, 
-                      class.behaviour=list(integer=MeanNaRm, 
-                                           numeric=MeanNaRm, 
-                                           character=JoinUnique, 
-                                           logical=JoinUnique), 
-                      column.behaviour=NULL)
+LumpNodes <- function(community, lump, title=NULL, 
+                       class.behaviour=list(integer=MeanNaRm, 
+                                            numeric=MeanNaRm, 
+                                            character=JoinUnique, 
+                                            logical=JoinUnique), 
+                       column.behaviour=NULL)
 {
     # Returns a community in which nodes are lumped. 
+    #   lump - a vector of of length NumberOfNodes containing names of lumped 
+    #          nodes
+    #   class.behaviour - 
+    #   column.behaviour - 
     if(!is.Community(community)) stop('Not a Community')
 
     # Must have one entry per node
+    stopifnot(is.character(lump))
     stopifnot(length(lump)==NumberOfNodes(community))
-
-    # Lump numbers should be continuous starting at 1 and ending with the 
-    # largest number of lumps.
-    stopifnot(1==min(lump))
-    stopifnot(max(lump)==length(unique(lump)))
-    stopifnot(all(!is.na(lump)))
-
+    stopifnot(all(nchar(lump)>0))
+    names(lump) <- unname(NP(community, 'node'))
+    
     # Functions for aggregating values
     stopifnot("function" == unique(lapply(class.behaviour, class)))
     stopifnot(is.null(column.behaviour) || 
@@ -884,45 +849,31 @@ LumpNodes <- function(community, lump, lumped.names=NULL, title=NULL,
         title <- paste(CP(community, 'title'), '(lumped)')
     }
 
-    if(is.null(lumped.names))
-    {
-        lumped.names <- paste('Lumped node', 1:length(unique(lump)))
-    }
-
     # Lump node properties
-    old.nodes <- NPS(community)
-    stopifnot(length(lumped.names)==length(unique(lump)))
-
-    new.nodes <- data.frame(node=lumped.names, stringsAsFactors=FALSE)
-    if(ncol(old.nodes)>1)
-    {
-        # Aggregate columns other than 'node'
-        new.nodes <- cbind(new.nodes, .AggregateDataFrame(old.nodes[,-1], 
-                                                          lump, 
-                                                          column.behaviour, 
-                                                          class.behaviour))
-    }
+    new.nodes <- .AggregateDataFrame(NPS(community)[,-1], 
+                                     lump, 
+                                     column.behaviour, 
+                                     class.behaviour)
+    new.nodes <- cbind(node=unique(lump), new.nodes)
 
     # Lump trophic links and properties
     old.tlp <- new.tlp <- TLPS(community)
     if(!is.null(old.tlp))
     {
+        old.nodes <- NP(community, 'node')
         new.tlp <- new.tlp[,c('resource', 'consumer')]
         for(index in 1:NumberOfNodes(community))
         {
-            new.tlp[new.tlp == old.nodes$node[index]] <- 
-                                                     lumped.names[lump[index]]
+            new.tlp[new.tlp == old.nodes[index]] <- lump[index]
         }
 
-        new.tlp <- new.tlp[!duplicated(new.tlp),]
-
-        aggregate.by <- paste(lumped.names[lump[old.tlp$resource]], 
-                              lumped.names[lump[old.tlp$consumer]])
+        new.tlp <- new.tlp[!duplicated(new.tlp),,drop=FALSE]
+        aggregate.by <- paste(lump[old.tlp$resource], lump[old.tlp$consumer])
         if(ncol(old.tlp)>2)
         {
             # Aggregate columns other than 'resource' and 'consumer'
             select.cols <- !colnames(old.tlp) %in% c('resource', 'consumer')
-            old.tlp <- old.tlp[,select.cols]
+            old.tlp <- old.tlp[,select.cols,drop=FALSE]
             new.tlp <- cbind(new.tlp, .AggregateDataFrame(old.tlp, 
                                                           aggregate.by, 
                                                           column.behaviour, 
@@ -957,8 +908,7 @@ LumpTrophicSpecies <- function(community, include.isolated=TRUE, title=NULL,...)
 
     ts <- TrophicSpecies(community, include.isolated=TRUE)
     return (LumpNodes(community, title=title, 
-                      lump=ts, 
-                      lumped.names=paste('Trophic species', 1:max(ts)), ...))
+                      lump=paste('Trophic species', ts), ...))
 }
 
 OrderCommunity <- function(community, ..., decreasing=FALSE, new.order=NULL, 

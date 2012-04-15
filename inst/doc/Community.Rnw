@@ -245,7 +245,7 @@ head(NPS(TL84, list(TS.iso='TrophicSpecies',
 \textit{Asterionella formosa} is an isolated species so has been given a 
 trophic species of \code{NA} in the `TS.no.iso' column. The 
 \code{LumpTrophicSpecies} function lumps nodes together using these IDs 
-(Section \ref{sec:lump_trophic_species}).
+(Section \ref{sec:lumping_nodes}).
 
 \code{NPS} therefore makes it very easy to assemble tables of properties either 
 for analysis or for presentation in a manuscript. We example below recreates 
@@ -715,52 +715,20 @@ Cannibals(TL84.no.cannibals)             # No species
 NumberOfTrophicLinks(TL84.no.cannibals)  # 5 fewer trophic links
 @
 
-\subsection{Merging nodes}
-The Ythan Estuary dataset contains two species that are split into adult and 
-forms: \textit{Platichthys flesus} (European flounder) and 
-\textit{Somateria mollissima} (Somateria mollissima). This code 
-fragment shows how to merge these into a single node for each species. 
-
-\begin{center}
-\SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=\textwidth}
-<<fig=TRUE>>=
-data(YthanEstuary)
-
-# Merge the two European flounder nodes
-to.merge1 <- c("Platichthys flesus", "Platichthys flesus (juvenile)")
-merged1 <-     "Platichthys flesus"
-YE.merged <- MergeNodes(YthanEstuary, to.merge1, merged1)
-
-# Merge the two Common Eider nodes
-to.merge2 <- c("Somateria mollissima", "Somateria mollissima (juvenile)")
-merged2 <-     "Somateria mollissima"
-YE.merged <- MergeNodes(YE.merged, to.merge2, merged2, 
-                        title='Ythan Estuary (nodes merged)')
-
-# Plot the original community and the community with merged nodes
-par(mfrow=c(1,2))
-plot(YthanEstuary, highlight.nodes=c(to.merge1,to.merge2))
-plot(YE.merged, highlight.nodes=c(merged1,merged2))
-@
-\end{center}
-
-\subsection{Lumping trophic species}
-\label{sec:lump_trophic_species}
-Species that share the same resources and consumers are said to be the same 
-`trophic species' \citep{BriandAndCohen1984Nature, PimmEtAl1991Nature, 
+\subsection{Lumping nodes}
+\label{sec:lumping_nodes}
+Certain analyses call for food-web nodes to be merged. One such example is 
+the lumping together of nodes that share the same resources and consumers, 
+so-called `trophic species' \citep{BriandAndCohen1984Nature, PimmEtAl1991Nature,
 WilliamsAndMartinez2000Nature}. The \code{LumpTrophicSpecies} function returns 
-a new \code{Community} object with trophic species merged. 
+a new \code{Community} object with trophic species lumped.
 <<>>=
 NumberOfNodes(TL84)
-NumberOfTrophicLinks(TL84)
-
-# There are 22 different trophic species
-length(unique(TrophicSpecies(TL84)))
 
 TL84.lumped <- LumpTrophicSpecies(TL84)
-NumberOfNodes(TL84.lumped)  # 22 species
-NumberOfTrophicLinks(TL84.lumped)   # 71 links
+
+length(unique(TrophicSpecies(TL84)))    # 22 trophic species in TL84...
+NumberOfNodes(TL84.lumped)              # ... and 22 nodes in the lumped web
 @
 The plot below shows the lumped and unlumped webs.
 
@@ -771,6 +739,75 @@ The plot below shows the lumped and unlumped webs.
 par(mfrow=c(1,2))
 plot(TL84)
 plot(TL84.lumped, xlim=range(Log10M(TL84)), ylim=range(Log10N(TL84)))
+@
+\end{center}
+
+The \code{LumpNodes} function is a more general-purpose function that allows 
+any nodes in a community to be lumped together. It takes a parameter `lump', 
+which should be a vector of length \code{NumberOfNodes}. Nodes with the same 
+value of `lump' will be merged together.
+This example lumps together isolated species in TL84.
+<<>>=
+length(which(IsIsolatedNode(TL84)))  # 6 isolated species
+IsolatedNodes(TL84)                  # Names of isolated nodes
+
+lump <- NP(TL84, 'node')             # Existing node names
+
+# Give isolated nodes the same lump value
+lump[IsolatedNodes(TL84)] <- 'Isolated nodes lumped together'
+TL84.lumped <- LumpNodes(TL84, lump)
+
+NumberOfNodes(TL84)         # 56 nodes in unlumped web
+NumberOfNodes(TL84.lumped)  # 51 nodes in lumped web
+
+IsolatedNodes(TL84.lumped)  # A single node
+@
+
+This trivial example shows that no nodes are lumped if values in lump are 
+unique to each node.
+<<>>=
+lump <- NP(TL84, 'node')
+identical(TL84, LumpNodes(TL84, lump, title=CP(TL84, 'title')))
+@
+
+Ythan Estuary dataset contains two species that are split by life stage: 
+\textit{Platichthys flesus} (european flounder) and 
+\textit{Somateria mollissima} (common eider). The code fragment below shows how 
+to lump these into a single node for each species. 
+<<>>=
+data(YthanEstuary)
+
+# The names of nodes in YthanEstuary
+lump <- NP(YthanEstuary, 'node')
+
+# European flounder:
+# "Platichthys flesus" and "Platichthys flesus (juvenile)"
+# Lump these into one node
+lump["Platichthys flesus (juvenile)"==lump] <- "Platichthys flesus"
+
+# Common eider:
+# "Somateria mollissima" and "Somateria mollissima (juvenile)"
+# Lump these into one node
+lump["Somateria mollissima (juvenile)"==lump] <- "Somateria mollissima"
+YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
+
+NumberOfNodes(YthanEstuary)         # 92
+NumberOfNodes(YthanEstuary.lumped)  # 90
+@
+Graphically compare the two communities.
+
+\begin{center}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=\textwidth}
+<<fig=TRUE>>=
+# Plot the original and lumped communities
+par(mfrow=c(1,2))
+plot(YthanEstuary, highlight.nodes=c("Platichthys flesus", 
+                                     "Platichthys flesus (juvenile)", 
+                                     "Somateria mollissima", 
+                                     "Somateria mollissima (juvenile)"))
+plot(YthanEstuary.lumped, highlight.nodes=c("Platichthys flesus", 
+                                            "Somateria mollissima"))
 @
 \end{center}
 

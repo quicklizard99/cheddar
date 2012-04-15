@@ -165,7 +165,14 @@ TestAggregateCommunitiesFailures <- function()
 
 TestAggregateCommunitiesProperties <- function()
 {
+    # TODO Test that union of trophic links taken
+    # Test aggregation of properties for TL84 and TL86
     a <- CommunityCollection(list(TL84, TL86))
+
+    # tapply coerces INDEX parameter to a factor, sorting alphabetically. This 
+    # line retains the existing ordering.
+    a.nodes <- factor(CollectionNPS(a)[,'node'], 
+                      levels=unique(CollectionNPS(a)[,'node']))
 
     # 1. mean
     b <- AggregateCommunities(a)
@@ -176,20 +183,12 @@ TestAggregateCommunitiesProperties <- function()
     stopifnot(all(sort(NP(b, 'node')) == all.spp))
 
     # Check M and N averaged correctly
-    stopifnot(all(NP(b,'M') == 
-                  tapply(CollectionNPS(a)[,'M'], 
-                         CollectionNPS(a)[,'node'], 
-                         mean)))
-    stopifnot(all(NP(b,'N') == 
-                  tapply(CollectionNPS(a)[,'N'], 
-                         CollectionNPS(a)[,'node'], 
-                         mean)))
+    stopifnot(all(NP(b,'M') == tapply(CollectionNPS(a)[,'M'], a.nodes, mean)))
+    stopifnot(all(NP(b,'N') == tapply(CollectionNPS(a)[,'N'], a.nodes, mean)))
 
     # Check category
-    stopifnot(all(NP(b,'category') == 
-                  tapply(CollectionNPS(a)[,'category'], 
-                         CollectionNPS(a)[,'node'], 
-                         unique)))
+    stopifnot(all(NP(b,'category') == tapply(CollectionNPS(a)[,'category'], 
+                                             a.nodes, unique)))
 
     # 2. median M
     b <- AggregateCommunities(a, column.behaviour=list(M=median))
@@ -197,17 +196,9 @@ TestAggregateCommunitiesProperties <- function()
     # Sanity check
     stopifnot(all(sort(NP(b, 'node')) == all.spp))
 
-    # Check M is median
-    stopifnot(all(NP(b,'M') == 
-                  tapply(CollectionNPS(a)[,'M'], 
-                         CollectionNPS(a)[,'node'], 
-                         median)))
-
-    # Check N is mean
-    stopifnot(all(NP(b,'N') == 
-                  tapply(CollectionNPS(a)[,'N'], 
-                         CollectionNPS(a)[,'node'], 
-                         mean)))
+    # Check M and N averaged correctly
+    stopifnot(all(NP(b,'M') == tapply(CollectionNPS(a)[,'M'], a.nodes, median)))
+    stopifnot(all(NP(b,'N') == tapply(CollectionNPS(a)[,'N'], a.nodes, median)))
 
     # 3. min M and max N
     b <- AggregateCommunities(a, column.behaviour=list(M=min, N=max))
@@ -216,20 +207,15 @@ TestAggregateCommunitiesProperties <- function()
     stopifnot(all(sort(NP(b, 'node')) == all.spp))
 
     # Check M is min
-    stopifnot(all(NP(b,'M') == 
-                  tapply(CollectionNPS(a)[,'M'], 
-                         CollectionNPS(a)[,'node'], 
-                         min)))
+    stopifnot(all(NP(b,'M') == tapply(CollectionNPS(a)[,'M'], a.nodes, min)))
 
     # Check N is max
-    stopifnot(all(NP(b,'N') == 
-                  tapply(CollectionNPS(a)[,'N'], 
-                         CollectionNPS(a)[,'node'], 
-                         max)))
+    stopifnot(all(NP(b,'N') == tapply(CollectionNPS(a)[,'N'], a.nodes, max)))
 }
 
 TestAggregateCommunitiesBy <- function()
 {
+    # TODO Test these cases
     AggregateCommunitiesBy(pHWebs, 'pH')
     AggregateCommunitiesBy(pHWebs, 'lat')
     AggregateCommunitiesBy(pHWebs, 'NumberOfTrophicLinks')
