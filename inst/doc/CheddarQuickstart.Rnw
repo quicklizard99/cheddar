@@ -160,7 +160,7 @@ them, read the `Collections' vignette. The `TriTrophic' vignette describes
 Cheddar's support for a novel analysis that simultaneously considers body 
 mass, numerical abundance, and a food web \cite{CohenEtAl2009PNAS}.
 
-%\bibliographystyle{cheddar}
+\bibliographystyle{cheddar}
 \bibliography{cheddar} 
 
 \end{document}

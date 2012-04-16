@@ -273,7 +273,7 @@ data(Benguela)
 Benguela.ni <- PredationMatrix(Benguela, weight='diet.fraction')
 @
 
-%\bibliographystyle{cheddar}
+\bibliographystyle{cheddar}
 \bibliography{cheddar} 
 
 \end{document}

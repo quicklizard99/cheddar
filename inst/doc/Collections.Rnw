@@ -483,7 +483,7 @@ By default \code{PlotNvM} highlights species that are cannibals, which are
 shown in a darker colour. See the \code{PlotNPS} function and the `Plots' 
 vignette for more information.
 
-%\bibliographystyle{cheddar}
+\bibliographystyle{cheddar}
 \bibliography{cheddar} 
 
 \end{document}

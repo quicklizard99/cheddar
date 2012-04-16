@@ -511,10 +511,10 @@ of \cite{Levine1980JTheorBiol} to compute trophic levels
 for flow through loops. A different measure of trophic level is offered by the 
 \code{ChainAveragedTrophicLevel} function, which enumerates every unique food 
 chain in the web (using \code{TrophicChains}) and computes the mean position 
-of each node in every chain \cite{WilliamsAndMartinez2004AmNat}. 
+of each node in every chain \citep{WilliamsAndMartinez2004AmNat}. 
 The method of \code{ChainAveragedTrophicLevel} is the same as that described 
-as `trophic height' by \cite{JonssonEtAl2005} and the name \code{TrophicHeight} 
-is a synonym for \code{ChainAveragedTrophicLevel}. 
+as `trophic height' by \cite{JonssonEtAl2005AER} and the name 
+\code{TrophicHeight} is a synonym for \code{ChainAveragedTrophicLevel}. 
 \code{ChainAveragedTrophicLevel} might be noticeably slower than 
 \code{PreyAveragedTrophicLevel} for very large and/or highly connected food 
 webs.
@@ -821,7 +821,7 @@ plot(YthanEstuary.lumped, highlight.nodes=c("Platichthys flesus",
 @
 \end{center}
 
-%\bibliographystyle{cheddar}
+\bibliographystyle{cheddar}
 \bibliography{cheddar} 
 
 \end{document}

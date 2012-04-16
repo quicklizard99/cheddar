@@ -891,7 +891,7 @@ title(main='Woodward et al. (2005) AER, Fig. 4 (p 108)', outer=TRUE)
 @
 \end{center}
 
-%\bibliographystyle{cheddar}
+\bibliographystyle{cheddar}
 \bibliography{cheddar} 
 
 \end{document}

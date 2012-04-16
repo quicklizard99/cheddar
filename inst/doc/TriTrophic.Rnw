@@ -162,7 +162,7 @@ for(community in list(TL84, TL86, YthanEstuary))
 }
 @
 
-%\bibliographystyle{cheddar}
+\bibliographystyle{cheddar}
 \bibliography{cheddar} 
 
 \end{document}
