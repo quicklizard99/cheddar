@@ -580,17 +580,65 @@ TestRemoveIsolatedNodes <- function()
 
 TestLumpNodes <- function()
 {
-    # TODO Test values
-    stopifnot(1==NumberOfNodes(LumpNodes(TL84, paste('S', rep(1, 56)))))
-
+    # Don't lump any nodes. The returned community should be identical to the 
+    # original.
     lump <- NP(TL84, 'node')
-    stopifnot(identical(TL84, LumpNodes(TL84, lump, title=CP(TL84, 'title'))))
+    TL84.lumped <- LumpNodes(TL84, lump, title=CP(TL84, 'title'))
+    stopifnot(identical(TL84, TL84.lumped))
 
+    # Lump all nodes into a single node
+    TL84.lumped <- LumpNodes(TL84, paste('S', rep(1, 56)))
+    stopifnot(1==NumberOfNodes(TL84.lumped))
+    stopifnot(mean(NP(TL84, 'M'))==NP(TL84.lumped, 'M'))
+    stopifnot(mean(NP(TL84, 'N'))==NP(TL84.lumped, 'N'))
+    stopifnot("producer,invertebrate,vert.ecto"==NP(TL84.lumped, 'category'))
+
+    # Lump some specific nodes
+    lump <- NP(TL84, 'node')
+    lump[c(1,3)] <- 'Lump 1 and 3'
+    lump[c(2,4)] <- 'Lump 2 and 4'
+    TL84.lumped <- LumpNodes(TL84, lump)
+    stopifnot(54==NumberOfNodes(TL84.lumped))
+    stopifnot(mean(NP(TL84, 'M')[c(1,3)])==NP(TL84.lumped, 'M')['Lump 1 and 3'])
+    stopifnot(mean(NP(TL84, 'N')[c(1,3)])==NP(TL84.lumped, 'N')['Lump 1 and 3'])
+    stopifnot('producer'==NP(TL84.lumped, 'category')['Lump 1 and 3'])
+    stopifnot('Bacteria,Chromista'==NP(TL84.lumped, 'kingdom')['Lump 1 and 3'])
+    stopifnot(mean(NP(TL84, 'M')[c(2,4)])==NP(TL84.lumped, 'M')['Lump 2 and 4'])
+    stopifnot(mean(NP(TL84, 'N')[c(2,4)])==NP(TL84.lumped, 'N')['Lump 2 and 4'])
+    stopifnot('producer'==NP(TL84.lumped, 'category')['Lump 2 and 4'])
+    stopifnot('Plantae,Chromista'==NP(TL84.lumped, 'kingdom')['Lump 2 and 4'])
+    stopifnot(identical(NPS(TL84)[5:56,], NPS(TL84.lumped)[3:54,]))
+
+    # Lump some specific nodes, taking median of M
+    lump <- NP(TL84, 'node')
+    lump[c(1,3)] <- 'Lump 1 and 3'
+    lump[c(2,4)] <- 'Lump 2 and 4'
+    TL84.lumped <- LumpNodes(TL84, lump, column.behaviour=list(M=median))
+    stopifnot(54==NumberOfNodes(TL84.lumped))
+    stopifnot(median(NP(TL84, 'M')[c(1,3)]) == 
+              NP(TL84.lumped, 'M')['Lump 1 and 3'])
+    stopifnot(mean(NP(TL84, 'N')[c(1,3)])==NP(TL84.lumped, 'N')['Lump 1 and 3'])
+    stopifnot('producer'==NP(TL84.lumped, 'category')['Lump 1 and 3'])
+    stopifnot('Bacteria,Chromista'==NP(TL84.lumped, 'kingdom')['Lump 1 and 3'])
+    stopifnot(median(NP(TL84, 'M')[c(2,4)]) == 
+              NP(TL84.lumped, 'M')['Lump 2 and 4'])
+    stopifnot(mean(NP(TL84, 'N')[c(2,4)])==NP(TL84.lumped, 'N')['Lump 2 and 4'])
+    stopifnot('producer'==NP(TL84.lumped, 'category')['Lump 2 and 4'])
+    stopifnot('Plantae,Chromista'==NP(TL84.lumped, 'kingdom')['Lump 2 and 4'])
+    stopifnot(identical(NPS(TL84)[5:56,], NPS(TL84.lumped)[3:54,]))
+
+    # Lump isolated nodes
     stopifnot(56==NumberOfNodes(TL84))
     stopifnot(6==length(IsolatedNodes(TL84)))
     lump <- NP(TL84, 'node')
-    lump[IsolatedNodes(TL84)] <- 'Isolated nodes lumped together'
-    stopifnot(51==NumberOfNodes(LumpNodes(TL84, lump)))
+    lump[IsolatedNodes(TL84)] <- 'Isolated'
+    TL84.lumped <- LumpNodes(TL84, lump)
+    stopifnot(51==NumberOfNodes(TL84.lumped))
+    stopifnot(mean(NP(TL84, 'M')[IsolatedNodes(TL84)]) == 
+              NP(TL84.lumped, 'M')['Isolated'])
+    stopifnot(mean(NP(TL84, 'N')[IsolatedNodes(TL84)]) == 
+              NP(TL84.lumped, 'N')['Isolated'])
+    stopifnot("producer"==NP(TL84.lumped, 'category')['Isolated'])
 }
 
 TestLumpTrophicSpecies <- function()
