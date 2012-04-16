@@ -82,11 +82,21 @@ ExpectSingleUniqueEmptyRm <- function(x)
 .AggregateDataFrame <- function(data, aggregate.by, column.behaviour, 
                                 class.behaviour)
 {
+    # Aggregates data by the values in aggregate.by. 
+    #   data: a data.frame
+    #   lump: a vector of length nrow(data) to be used as INDEX param of tapply
+    #   class.behaviour: a named list of functions. Names should be the names 
+    #                    of R classes (integer, character etc). Functions 
+    #                    should accept a single vector of values and should 
+    #                    return a single value, e.g. mean, MeanNaRm etc
+    #   column.behaviour: NULL or a named list of functions. Overrides 
+    #                     class.behaviour.
     if(is.character(aggregate.by))
     {
-        # tapply converts aggregate.by to a factor. If aggregate.by is a 
-        # character, is will be sorted alphabetically. 
-        # This code retains the existing ordering.
+        # tapply (used below) converts aggregate.by to a factor. 
+        # If aggregate.by is a character, the resulting factor will be sorted 
+        # alphabetically. Construct a factor here to retain the existing 
+        # ordering.
         aggregate.by <- factor(aggregate.by, levels=unique(aggregate.by))
     }
     
