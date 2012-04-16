@@ -21,10 +21,12 @@ AggregateCommunitiesBy(collection, aggregate.by, \dots)
 \arguments{
   \item{collection}{an object of class \code{CommunityCollection}.}
   \item{aggregate}{the names of the communities to aggregate.}
-  \item{class.behaviour}{the names of functions that are used to aggregate 
-    values.}
-  \item{column.behaviour}{the names of functions that are used to aggregate 
-    values.}
+  \item{class.behaviour}{a named list of functions that are used to aggregate 
+    values. Names should be the names of R classes (integer, character etc). 
+    Functions should accept a single vector of values and should return a 
+    single value.}
+  \item{column.behaviour}{either NULL or a named list of functions giving 
+    column-specific behaviour.}
   \item{title}{the title of the new \code{Community}.}
   \item{aggregate.by}{the name of a community property, either first-class or
     computed, over which to aggregate.}
@@ -56,7 +58,11 @@ data(pHWebs)
 # An aggregate of 3 communities
 AggregateCommunities(pHWebs, c('Old Lodge', 'Afon Hafren', 'Broadstone'))
 
-# An error - 
+# Use median body mass rather than mean body mass
+AggregateCommunities(pHWebs, c('Old Lodge', 'Afon Hafren', 'Broadstone'), 
+                     column.behaviour=list(M=median))
+
+# An error
 \dontrun{AggregateCommunities(pHWebs, c('not a community', 'Afon Hafren'))}
 
 # The Duddon Pike Beck and Mosedal Beck communities share the same 

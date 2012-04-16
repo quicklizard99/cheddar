@@ -16,10 +16,12 @@
   \item{lump}{a vector of of length \code{NumberOfNodes} containing names of 
     lumped nodes. Nodes with the same value of \code{lump} will be merged.}
   \item{title}{the title of the new \code{Community}.}
-  \item{class.behaviour}{the names of functions that are used to aggregate 
-    values.}
-  \item{column.behaviour}{the names of functions that are used to aggregate 
-    values.}
+  \item{class.behaviour}{a named list of functions that are used to aggregate 
+    values. Names should be the names of R classes (integer, character etc). 
+    Functions should accept a single vector of values and should return a 
+    single value.}
+  \item{column.behaviour}{either NULL or a named list of functions giving 
+    column-specific behaviour.}
 }
 
 \value{A new object of class \code{Community}.}
@@ -46,6 +48,12 @@ NumberOfNodes(TL84)         # 56 nodes in unlumped web
 NumberOfNodes(TL84.lumped)  # 51 nodes in lumped web
 
 IsolatedNodes(TL84.lumped)  # A single node
+
+
+# Lump isolated nodes using median body mass rather than mean body mass
+lump <- NP(TL84, 'node')             # Existing node names
+lump[IsolatedNodes(TL84)] <- 'Isolated nodes lumped together'
+TL84.lumped <- LumpNodes(TL84, lump, column.behaviour=list(M=median))
 
 
 # This trivial example shows that no nodes are lumped if values in lump are 

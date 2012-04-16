@@ -9,8 +9,8 @@
 \alias{ExpectSingleUnique}
 \alias{ExpectSingleUniqueEmptyRm}
 \title{Aggregate helpers}
-\description{Helper functions that govern how nodes and communities are 
-aggregated.}
+\description{Helper functions that govern how values are aggregated by 
+\code{LumpNodes} and \code{AggregateCommunities}.}
 
 \usage{
 MeanNaRm(x)
