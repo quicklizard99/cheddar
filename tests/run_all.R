@@ -1,3 +1,5 @@
+# Runs all of cheddar's tests. You must cd cheddar/tests before running 
+# Rscript run_all.R
 options(warn=2)
 library(cheddar)
 
@@ -14,7 +16,7 @@ F <- function(ex)
 # Data for test plans
 data(Benguela, BroadstoneStream, SkipwithPond, TL84, TL86, YthanEstuary, pHWebs)
 
-# One species. No properties.
+# One species. No properties. No trophic links.
 c1 <- Community(nodes=data.frame(node='S'), properties=list(title='c1'))
 
 # One cannibalistic species
