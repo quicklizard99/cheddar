@@ -569,8 +569,6 @@ NvMSlope(TL84)
 The ordering of nodes within a community can be important both for presentation 
 and analysis. Cheddar's \code{OrderCommunity} function reorders nodes and 
 returns a new community object. 
-
-\subsubsection{Presentation of nodes}
 \code{OrderCommunity} accepts names that meets the criteria of the 
 \code{properties} parameter of the \code{NPS} function. 
 This includes the names of `first-class' properties, such as $M$, 
@@ -594,7 +592,7 @@ TL84.category.then.M <- OrderCommunity(TL84, 'category', 'M')
 head(NPS(TL84.category.then.M, c('category', 'M')))
 @
 
-\subsubsection{Food webs and intervality}
+\subsection{Node order and intervality}
 Visualising the food web as a predation matrix is central to many analyses and 
 theories. There has been much recent interest in the relationship between food 
 web structure and species' niches, in particular the role of body size on 
@@ -663,7 +661,7 @@ res <- MinimiseSumConsumerGaps(TL84)
 PlotPredationMatrix(res$reordered)
 @
 
-\subsection{Removing isolated nodes}
+\subsection{Removing nodes}
 Isolated nodes are often removed from food-web analyses (e.g.\ 
 \citealp{JonssonEtAl2005AER}). \code{RemoveIsolatedNodes} is a convenience 
 function that returns a new \code{Community} with isolated nodes removed.
@@ -678,9 +676,8 @@ IsolatedNodes(TL84.no.isolated)         # No isolated species
 NumberOfTrophicLinks(TL84.no.isolated)  # Number of trophic links unchanged
 @
 
-\subsection{Remove any nodes}
-The \code{RemoveNodes} function returns a new \code{Community} object 
-with one or more nodes removed. 
+The general-purpose \code{RemoveNodes} function returns a new 
+\code{Community} object with one or more nodes removed. 
 <<>>=
 NumberOfNodes(TL84)
 NumberOfTrophicLinks(TL84)
@@ -717,11 +714,12 @@ NumberOfTrophicLinks(TL84.no.cannibals)  # 5 fewer trophic links
 
 \subsection{Lumping nodes}
 \label{sec:lumping_nodes}
-Certain analyses call for food-web nodes to be merged. One such example is 
-the lumping together of nodes that share the same resources and consumers, 
-so-called `trophic species' \citep{BriandAndCohen1984Nature, PimmEtAl1991Nature,
-WilliamsAndMartinez2000Nature}. The \code{LumpTrophicSpecies} function returns 
-a new \code{Community} object with trophic species lumped.
+Certain analyses call for food-web nodes to be merged. 
+In order to reduce biases, nodes that share the same resources and consumers, 
+so-called `trophic species', are commonly lumped together 
+\citep{BriandAndCohen1984Nature, PimmEtAl1991Nature, 
+WilliamsAndMartinez2000Nature}. The \code{LumpTrophicSpecies} performs this 
+task and returns a new \code{Community} object.
 <<>>=
 NumberOfNodes(TL84)
 
