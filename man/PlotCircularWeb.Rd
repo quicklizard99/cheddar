@@ -8,6 +8,8 @@ PlotCircularWeb(community,
                 origin.degrees = 0, 
                 proportional.radius = 1, 
                 frame.plot = FALSE,
+                xlim = c(-1,1), 
+                ylim = c(-1,1), 
                 \dots)
 }
 
@@ -19,6 +21,8 @@ PlotCircularWeb(community,
     \code{community} will be placed.}
   \item{proportional.radius}{a value between 0 and 1.}
   \item{frame.plot}{logical.}
+  \item{xlim}{limits of the x axis.} 
+  \item{ylim}{limits of the y axis.} 
   \item{\dots}{other values to \code{PlotNPS}.}
 }
 

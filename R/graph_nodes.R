@@ -664,6 +664,8 @@ PlotCircularWeb <- function(community,
                             origin.degrees=0, 
                             proportional.radius=1, 
                             frame.plot=FALSE, 
+                            xlim=c(-1,1), 
+                            ylim=c(-1,1), 
                             ...)
 {
     # A plot of the food web in a circular arrangement, although will be an 
@@ -698,6 +700,6 @@ PlotCircularWeb <- function(community,
     y <- Im(z)
 
     PlotNPS(community, x, y, xlab='', ylab='', are.values=TRUE, 
-            frame.plot=frame.plot, xaxt='n', yaxt='n', ...)
+            frame.plot=frame.plot, xaxt='n', yaxt='n', xlim=xlim, ylim=ylim,...)
 }
 
