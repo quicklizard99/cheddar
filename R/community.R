@@ -307,21 +307,13 @@ Community <- function(nodes, properties, trophic.links=NULL)
         }
 
         tl[,'resource'] <- .StripWhitespace(tl[,'resource'])
-        missing <- !tl[,'resource'] %in% nodes$node
-        if(any(missing))
-        {
-            stop(paste('The resources [', 
-                       paste(unique(tl[missing,'resource']), collapse=','), 
-                       '] in the set of trophic links are not listed in nodes', 
-                       sep=''))
-        }
-
         tl[,'consumer'] <- .StripWhitespace(tl[,'consumer'])
-        missing <- !tl[,'consumer'] %in% nodes$node
-        if(any(missing))
+
+        missing <- setdiff(c(tl[,'resource'],tl[,'consumer']), nodes$node)
+        if(0!=length(missing))
         {
-            stop(paste('The consumers [', 
-                       paste(unique(tl[missing,'consumer']), collapse=','), 
+            stop(paste('The names [', 
+                       paste(missing, collapse=','), 
                        '] in the set of trophic links are not listed in nodes', 
                        sep=''))
         }
@@ -727,6 +719,8 @@ NodeNameIndices <- function(community, nodes)
 {
     # Returns the integer indices of the given nodes
     if(!is.Community(community)) stop('Not a Community')
+    if(0==length(nodes))    return (NULL)
+
     np <- NPS(community)
     bad <- !nodes %in% np$node
     if(any(bad))
