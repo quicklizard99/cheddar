@@ -341,13 +341,13 @@ Community <- function(nodes, properties, trophic.links=NULL)
     {
         
         # Producers should not be assigned resources
-        producers <- nodes[,'category']=='producers'
+        producers <- nodes[,'category']=='producer'
         producers <- nodes[producers, 'node']
-        bad <- sapply(producers, function(p) p %in% trophic.links[,'consumer'])
+        bad <- is.element(producers, trophic.links[,'consumer'])
         if(any(bad))
         {
             stop(paste('Nodes [', 
-                       paste(unique(names(which(bad))), collapse=','), 
+                       paste(unique(producers[bad]), collapse=','), 
                        '] have a category of producer but have been ', 
                        "given resources in 'trophic.links'", sep=''))
         }

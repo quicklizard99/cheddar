@@ -244,6 +244,22 @@ TestCommunityTrophicLinks <- function()
                 trophic.links=cbind(x='A', t='A'), 
                 properties=list(title='test')))
 
+    # Producers appear in 'consumer' column
+    F(Community(nodes=data.frame(node=LETTERS, 
+                                 category=c(rep('producer', 25), 'consumer')), 
+                trophic.links=cbind(resource='A', consumer='W'), 
+                properties=list(title='test')))
+    F(Community(nodes=data.frame(node=LETTERS, 
+                                 category=c(rep('producer', 25), 'consumer')), 
+                trophic.links=cbind(resource=c('A', 'B'), 
+                                    consumer=c('W', 'W')),
+                properties=list(title='test')))
+    F(Community(nodes=data.frame(node=LETTERS, 
+                                 category=c(rep('producer', 25), 'consumer')), 
+                trophic.links=cbind(resource=c('A', 'A'), 
+                                    consumer=c('W', 'Z')),
+                properties=list(title='test')))
+
     # Some illegal trophic.link properties
     F(Community(nodes=data.frame(node=LETTERS), 
                 trophic.links=data.frame(resource='A', consumer='A', node='A'), 
