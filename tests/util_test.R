@@ -35,3 +35,22 @@ TestPredationMatrixToLinks <- function()
     F(PredationMatrixToLinks(matrix(0, ncol=10, nrow=10)))
 }
 
+TestStripWhiteSpace <- function()
+{
+    stopifnot(''==cheddar:::.StripWhitespace(''))
+    stopifnot(''==cheddar:::.StripWhitespace(' '))
+    stopifnot(''==cheddar:::.StripWhitespace('   '))
+    stopifnot('a'==cheddar:::.StripWhitespace('a'))
+    stopifnot('a'==cheddar:::.StripWhitespace('a '))
+    stopifnot('a'==cheddar:::.StripWhitespace('a  '))
+    stopifnot('a'==cheddar:::.StripWhitespace(' a'))
+    stopifnot('a'==cheddar:::.StripWhitespace('  a'))
+    stopifnot('a'==cheddar:::.StripWhitespace(' a '))
+    stopifnot('a'==cheddar:::.StripWhitespace('  a  '))
+    stopifnot('a b c'==cheddar:::.StripWhitespace('a b c'))
+    stopifnot('a b c'==cheddar:::.StripWhitespace(' a b c'))
+    stopifnot('a b c'==cheddar:::.StripWhitespace(' a b c '))
+    stopifnot('\\.[]a b c.$^-+.;/"' == 
+              cheddar:::.StripWhitespace(' \\.[]a b c.$^-+.;/" '))
+}
+

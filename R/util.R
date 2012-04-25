@@ -66,7 +66,7 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
 .StripWhitespace <- function(v)
 {
     # Returns v with leading and trailing whitespace removed
-    return (sub("^[[:space:]]*(.*?)[[:space:]]*$", "\\1", v, perl=TRUE))
+    return (gsub('^\\s+|\\s+$', '', v, perl=TRUE))
 }
 
 .SimpleRBindFill <- function(...)
