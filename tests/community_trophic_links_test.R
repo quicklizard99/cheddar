@@ -817,18 +817,20 @@ TestTrophicHeight <- function()
     stopifnot(all(c(1,2,3)==TrophicHeight(c6, include.isolated=TRUE)))
     stopifnot(all(c(1,2,3)==TrophicHeight(c6, include.isolated=FALSE)))
 
-    stopifnot(all(c(rep(1,31),2,2,2,2,10/3,2,2.41860465116279055309,2,2,
-                    2,2,2,2,2,2,4.2,2,2,2,2,10/3,
-                    4.60252672497570447518, 5.16833667334669311089, 
-                    5.16833667334669311089, 5.83500334001336007361) == 
-                  TrophicHeight(TL84)))
-    stopifnot(all(c(1,1,NA,1,1,1,1,NA,1,1,1,NA,rep(1,13),NA,1,NA,NA,1,1,
-                    2,2,2,2,10/3,2,2.41860465116279055309,2,2,
-                    2,2,2,2,2,2,4.2,2,2,2,2,10/3,
-                    4.60252672497570447518, 5.16833667334669311089, 
-                    5.16833667334669311089, 5.83500334001336007361) == 
-                  TrophicHeight(TL84, include.isolated=FALSE), 
-                  na.rm=TRUE))
+    # Lower tolerance required for Mac Pro in GIS lab.
+    stopifnot(all.equal(c(rep(1,31),2,2,2,2,10/3,2,2.41860465116279055309,2,2,
+                          2,2,2,2,2,2,4.2,2,2,2,2,10/3,
+                          4.60252672497570447518, 5.16833667334669311089, 
+                          5.16833667334669311089, 5.83500334001336007361), 
+                        unname(TrophicHeight(TL84)), 
+                        tolerance=1e-6))
+    stopifnot(all.equal(c(1,1,NA,1,1,1,1,NA,1,1,1,NA,rep(1,13),NA,1,NA,NA,1,1,
+                          2,2,2,2,10/3,2,2.41860465116279055309,2,2,
+                          2,2,2,2,2,2,4.2,2,2,2,2,10/3,
+                          4.60252672497570447518, 5.16833667334669311089, 
+                          5.16833667334669311089, 5.83500334001336007361), 
+                        unname(TrophicHeight(TL84, include.isolated=FALSE)), 
+                        tolerance=1e-6))
 }
 
 TestTrophicLevel <- function()
