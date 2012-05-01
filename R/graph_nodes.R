@@ -505,85 +505,13 @@ PlotBDistribution <- function(community, xlab=Log10BLabel(community), ...)
     PlotNPSDistribution(community, 'Log10Biomass', xlab=xlab, ...)
 }
 
-XLayoutA <- function(nodes.at.level, max.nodes.per.row)
-{
-    # Spaced one x unit apart
-    return (1:length(nodes.at.level) - (1+length(nodes.at.level))/2)
-}
-
-XLayoutB <- function(nodes.at.level, max.nodes.per.row)
-{
-    if(length(nodes.at.level)<max.nodes.per.row)
-    {
-        # Spaced one x unit apart
-        return (1:length(nodes.at.level) - (1+length(nodes.at.level))/2)
-    }
-    else
-    {
-        # Squashed into available x space
-        return (seq(-max.nodes.per.row/2, max.nodes.per.row/2, 
-                    length.out=length(nodes.at.level)))
-    }
-}
-
-XLayoutC <- function(nodes.at.level, max.nodes.per.row)
-{
-    if(length(nodes.at.level)<max.nodes.per.row/2)
-    {
-        # Space widely
-        extent <- max.nodes.per.row/2 - 
-                  max.nodes.per.row / length(nodes.at.level) / 2
-        return (seq(-extent, extent, length.out=length(nodes.at.level)))
-    }
-    else
-    {
-        # Take up all available space
-        return (seq(-max.nodes.per.row/2, max.nodes.per.row/2, 
-                    length.out=length(nodes.at.level)))
-    }
-}
-
-YLayout1 <- function(nodes.at.level, max.nodes.per.row)
-{
-    if(length(nodes.at.level)>=max.nodes.per.row)
-    {
-        # Stagger across several rows
-        return (0:(length(nodes.at.level) %/% max.nodes.per.row))
-    }
-    else
-    {
-        # Space evenly on a single row
-        return (0)
-    }
-}
-
-YLayout2 <- function(nodes.at.level, max.nodes.per.row)
-{
-   if(length(nodes.at.level)>=max.nodes.per.row/2 && 
-      length(nodes.at.level)<max.nodes.per.row)
-    {
-        # Stagger across several rows
-        return (0:(length(nodes.at.level) %/% (max.nodes.per.row/2)))
-    }
-    else if(length(nodes.at.level)>=max.nodes.per.row)
-    {
-        # Stagger across several rows
-        return (0:(length(nodes.at.level) %/% max.nodes.per.row))
-    }
-    else
-    {
-        # All on the same row
-        return (0)
-    }
-}
-
 PlotWebByLevel <- function(community, 
                            level='PreyAveragedTrophicLevel', 
                            max.nodes.per.row=20,
                            jitter.overlap=0.2,
                            jitter.amount=0, 
-                           x.layout=XLayoutC, # Fn that returns x locations
-                           y.layout=YLayout2, # Fn that returns y offsets
+                           x.layout='wide', # 'skinny', 'narrow' or 'wide'
+                           y.layout='compress',     # 'stagger' or 'compress'
                            show.level.labels=TRUE,
                            show.level.lines=FALSE, 
                            xaxt='n', yaxt='n', xlab='', ylab='', 
@@ -601,6 +529,101 @@ PlotWebByLevel <- function(community,
     stopifnot(max.nodes.per.row>2)
     stopifnot(jitter.overlap>0)
     stopifnot(jitter.amount>=0 && jitter.amount<1)
+
+    stopifnot(x.layout %in% c('skinny', 'narrow', 'wide'))
+    stopifnot(y.layout %in% c('stagger', 'compress'))
+    if('skinny'==x.layout)
+    {
+        x.layout <- function(nodes.at.level, max.nodes.per.row)
+        {
+            # Spaced one x unit apart
+            return (1:length(nodes.at.level) - (1+length(nodes.at.level))/2)
+        }
+    }
+    else if('narrow'==x.layout)
+    {
+        x.layout <- function(nodes.at.level, max.nodes.per.row)
+        {
+            if(length(nodes.at.level)<max.nodes.per.row)
+            {
+                # Spaced one x unit apart
+                return (1:length(nodes.at.level) - (1+length(nodes.at.level))/2)
+            }
+            else
+            {
+                # Squashed into available x space
+                return (seq(-max.nodes.per.row/2, max.nodes.per.row/2, 
+                            length.out=length(nodes.at.level)))
+            }
+        }
+    }
+    else if('wide'==x.layout)
+    {
+        x.layout <- function(nodes.at.level, max.nodes.per.row)
+        {
+            if(length(nodes.at.level)<max.nodes.per.row/2)
+            {
+                # Space widely
+                extent <- max.nodes.per.row/2 - 
+                          max.nodes.per.row / length(nodes.at.level) / 2
+                return (seq(-extent, extent, length.out=length(nodes.at.level)))
+            }
+            else
+            {
+                # Take up all available space
+                return (seq(-max.nodes.per.row/2, max.nodes.per.row/2, 
+                            length.out=length(nodes.at.level)))
+            }
+        }
+    }
+    else
+    {
+        stop(paste('Unknown x.layout [', x.layout, ']'))
+    }
+
+    stopifnot(y.layout %in% c('stagger', 'compress'))
+    if('stagger'==y.layout)
+    {
+        y.layout <- function(nodes.at.level, max.nodes.per.row)
+        {
+            if(length(nodes.at.level)>=max.nodes.per.row)
+            {
+                # Stagger across several rows
+                return (0:(length(nodes.at.level) %/% max.nodes.per.row))
+            }
+            else
+            {
+                # Space evenly on a single row
+                return (0)
+            }
+        }
+    }
+    else if('compress'==y.layout)
+    {
+        y.layout <- function(nodes.at.level, max.nodes.per.row)
+        {
+           if(length(nodes.at.level)>=max.nodes.per.row/2 && 
+              length(nodes.at.level)<max.nodes.per.row)
+            {
+                # Stagger across several rows
+                return (0:(length(nodes.at.level) %/% (max.nodes.per.row/2)))
+            }
+            else if(length(nodes.at.level)>=max.nodes.per.row)
+            {
+                # Stagger across several rows
+                return (0:(length(nodes.at.level) %/% max.nodes.per.row))
+            }
+            else
+            {
+                # All on the same row
+                return (0)
+            }
+        }
+    }
+    else
+    {
+        stop(paste('Unknown y.layout [', y.layout, ']'))
+    }
 
     # Assign each species x values
     x <- rep(NA, NumberOfNodes(community))
