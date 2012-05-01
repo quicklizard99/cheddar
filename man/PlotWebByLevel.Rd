@@ -44,7 +44,6 @@ PlotWebByLevel(community,
   \item{frame.plot}{logical - if \code{TRUE} then a border is drawn around 
     the plot.}
   \item{ylim}{limits of the y axis} 
-  \item{nodes.at.level}{the number of nodes at the current level.}
   \item{\dots}{other values to \code{PlotNPS}.}
 }
 
