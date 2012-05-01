@@ -1,14 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{amsmath}            % /eqref
+\usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 
 %\VignetteIndexEntry{Collections of communities}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
-
-\bibpunct{(}{)}{;}{a}{}{,}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\R}{\textsf{R} }
@@ -310,27 +308,32 @@ A plot similar to \cite{RiedeEtAl2010AER}, Fig.\ 1 (p 143) and
 data.
 
 \begin{center}
-\SweaveOpts{width=2.6,height=8}
-\setkeys{Gin}{width=4in}
+\SweaveOpts{width=8,height=3}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 properties <- CollectionCPS(pHWebs, c(S='NumberOfNodes', 
                                       L='NumberOfTrophicLinks', 
                                       'LinkageDensity', 
                                       C='DirectedConnectance'))
-par(mfrow=c(3,1))
-plot(properties$S, properties$L)
-plot(properties$S, properties$LinkageDensity)
-plot(properties$S, properties$C)
+par(mfrow=c(1,3))
+with(properties, plot(S, L))
+with(properties, plot(S, LinkageDensity))
+with(properties, plot(S, C))
 @
 \end{center}
 
 \citep{LayerEtAl2010AER}, Fig.\ 4 (p 280). Cheddar's \code{pHWebs} dataset 
 contains ten of the twenty food webs analysed by \cite{LayerEtAl2010AER} so 
 the plot below is not an exact recreation of the published figure. 
-<<>>=
+
+\begin{center}
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.8\textwidth}
+<<fig=TRUE>>=
 properties <- CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
-plot(properties$pH, properties$S)
+with(properties, plot(pH, S))
 @
+\end{center}
 
 \subsubsection{Number of links vs rank number of links}
 
@@ -483,7 +486,7 @@ By default \code{PlotNvM} highlights species that are cannibals, which are
 shown in a darker colour. See the \code{PlotNPS} function and the `Plots' 
 vignette for more information.
 
-\bibliographystyle{cheddar}
+\bibliographystyle{plainnat}
 \bibliography{cheddar} 
 
 \end{document}

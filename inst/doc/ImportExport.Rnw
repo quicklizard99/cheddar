@@ -1,14 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{amsmath}            % /eqref
+\usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 
 %\VignetteIndexEntry{Importing and exporting data in-to and out-of Cheddar}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
-
-\bibpunct{(}{)}{;}{a}{}{,}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\R}{\textsf{R} }
@@ -77,7 +75,7 @@ fictitious community named `Stream 12'.
 
 \subsection{properties.csv}
 This file must contain one row of data only (Table 
-{tab:example_properties_csv}).
+\ref{tab:example_properties_csv}).
 \begin{table}[h!]
   \begin{center}
     \begin{tabular}{llllll}
@@ -291,7 +289,7 @@ data(Benguela)
 Benguela.ni <- PredationMatrix(Benguela, weight='diet.fraction')
 @
 
-\bibliographystyle{cheddar}
+\bibliographystyle{plainnat}
 \bibliography{cheddar} 
 
 \end{document}

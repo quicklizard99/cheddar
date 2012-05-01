@@ -1,14 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{amsmath}            % /eqref
+\usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 
 %\VignetteIndexEntry{Tri-trophic statistics}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
-
-\bibpunct{(}{)}{;}{a}{}{,}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\R}{\textsf{R} }
@@ -152,6 +150,8 @@ print(res)
 @
 
 \subsection{\cite{CohenEtAl2009PNAS}, Fig. 1 p 22336}
+
+\begin{center}
 <<fig=TRUE, echo=TRUE>>=
 data(TL84, TL86, YthanEstuary)
 par(mfrow=c(3,2))
@@ -161,8 +161,9 @@ for(community in list(TL84, TL86, YthanEstuary))
     PlotAuppervAlower(community)
 }
 @
+\end{center}
 
-\bibliographystyle{cheddar}
+\bibliographystyle{plainnat}
 \bibliography{cheddar} 
 
 \end{document}

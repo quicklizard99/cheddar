@@ -1,14 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{amsmath}            % /eqref
+\usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 
 %\VignetteIndexEntry{Introduction to Cheddar}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
-
-\bibpunct{(}{)}{;}{a}{}{,}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\R}{\textsf{R} }
@@ -819,7 +817,7 @@ plot(YthanEstuary.lumped, highlight.nodes=c("Platichthys flesus",
 @
 \end{center}
 
-\bibliographystyle{cheddar}
+\bibliographystyle{plainnat}
 \bibliography{cheddar} 
 
 \end{document}

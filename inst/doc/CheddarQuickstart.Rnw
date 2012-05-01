@@ -1,14 +1,12 @@
 \documentclass[11pt]{article}
 \usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
-\usepackage{natbib}
 \usepackage{amsmath}            % /eqref
+\usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 
 %\VignetteIndexEntry{A quick introduction to Cheddar}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
-
-\bibpunct{(}{)}{;}{a}{}{,}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\R}{\textsf{R} }
@@ -160,7 +158,7 @@ them, read the `Collections' vignette. The `TriTrophic' vignette describes
 Cheddar's support for a novel analysis that simultaneously considers body 
 mass, numerical abundance, and a food web \cite{CohenEtAl2009PNAS}.
 
-\bibliographystyle{cheddar}
+\bibliographystyle{plainnat}
 \bibliography{cheddar} 
 
 \end{document}
