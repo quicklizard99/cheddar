@@ -81,9 +81,6 @@ pHWebs[seq(1, 10, by=2)]
 # A new CommunityCollection containing two webs
 pHWebs[c('Old Lodge','Bere Stream')]
 
-# You can't modify CommunityCollections
-\dontrun{pHWebs[1] <- 'silly'}
-
 # CollectionCPS gets community properties
 CollectionCPS(pHWebs)   # Webs are sorted by increasing pH
 
@@ -99,6 +96,9 @@ CollectionCPS(pHWebs.name, c('pH', 'NumberOfNodes'))
 data(TL84, TL86)
 BothTL <- CommunityCollection(list(TL84, TL86))
 CollectionCPS(BothTL)
+
+# You can't modify CommunityCollections
+\dontrun{pHWebs[1] <- 'silly'}
 }
 
 \keyword{utilities}

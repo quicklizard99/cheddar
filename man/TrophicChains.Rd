@@ -38,8 +38,10 @@ head(TrophicChains(TL84, node.properties=c('M','N')))
 
 # Skipwith Pond has more than 1e5 unique chains
 data(SkipwithPond)
-\dontrun{dim(TrophicChains(SkipwithPond))}  # Fails
-dim(TrophicChains(SkipwithPond, max.chains=3e6))    # Succeeds
+# This fails:
+\dontrun{dim(TrophicChains(SkipwithPond))}
+# This succeeds
+dim(TrophicChains(SkipwithPond, max.chains=3e6))
 }
 \keyword{utilities}
 
