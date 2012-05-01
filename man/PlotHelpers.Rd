@@ -62,10 +62,6 @@ FormatLM(model, slope.95.ci = FALSE, ci.plus.minus.style = FALSE,
   \item{\dots}{other values passed to plotting functions.}
 }
 
-\details{}
-
-\value{}
-
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{Community}}, 
@@ -73,9 +69,6 @@ FormatLM(model, slope.95.ci = FALSE, ci.plus.minus.style = FALSE,
          \code{\link{NvMLinearRegressions}}, 
          \code{\link{LinearRegressionByClass}}, 
          \code{\link{lm}}}
-
-\examples{
-}
 
 \keyword{hplot}
 

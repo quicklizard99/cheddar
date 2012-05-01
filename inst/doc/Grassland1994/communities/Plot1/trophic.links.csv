@@ -1,0 +1,10 @@
+"resource","consumer"
+"Grass 1","Herbivore 1"
+"Grass 2","Herbivore 1"
+"Grass 3","Herbivore 1"
+"Grass 3","Herbivore 2"
+"Grass 2","Herbivore 3"
+"Predator 1","Herbivore 1"
+"Predator 1","Herbivore 2"
+"Predator 1","Herbivore 3"
+

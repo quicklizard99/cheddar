@@ -1,0 +1,11 @@
+"node","category","functional.group","M","N"
+"Detritus","","detritus",,
+"Fungi","","decomposer",,
+"Species 1","producer","producer",3e-13,2e+06
+"Species 2","producer","producer",1e-13,3e+07
+"Species 3","producer","producer",7e-11,2e+07
+"Species 4","invertebrate","detritivore",4e-08,6e+06
+"Species 5","invertebrate","herbivore",6e-07,6e+05
+"Species 6","invertebrate","herbivore",1e-07,5e+06
+"Species 7","invertebrate","predator",9e-05,1e+07
+"Species 8","vert.ecto","predator",0.007,2000

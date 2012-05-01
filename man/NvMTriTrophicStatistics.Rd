@@ -8,9 +8,6 @@
   \item{community}{an object of class \code{Community}.}
 }
 
-\details{
-}
-
 \value{A \code{list} containing
 \item{links}{a \code{data.frame}.}
 \item{three.node.chains}{a \code{data.frame}.}
@@ -30,6 +27,16 @@ Proceedings of the National Academy of Sciences of the United States of America
          \code{\link{Chains}}}
 
 \examples{
+data(TL84)
+tts <- NvMTriTrophicStatistics(TL84)
+nrow(tts$links)
+head(tts$links)
+
+nrow(tts$three.node.chains)
+head(tts$three.node.chains)
+
+nrow(tts$trophic.chains)
+head(tts$trophic.chains)
 }
 \keyword{utilities}
 

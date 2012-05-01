@@ -23,7 +23,7 @@ environmental, temporal or spatial gradients.
 
 \author{Maintainer: Lawrence Hudson <lawrence.hudson08@imperial.ac.uk>}
 
-\references{}
+%\references{}
 
 \keyword{ package }
 
