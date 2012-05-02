@@ -508,8 +508,8 @@ PlotBDistribution <- function(community, xlab=Log10BLabel(community), ...)
 PlotWebByLevel <- function(community, 
                            level='PreyAveragedTrophicLevel', 
                            max.nodes.per.row=20,
-                           jitter.overlap=0.2,
-                           jitter.amount=0, 
+                           round.levels.to.nearest=0.2,
+                           stagger=0.1, 
                            x.layout='wide', # 'skinny', 'narrow' or 'wide'
                            y.layout='compress',     # 'stagger' or 'compress'
                            show.level.labels=TRUE,
@@ -521,17 +521,18 @@ PlotWebByLevel <- function(community,
 {
     # Plots the food web with higher trophic level species towards the top, 
     # similar to Jonsson et al 2005 AER Fig. 1 but without the abundance and 
-    # body mass bars
+    # body mass bars.
     if(!is.Community(community)) stop('Not a Community')
 
+    # .ResolveLevel assembles a vector of length NumberOfNodse and checks that 
+    # values are valid
     level <- .ResolveLevel(community, level)
 
     stopifnot(max.nodes.per.row>2)
-    stopifnot(jitter.overlap>0)
-    stopifnot(jitter.amount>=0 && jitter.amount<1)
+    stopifnot(round.levels.to.nearest>=0 && round.levels.to.nearest<1)
+    stopifnot(stagger>=0 && stagger<1)
 
     stopifnot(x.layout %in% c('skinny', 'narrow', 'wide'))
-    stopifnot(y.layout %in% c('stagger', 'compress'))
     if('skinny'==x.layout)
     {
         x.layout <- function(nodes.at.level, max.nodes.per.row)
@@ -581,6 +582,7 @@ PlotWebByLevel <- function(community,
         stop(paste('Unknown x.layout [', x.layout, ']'))
     }
 
+    # y.layout functions return values >= 0
     stopifnot(y.layout %in% c('stagger', 'compress'))
     if('stagger'==y.layout)
     {
@@ -593,7 +595,7 @@ PlotWebByLevel <- function(community,
             }
             else
             {
-                # Space evenly on a single row
+                # Everything on the same row
                 return (0)
             }
         }
@@ -602,22 +604,8 @@ PlotWebByLevel <- function(community,
     {
         y.layout <- function(nodes.at.level, max.nodes.per.row)
         {
-           if(length(nodes.at.level)>=max.nodes.per.row/2 && 
-              length(nodes.at.level)<max.nodes.per.row)
-            {
-                # Stagger across several rows
-                return (0:(length(nodes.at.level) %/% (max.nodes.per.row/2)))
-            }
-            else if(length(nodes.at.level)>=max.nodes.per.row)
-            {
-                # Stagger across several rows
-                return (0:(length(nodes.at.level) %/% max.nodes.per.row))
-            }
-            else
-            {
-                # All on the same row
-                return (0)
-            }
+            # Everything always on the same row
+            return (0)
         }
     }
     else
@@ -630,29 +618,37 @@ PlotWebByLevel <- function(community,
     y <- level
 
     # Adjust x and y to avoid overprinting
-    # Round to nearest fractional part
+
     Round <- function(v, n)
     {
-        i <- floor(v)    # integer part
-        f <- v - i       # fractional part
-        f <- f / n
-        f <- round(f, 0)
-        f <- f * n
-        return (i + f)
+        # A helper that rounds to nearest fractional part
+        if(0==round.levels.to.nearest)
+        {
+            return (v)
+        }
+        else
+        {
+            i <- floor(v)    # integer part
+            f <- v - i       # fractional part
+            f <- f / n
+            f <- round(f, 0)
+            f <- f * n
+            return (i + f)
+        }
     }
 
     # Assign each node an x value
     while(any(is.na(x)))
     {
         l <- level[min(which(is.na(x)))]
-        nodes.at.level <- which(Round(level, jitter.overlap) == 
-                                Round(l, jitter.overlap))
+        nodes.at.level <- which(Round(level, round.levels.to.nearest) == 
+                                Round(l, round.levels.to.nearest))
 
         x[nodes.at.level] <- x.layout(nodes.at.level, max.nodes.per.row)
         level.offset <- y.layout(nodes.at.level, max.nodes.per.row)
         y.offset <- rep(level.offset, length.out=length(nodes.at.level))
         y.offset <- y.offset - max(y.offset)/2
-        y.offset <- y.offset * jitter.amount
+        y.offset <- y.offset * stagger
         stopifnot(length(y.offset)==length(nodes.at.level))
         y[nodes.at.level] <- y[nodes.at.level] + y.offset
     }
@@ -673,7 +669,7 @@ PlotWebByLevel <- function(community,
         }
 
         # Label each whole number trophic level.
-        axis(2, at=labels, labels=labels, las=1, tick=FALSE)
+        axis(2, at=unique(labels), labels=unique(labels), las=1, tick=FALSE)
     }
 
     if(show.level.lines)
