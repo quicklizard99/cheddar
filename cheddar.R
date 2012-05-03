@@ -1,5 +1,7 @@
-# Four different views of the community of Tuesday Lake, 1984.
-# Plots are written to images/cheddar.png
+# Creates image for http://quicklizard99.github.com/cheddar/ homepage
+# Four different views of the community of Tuesday Lake, 1984 are written to 
+# images/cheddar.png.
+
 options(warn=2)
 library(cheddar)
 data(TL84)
