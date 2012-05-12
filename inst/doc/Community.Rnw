@@ -5,7 +5,7 @@
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 
-%\VignetteIndexEntry{Introduction to Cheddar}
+%\VignetteIndexEntry{Working with Cheddar communities}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
 
 \newcommand{\code}[1]{\texttt{#1}}
