@@ -40,8 +40,9 @@ head(TrophicChains(TL84, node.properties=c('M','N')))
 data(SkipwithPond)
 # This fails:
 \dontrun{dim(TrophicChains(SkipwithPond))}
-# This succeeds
-dim(TrophicChains(SkipwithPond, max.chains=3e6))
+# This succeeds, although not all systems will be able to allocate the 
+# memory required to hold the chains
+\dontrun{dim(TrophicChains(SkipwithPond, max.chains=3e6))}
 }
 \keyword{utilities}
 
