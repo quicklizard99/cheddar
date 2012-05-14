@@ -308,7 +308,12 @@ PlotLinearModels <- function(models, colour.spec, col=NULL, ...)
     # A helper that plots the list of models using LMabline(). List elements 
     # can be NULL. Returns a vector of colours used for each model.
 
-    # TODO Check classes of models
+    if('lm'==class(models))
+    {
+        models <- list(models)
+    }
+
+    stopifnot('list'==class(models))
 
     # Remove NULL objects
     models <- models[!sapply(models, is.null)]
