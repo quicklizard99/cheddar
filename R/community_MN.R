@@ -160,8 +160,8 @@ NvMLinearRegressions <- function(community, class)
 NvMSlope <- function(community)
 {
     # The slope of a line through log10(N) versus log10(M) data
-    model <- NvMLinearRegressions(community, class=NULL)
-    return (unname(coef(model)[2]))
+    models <- NvMLinearRegressions(community, class=NULL)
+    return (unname(coef(models[['all']])[2]))
 }
 
 NvMTriTrophicStatistics <- function(community)

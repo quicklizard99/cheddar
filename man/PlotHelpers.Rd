@@ -41,7 +41,7 @@ FormatLM(model, slope.95.ci = FALSE, ci.plus.minus.style = FALSE,
   \item{y}{y values.}
   \item{xlim}{limits of the x axis.} 
   \item{ylim}{limits of the y axis.} 
-  \item{models}{a \code{list} of \code{lm} objects that are plotted.}
+  \item{models}{a \code{list} of \code{lm} objects to be plotted.}
   \item{colour.spec}{either \code{NULL} or a named vector that maps values 
     of \code{colour.by} to plotting values; defaults to the vector returned 
     by \code{DefaultCategoryColours}.}

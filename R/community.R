@@ -1045,17 +1045,6 @@ LinearRegressionByClass <- function(community, X, Y, class)
         }
     }
 
-    if(is.null(class) || 1==length(unique(class)))
-    {
-        stopifnot(1==length(models))
-        return (models[[1]])
-    }
-    else
-    {
-        # Even if models is of length 1 we should still return a list 
-        # in this case as the caller requested >1 classes and will 
-        # need the list names to know which model has been returned.
-        return (models)
-    }
+    return (models)
 }
 

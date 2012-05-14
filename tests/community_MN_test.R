@@ -76,13 +76,13 @@ TestNvMLinearRegressions <- function()
 
     # Using default class of category - all NA as c6 does not have category
     res <- NvMLinearRegressions(c6)
-    stopifnot('lm'==class(res))
-    stopifnot(all(c(2.58,-1.04) == round(coef(res), 2)))
+    stopifnot('all'==names(res))
+    stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
 
     # class==NULL should result in a single lm object being returned
     res <- NvMLinearRegressions(c6, class=NULL)
-    stopifnot('lm'==class(res))
-    stopifnot(all(c(2.58,-1.04) == round(coef(res), 2)))
+    stopifnot('all'==names(res))
+    stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
 
     # Each node is in it's own class. Can't fit lm through one data point 
     # so should only have 'all'

@@ -834,7 +834,7 @@ plot(NA, NA, xlim=c(-15,10), ylim=c(-5,15), xlab=Log10MLabel(units='mg'),
 
 # A list of list of lm models
 models <- lapply(pHWebs, NvMLinearRegressions, class=NULL)
-PlotLinearModels(models, col=1)
+sapply(models, PlotLinearModels, col=1)
 title(main='Layer et al. (2011) AER, Fig. 5 (p 281)', outer=TRUE)
 @
 \end{center}
