@@ -157,11 +157,49 @@ NvMLinearRegressions <- function(community, class)
     LinearRegressionByClass(community, 'Log10M', 'Log10N', class)
 }
 
+NvMSlopeAndIntercept <- function(community)
+{
+    # The slope and intercept of a line through log10(N) versus log10(M) data
+    models <- NvMLinearRegressions(community, class = NULL)
+    return(c(slope=unname(coef(models[["all"]])[2]), 
+             intercept=unname(coef(models[["all"]])[1])))
+}
+
 NvMSlope <- function(community)
 {
     # The slope of a line through log10(N) versus log10(M) data
-    models <- NvMLinearRegressions(community, class=NULL)
-    return (unname(coef(models[['all']])[2]))
+    return (unname(NvMSlopeAndIntercept(community)['slope']))
+}
+
+NvMIntercept <- function(community)
+{
+    # The intercept of a line through log10(N) versus log10(M) data
+    return (unname(NvMSlopeAndIntercept(community)['intercept']))
+}
+
+NvMSlopeAndInterceptByClass <- function(community, class)
+{
+    # The slopes and intercepts of lines through log10(N) versus log10(M) data
+    models <- NvMLinearRegressions(community, class)
+    slopes <- sapply(models, coef)[2,]
+    names(slopes) <- paste('slope.', names(slopes), sep='')
+    intercepts <- sapply(models, coef)[1,]
+    names(intercepts) <- paste('intercept.', names(intercepts), sep='')
+    return (c(slopes, intercepts))
+}
+
+NvMSlopeByClass <- function(community, class)
+{
+    # The slopes of lines through log10(N) versus log10(M) data
+    res <- NvMSlopeAndInterceptByClass(community, class)
+    return (res[grep('slope*', names(res))])
+}
+
+NvMInterceptByClass <- function(community, class)
+{
+    # The intercepts of lines through log10(N) versus log10(M) data
+    res <- NvMSlopeAndInterceptByClass(community, class)
+    return (res[grep('intercept*', names(res))])
 }
 
 NvMTriTrophicStatistics <- function(community)

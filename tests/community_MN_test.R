@@ -288,43 +288,7 @@ TestNvMTriTrophic2 <- function()
     stopifnot(all.equal(round(res, 2), check))
 }
 
-#TestNodeHasMAndN <- function()
-#{
-#    stopifnot(FALSE==NodeHasMAndN(c1))
-#    stopifnot(FALSE==NodeHasMAndN(c2))
-#    stopifnot(all(c(FALSE,FALSE)==NodeHasMAndN(c3)))
-#    stopifnot(all(c(FALSE,FALSE,FALSE)==NodeHasMAndN(c4)))
-#    stopifnot(all(c(FALSE,FALSE,FALSE)==NodeHasMAndN(c5)))
-#    stopifnot(all(c(TRUE,TRUE,TRUE)==NodeHasMAndN(c6)))
-#    stopifnot(all(rep(TRUE, 56)==NodeHasMAndN(TL84)))
-#    stopifnot(all(c(rep(TRUE, 91),FALSE)==NodeHasMAndN(YthanEstuary)))
-#}
-
-#TestNodesWithMAndN <- function(community)
-#{
-#    stopifnot(0==length(NodesWithMAndN(c1)))
-#    stopifnot(0==length(NodesWithMAndN(c2)))
-#    stopifnot(0==length(NodesWithMAndN(c3)))
-#    stopifnot(0==length(NodesWithMAndN(c4)))
-#    stopifnot(0==length(NodesWithMAndN(c5)))
-#    stopifnot(all(c('R','C','P')==NodesWithMAndN(c6)))
-#    stopifnot(56==length(NodesWithMAndN(TL84)))
-#    stopifnot(91==length(NodesWithMAndN(YthanEstuary)))
-#}
-
-#TestNumberOfNodesWithMAndN <- function(community)
-#{
-#    stopifnot(0==NumberOfNodesWithMAndN(c1))
-#    stopifnot(0==NumberOfNodesWithMAndN(c2))
-#    stopifnot(0==NumberOfNodesWithMAndN(c3))
-#    stopifnot(0==NumberOfNodesWithMAndN(c4))
-#    stopifnot(0==NumberOfNodesWithMAndN(c5))
-#    stopifnot(3==NumberOfNodesWithMAndN(c6))
-#    stopifnot(56==NumberOfNodesWithMAndN(TL84))
-#    stopifnot(91==NumberOfNodesWithMAndN(YthanEstuary))
-#}
-
-TestNodesWithoutMOrN <- function(community)
+TestNodesWithoutMOrN <- function()
 {
     NodesWithoutMOrN <- cheddar:::.NodesWithoutMOrN
     stopifnot('S'==NodesWithoutMOrN(c1))
@@ -337,15 +301,65 @@ TestNodesWithoutMOrN <- function(community)
     stopifnot('POM (detritus)'==NodesWithoutMOrN(YthanEstuary))
 }
 
-#TestNumberOfNodesWithoutMOrN <- function(community)
-#{
-#    stopifnot(1==NumberOfNodesWithoutMOrN(c1))
-#    stopifnot(1==NumberOfNodesWithoutMOrN(c2))
-#    stopifnot(2==NumberOfNodesWithoutMOrN(c3))
-#    stopifnot(3==NumberOfNodesWithoutMOrN(c4))
-#    stopifnot(3==NumberOfNodesWithoutMOrN(c5))
-#    stopifnot(0==NumberOfNodesWithoutMOrN(c6))
-#    stopifnot(0==NumberOfNodesWithoutMOrN(TL84))
-#    stopifnot(1==NumberOfNodesWithoutMOrN(YthanEstuary))
-#}
+TestNvMSlopeAndIntercept <- function()
+{
+    stopifnot(is.null(NvMSlope(c1)))
+    stopifnot(is.null(NvMSlope(c2)))
+    stopifnot(is.null(NvMSlope(c3)))
+    stopifnot(is.null(NvMSlope(c4)))
+    stopifnot(is.null(NvMSlope(c5)))
+    stopifnot(all.equal(NvMSlope(c6), -1.04009302605305009592))
+    stopifnot(all.equal(NvMSlope(TL84), -0.82711453844476423569))
+
+    stopifnot(is.null(NvMIntercept(c1)))
+    stopifnot(is.null(NvMIntercept(c2)))
+    stopifnot(is.null(NvMIntercept(c3)))
+    stopifnot(is.null(NvMIntercept(c4)))
+    stopifnot(is.null(NvMIntercept(c5)))
+    stopifnot(all.equal(NvMIntercept(c6), 2.57689795300774049380))
+    stopifnot(all.equal(NvMIntercept(TL84), -2.68627529180856106095))
+
+    stopifnot(is.null(NvMSlopeAndIntercept(c1)))
+    stopifnot(is.null(NvMSlopeAndIntercept(c2)))
+    stopifnot(is.null(NvMSlopeAndIntercept(c3)))
+    stopifnot(is.null(NvMSlopeAndIntercept(c4)))
+    stopifnot(is.null(NvMSlopeAndIntercept(c5)))
+    stopifnot(all.equal(NvMSlopeAndIntercept(c6), 
+                        c(slope=-1.04009302605305009592, 
+                          intercept=2.57689795300774049380)))    
+    stopifnot(all.equal(NvMSlopeAndIntercept(TL84), 
+                        c(slope=-0.82711453844476423569, 
+                          intercept=-2.68627529180856106095)))
+}
+
+TestNvMSlopeAndInterceptByClass <- function()
+{
+    stopifnot(all.equal(NvMSlopeByClass(c6), c(slope.=-1.04009302605305009592)))
+    stopifnot(all.equal(NvMSlopeByClass(TL84), 
+                        c(slope.all=-0.82711453844476423569, 
+                          slope.producer=-0.40715089579609509141, 
+                          slope.invertebrate=-0.32431675051076519489, 
+                          slope.vert.ecto=-11.62787086769622924010)))
+
+    stopifnot(all.equal(NvMInterceptByClass(c6), 
+                        c(intercept.=2.57689795300774049380)))
+    stopifnot(all.equal(NvMInterceptByClass(TL84), 
+                        c(intercept.all=-2.68627529180856106095, 
+                          intercept.producer=2.55833642234355362888, 
+                          intercept.invertebrate=1.46560619016986248830, 
+                          intercept.vert.ecto=-34.66097278952445748246)))
+
+    stopifnot(all.equal(NvMSlopeAndInterceptByClass(c6), 
+                        c(slope.=-1.04009302605305009592, 
+                          intercept.=2.57689795300774049380)))
+    stopifnot(all.equal(NvMSlopeAndInterceptByClass(TL84), 
+                        c(slope.all=-0.82711453844476423569, 
+                          slope.producer=-0.40715089579609509141, 
+                          slope.invertebrate=-0.32431675051076519489, 
+                          slope.vert.ecto=-11.62787086769622924010, 
+                          intercept.all=-2.68627529180856106095, 
+                          intercept.producer=2.55833642234355362888, 
+                          intercept.invertebrate=1.46560619016986248830, 
+                          intercept.vert.ecto=-34.66097278952445748246)))
+}
 

@@ -2,13 +2,14 @@
 \alias{OrderCommunity}
 \title{Order a community}
 \description{Order a \code{Community}.}
-\usage{OrderCommunity(community, \dots, decreasing=FALSE, new.order=NULL, 
-                      title=NULL)}
+\usage{OrderCommunity(community, \dots, decreasing=FALSE, na.last = TRUE, 
+                      new.order=NULL, title=NULL)}
 
 \arguments{
   \item{community}{an object of class \code{Community}.}
   \item{\dots}{the names of properties by which to order the communities.}
   \item{decreasing}{logical.}
+  \item{na.last}{logical.}
   \item{new.order}{a vector of either node integer indices or node names 
     giving the order.}
   \item{title}{the title of the new \code{Community}.}

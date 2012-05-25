@@ -905,8 +905,8 @@ LumpTrophicSpecies <- function(community, include.isolated=TRUE, title=NULL,...)
                       lump=paste('Trophic species', ts), ...))
 }
 
-OrderCommunity <- function(community, ..., decreasing=FALSE, new.order=NULL, 
-                           title=NULL)
+OrderCommunity <- function(community, ..., decreasing=FALSE, na.last=TRUE, 
+                           new.order=NULL, title=NULL)
 {
     # Returns a new Community with nodes reordered.
 
@@ -930,7 +930,8 @@ OrderCommunity <- function(community, ..., decreasing=FALSE, new.order=NULL,
         if(!is.null(dim(order.by))) order.by <- as.list(order.by)
         else                        order.by <- list(order.by)
         args <- c(order.by, 
-                  decreasing=decreasing)
+                  decreasing=decreasing, 
+                  na.last=na.last)
         new.order <- do.call('order', args)
     }
     else if(is.character(new.order))
@@ -1046,5 +1047,15 @@ LinearRegressionByClass <- function(community, X, Y, class)
     }
 
     return (models)
+}
+
+NumberOfNodesByClass <- function(community, class)
+{
+    return (ApplyByClass(community, property='node', fn=length, class=class))
+}
+
+FractionOfNodesByClass <- function(community, class)
+{
+    return (NumberOfNodesByClass(community, class) / NumberOfNodes(community))
 }
 

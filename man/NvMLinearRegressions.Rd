@@ -1,12 +1,25 @@
 \name{NvMLinearRegressions}
 \alias{NvMLinearRegressions}
-\alias{NvMSlope}
 \title{NvMLinearRegressions}
-\description{Returns a list of linear regressions fitted to log10-transformed 
-    numerical abundance versus body mass.}
+\alias{NvMSlope}
+\alias{NvMIntercept}
+\alias{NvMSlopeAndIntercept}
+\alias{NvMSlopeByClass}
+\alias{NvMInterceptByClass}
+\alias{NvMSlopeAndInterceptByClass}
+\description{Creation and analysis of linear regressions fitted to log10-
+  transformed numerical abundance versus log10-transformed body mass.}
 
-\usage{NvMLinearRegressions(community, class)
+\usage{
+NvMLinearRegressions(community, class)
+
 NvMSlope(community)
+NvMIntercept(community)
+NvMSlopeAndIntercept(community)
+
+NvMSlopeByClass(community, class)
+NvMInterceptByClass(community, class)
+NvMSlopeAndInterceptByClass(community, class)
 }
 
 \arguments{
@@ -15,18 +28,21 @@ NvMSlope(community)
   to 'category' if the community has a node property with that name.}
 }
 
-\details{\code{NvMLinearRegressions} returns a \code{list} of \code{lm} 
-objects. \code{NvMSlope} returns the slope of a regression through all data.
-}
-
-\value{A list of \code{lm} objects named by unique values of \code{class} or 
-a single number.}
+\value{\code{NvMLinearRegressions} returns a \code{list} of \code{lm} 
+objects, one for each \code{class} and one fitted to all data. 
+\code{NvMSlope}, \code{NvMIntercept} and \code{NvMSlopeAndIntercept} return 
+the slope, intercept and both, respectively, of a single linear regression 
+fitted to all data. 
+\code{NvMSlopeByClass}, \code{NvMInterceptByClass} and 
+\code{NvMSlopeAndInterceptByClass} return the slope, intercept and both, 
+respectively, of linear regressions fitteed to each \code{class} and one 
+to all data.}
 
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{Community}}, 
-         \code{\link{ApplyByClass}}, 
-         \code{\link{NvMLinearRegressions}}}
+         \code{\link{CommunityCollection}}
+         \code{\link{ApplyByClass}}}
 
 \examples{
 data(TL84)
@@ -38,6 +54,17 @@ names(models)
 
 # Extract slopes and intercepts
 sapply(models, coef)
+
+
+# Slopes and intercepts through all data for each web in the pHWebs 
+# collection
+data(pHWebs)
+CollectionCPS(pHWebs, properties=c('NvMSlope'))
+CollectionCPS(pHWebs, properties=c('NvMIntercept'))
+CollectionCPS(pHWebs, properties=c('NvMSlopeAndIntercept'))
+
+# Slopes and intercepts through each category for each web in pHWebs
+CollectionCPS(pHWebs, properties=c('NvMSlopeAndInterceptByClass'))
 }
 \keyword{utilities}
 

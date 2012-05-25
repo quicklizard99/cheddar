@@ -873,3 +873,17 @@ TestOrderCommunity <- function()
                   NP(OrderCommunity(TL84, 'Degree', decreasing=TRUE), 'node')))
 }
 
+TestNumberOfNodesByClass <- function()
+{
+    stopifnot(NumberOfNodesByClass(TL84) == 
+              c(invertebrate=22, producer=31, vert.ecto=3))
+}
+
+FractionOfNodesByClass <- function()
+{
+    stopifnot(all.equal(FractionOfNodesByClass(TL84), 
+                        c(invertebrate=0.39285714285714284921, 
+                          producer=0.55357142857142860315, 
+                          vert.ecto=0.05357142857142856845)))
+}
+
