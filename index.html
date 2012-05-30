@@ -7,7 +7,16 @@
 
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+
     <script src="javascripts/scale.fix.js"></script>
+
+    <!-- Syntax highlighting -->
+    <script type="text/javascript" src="javascripts/shCore.js"></script>
+    <script type="text/javascript" src="javascripts/shBrushR.js"></script>
+    <link href="stylesheets/shCore.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheets/shCoreMidnight.css" rel="stylesheet" type="text/css" />
+    <link href="stylesheets/shThemeMidnight.css" rel="stylesheet" type="text/css" />
+    
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <meta name="description" content="Analysis and visualisation of ecological communities in R">
 
@@ -56,6 +65,14 @@
         <li>support for collections of communities, allowing investigation into changes in community structure through time, across environmental gradients or resulting from experimental manipulation.</li>
         </ul>
 
+        <p>Read the following PDF vignettes to get started with Cheddar.</p>
+        <pre class="brush: R">
+          library(cheddar)
+          vignette('CheddarQuickstart')
+          vignette('Community')
+          vignette('Plots')
+        </pre>
+
         <p>If you are interested in simulating community dynamics, have a look at the <a href="http://quicklizard99.github.com/gruyere/">Gruyere</a> package.</p>
       </section>
 
@@ -101,10 +118,15 @@
       </section>
     </div>
     <footer>
+      <p>R syntax highlighter by <a href="http://www.demitri.com/code/">Demitri Muna</a></p>
       <p>Project maintained by <a href="https://github.com/quicklizard99">quicklizard99</a></p>
       <p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
     </footer>
     <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
-    
+
+    <script type="text/javascript">
+         SyntaxHighlighter.all()
+    </script>    
+
   </body>
 </html>
