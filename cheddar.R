@@ -15,7 +15,9 @@ Plots <- function()
     PlotWebByLevel(TL84, show.nodes.as='both', cex=2, main='', y.layout='stagger')
     mtext('a)', side=2, at=par('usr')[4], line=1, las=1)
 
-    PlotCircularWeb(TL84, show.nodes.as='both', cex=2, main='')
+    PlotNPS(TL84, 'Log10M', 'PreyAveragedTrophicLevel', show.nodes.as='both', 
+            cex=2, main='', xlab=Log10MLabel(TL84), 
+            ylab='Prey-averaged trophic level')
     mtext('b)', side=2, at=par('usr')[4], line=1, las=1)
 
     PlotNvM(TL84, show.nodes.as='both', cex=2, main='')
