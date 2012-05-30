@@ -207,9 +207,10 @@ abline(lm(Degree(TL84) ~ Log10M(TL84)))
 \end{center}
 
 To examine the relationship between trophic structure and body mass 
-\citep{JonssonEtAl2005AER} we can plot trophic level against log-transformed 
-body mass. The \code{PreyAveragedTrophicLevel} uses the matrix-inversion method 
-of \cite{Levine1980JTheorBiol} to compute trophic levels.
+\citep{JonssonEtAl2005AER, deVisserEtAl2010JAnimEcol} we can plot trophic 
+level against log-transformed body mass. 
+The \code{PreyAveragedTrophicLevel} uses the matrix-inversion method of 
+\cite{Levine1980JTheorBiol} to compute trophic levels.
 
 \begin{center}
 \SweaveOpts{width=6,height=6}
