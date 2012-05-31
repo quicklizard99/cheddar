@@ -44,6 +44,9 @@ a standard data format for community representation. Data are stored in CSV
 and are well supported by \R. You should read the `Community' vignette before 
 reading this one.
 
+Researchers typically use their own bespoke data formats. This means that there are probably as many data formats as there are researchers! It is therefore extremely hard to write a generic 'import my data into Cheddar' function. 
+Help is at hand! If you have community data that you would like to import into Cheddar, please contact me (lawrence.hudson08 (at) imperial.ac.uk) - I will either provide example data-import R code for you to modify or will write the required R code for you.
+
 \section{Importing a single community from CSV data}
 \label{sec:introduction}
 <<echo=FALSE>>=
@@ -194,9 +197,6 @@ You can easily get the total biomass in each `functional.group'.
 SumBiomassByClass(stream12, class='functional.group')
 @
 
-%\section{Importing a single community from a custom data format}
-%\code{PredationMatrixToLinks}
-
 \section{Importing a collection of communities}
 <<echo=FALSE>>=
 grassland <- LoadCollection('Grassland1994')
@@ -231,9 +231,11 @@ three communities: `Plot 1', `Plot 2' and `Plot 3'.
 \end{verbatim}
 The \code{LoadCommunity} function loads the collection into \R.
 <<eval=FALSE>>=
-grassland1994 <- LoadCommunity('c:/Grassland1994')
-grassland1994
-length(grassland1994)
+grassland <- LoadCommunity('c:/Grassland1994')
+@
+<<>>=
+grassland
+length(grassland)
 @
 The `Collections' vignette explains information community collections in 
 detail.
