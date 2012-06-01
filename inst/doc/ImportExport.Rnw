@@ -108,7 +108,7 @@ cat(paste(paste(colnames(NPS(stream12)), collapse=' & '), '\\\\'))
       \midrule
 <<results=tex,echo=FALSE>>=
 junk <- apply(NPS(stream12), 1, 
-              function(row) cat(paste(paste(row, collapse=' & '), ' \\\\ \n')))
+              function(row) cat(paste(paste(replace(row, which(is.na(row)), ''), collapse=' & '), ' \\\\ \n')))
 @
       \bottomrule 
     \end{tabular} 
@@ -246,7 +246,7 @@ communities and collections respectively to CSV files.
 
 \subsection{igraph}
 The following function can be used to export a Cheddar community to the igraph 
-package \cite{igraph}.
+package \citep{igraph}.
 % Don't evaulate this block because it depends upon igraph, which might not be 
 % installed
 <<eval=FALSE>>=
@@ -279,8 +279,8 @@ Benguela.ig <- ToIgraph(Benguela, weight='diet.fraction')
 @
 
 \subsection{NetIndices}
-The \code{PredationMatrix} function can be used to export a Cheddar 
-community to the NetIndices package \cite{NetIndices}.
+The \code{PredationMatrix} function can be used to export a Cheddar community 
+to the NetIndices package \citep{NetIndices}.
 <<>>=
 data(TL84)
 # Unweighted network
