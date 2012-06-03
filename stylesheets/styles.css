@@ -199,6 +199,7 @@ section
   padding: 15px 20px;
   font-size: 15px;
   border-top: 1px solid #fff;
+  background: #DEDEDE;
   background: -webkit-gradient(linear, 50% 0%, 50% 700, color-stop(0%, #fafafa), color-stop(100%, #dedede));
   background: -webkit-linear-gradient(#fafafa, #dedede 700px);
   background: -moz-linear-gradient(#fafafa, #dedede 700px);
@@ -210,6 +211,7 @@ section
   -moz-border-radius: 8px;
   -ms-border-radius: 8px;
   -o-border-radius: 8px;
+  -khtml-border-radius: 8px;
   border-radius: 8px;
 }
 
