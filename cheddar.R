@@ -49,7 +49,7 @@ Plots <- function()
 }
 
 # PNG
-png('images/cheddar.png', width=550, height=750)
+png('images/cheddar.png', width=720, height=980)
 Plots()
 dev.off()
 
