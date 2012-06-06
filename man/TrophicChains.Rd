@@ -2,8 +2,10 @@
 \alias{TrophicChains}
 \title{Trophic chains}
 \description{Enumerates every trophic chain in a food web.}
-\usage{TrophicChains(community, node.properties = NULL, chain.properties = NULL, 
-                     max.chains)}
+\usage{
+TrophicChains(community, node.properties = NULL, chain.properties = NULL, 
+              max.chains)
+}
 
 \arguments{
   \item{community}{an object of class \code{Community}.}

@@ -2,14 +2,15 @@
 \alias{LumpNodes}
 \title{Lump nodes}
 \description{A function that lumps together nodes in a \code{Community}.}
-\usage{LumpNodes(community, 
-       lump, 
-       title = NULL, 
-       class.behaviour = list(integer = MeanNaRm, 
-                              numeric = MeanNaRm, 
-                              character = JoinUnique, 
-                              logical = JoinUnique), 
-       column.behaviour = NULL)}
+\usage{
+LumpNodes(community, 
+          lump, 
+          title = NULL, 
+          class.behaviour = list(integer = MeanNaRm, 
+                                 numeric = MeanNaRm, 
+                                 character = JoinUnique, 
+                                 logical = JoinUnique), 
+          column.behaviour = NULL)}
 
 \arguments{
   \item{community}{an object of class \code{Community}}

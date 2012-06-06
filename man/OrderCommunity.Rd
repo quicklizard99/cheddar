@@ -2,8 +2,10 @@
 \alias{OrderCommunity}
 \title{Order a community}
 \description{Order a \code{Community}.}
-\usage{OrderCommunity(community, \dots, decreasing=FALSE, na.last = TRUE, 
-                      new.order=NULL, title=NULL)}
+\usage{
+OrderCommunity(community, \dots, decreasing=FALSE, na.last = TRUE, 
+               new.order=NULL, title=NULL)
+}
 
 \arguments{
   \item{community}{an object of class \code{Community}.}

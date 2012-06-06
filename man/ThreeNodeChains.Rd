@@ -2,8 +2,10 @@
 \alias{ThreeNodeChains}
 \title{Three-node chains}
 \description{Enumerates every three-node chain in a food web.}
-\usage{ThreeNodeChains(community, exclude.loops=FALSE, node.properties=NULL, 
-                       chain.properties=NULL)}
+\usage{
+ThreeNodeChains(community, exclude.loops=FALSE, node.properties=NULL, 
+                chain.properties=NULL)
+}
 
 \arguments{
   \item{community}{an object of class \code{Community}.}

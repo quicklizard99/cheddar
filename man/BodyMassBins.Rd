@@ -4,8 +4,9 @@
 \description{Function that assigns each node in a \code{Community} to a 
 body-mass bin.}
 
-\usage{BodyMassBins(community, lower=min(NP(community,'M'), na.rm=TRUE), 
-                    upper=max(NP(community,'M'), na.rm=TRUE), n.bins=10) 
+\usage{
+BodyMassBins(community, lower=min(NP(community,'M'), na.rm=TRUE), 
+             upper=max(NP(community,'M'), na.rm=TRUE), n.bins=10) 
 }
 
 \arguments{

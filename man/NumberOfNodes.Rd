@@ -5,7 +5,8 @@
 \title{Number of nodes}
 \description{Functions that return the number of nodes in the community.}
 
-\usage{NumberOfNodes(community)
+\usage{
+NumberOfNodes(community)
 NumberOfNodesByClass(community, class)
 FractionOfNodesByClass(community, class)
 }

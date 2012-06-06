@@ -19,7 +19,7 @@
 \usage{CommunityCollection(communities)
 \method{print}{CommunityCollection}(x, \dots) 
 \method{plot}{CommunityCollection}(x, ncol=min(length(x),5), by.col=TRUE, 
-                                   plot.fn=plot, \dots)
+     plot.fn=plot, \dots)
 \method{summary}{CommunityCollection}(object, \dots) 
 }
 
