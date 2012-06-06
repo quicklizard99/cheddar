@@ -160,7 +160,7 @@ TestNvMTriTrophic1 <- function()
              'L'=NumberOfTrophicLinks(community),
              'S^2'=NumberOfNodes(community)^2,
              'L/S^2'=DirectedConnectance(community),
-             'L/S'=NumberOfTrophicLinks(community)/NumberOfNodes(community)))
+             'L/S'=LinkageDensity(community)))
     })
     res <- do.call('cbind', res)
 
