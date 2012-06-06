@@ -207,6 +207,10 @@ NvMTriTrophicStatistics <- function(community)
     # Exclude cannibals and all nodes with missing M and/or N
     if(!is.Community(community)) stop('Not a Community')
 
+    .RequireM(community)
+    .RequireN(community)
+    .RequireTrophicLinks(community)
+
     community <- RemoveNodes(community, remove=with(NPS(community), 
                                                     node[is.na(M) | is.na(N)]))
     community <- RemoveCannibalisticLinks(community)
@@ -343,8 +347,14 @@ NvMTriTrophicStatistics <- function(community)
     dim(chains.log10M) <- dim(chains)
     chains.log10N <- sapply(chains, function(col) log10N[col])
     dim(chains.log10N) <- dim(chains)
-    l <- abs(chains.log10M[,2:ncol(chains)]-chains.log10M[,1:(ncol(chains)-1)])+
-         abs(chains.log10N[,2:ncol(chains)]-chains.log10N[,1:(ncol(chains)-1)])
+
+    # Sum chain lengths
+    upper.cols <- 2:ncol(chains)
+    lower.cols <- 1:(ncol(chains)-1)
+    l <- abs(chains.log10M[,upper.cols,drop=FALSE] - 
+             chains.log10M[,lower.cols,drop=FALSE]) +
+         abs(chains.log10N[,upper.cols,drop=FALSE] - 
+             chains.log10N[,lower.cols,drop=FALSE])
     sum.chain.length <- apply(l, 1, sum, na.rm=TRUE)
 
     res <- cbind(chain.span, count.chain.length, sum.chain.length)

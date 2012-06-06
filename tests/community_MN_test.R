@@ -221,10 +221,6 @@ TestNvMTriTrophic1 <- function()
 TestNvMTriTrophic2 <- function()
 {
     # Recreates Table S3 from Cohen et al 2010 PNAS
-    data(TL84)
-    data(TL86)
-    data(YthanEstuary)
-
     communities <- list(TL84, TL86, RemoveNodes(YthanEstuary,'POM (detritus)'))
     communities <- lapply(communities, RemoveIsolatedNodes)
     communities <- lapply(communities, RemoveCannibalisticLinks)
@@ -286,6 +282,84 @@ TestNvMTriTrophic2 <- function()
     colnames(check) <- colnames(res)
     rownames(check) <- rownames(res)
     stopifnot(all.equal(round(res, 2), check))
+}
+
+TestNvMTriTrophic3 <- function()
+{
+    # Some of Doris' Icelandic streams communities have only producers and 
+    # herbivores, which caused an earlier version of 
+    # .NvMTrophicChainProperties() to fail with a nasty error.
+    # Let's check some cases for simple communities
+    F(NvMTriTrophicStatistics(c1))
+    F(NvMTriTrophicStatistics(c2))
+    F(NvMTriTrophicStatistics(c3))
+    F(NvMTriTrophicStatistics(c4))
+    F(NvMTriTrophicStatistics(c5))
+
+    # Resource-consumer
+    rc <- Community(nodes=data.frame(node=c('R', 'C'),
+                                     M=c(1, 10), 
+                                     N=c(100, 1)), 
+                    trophic.links=data.frame(resource='R', consumer='C'), 
+                    properties=list(title='Resource-consumer', M.units='g', 
+                                    N.units='m^-2'))
+    tts <- NvMTriTrophicStatistics(rc)
+    check <- data.frame(resource='R',
+                        consumer='C',
+                        length=3,
+                        angle=-63.43494882292200998108,
+                        slope=-2, 
+                        stringsAsFactors=FALSE, 
+                        row.names="1")
+    stopifnot(all.equal(check, tts$links))
+
+    stopifnot(is.null(tts$three.node.chains))
+
+    check <- data.frame(Node.1='R',
+                        Node.2='C', 
+                        chain.span=3,
+                        count.chain.length=1,
+                        sum.chain.length=3,
+                        stringsAsFactors=FALSE)
+    attr(check, 'link.cols') <- c('Node.1', 'Node.2')
+    class(check) <- c('Chains', 'data.frame')
+    stopifnot(all.equal(check, tts$trophic.chains))
+
+    # Tri-trophic chain
+    tts <- NvMTriTrophicStatistics(c6)
+    check <- data.frame(resource=c('R','C'),
+                        consumer=c('C','P'),
+                        length=c(2.52287874528033739807,1.56066730616973736723),
+                        angle=c(-75.34856290594565564334,-11.28584933963889191944),
+                        slope=c(-3.82497857878639635487, -0.19956289353132869446),
+                        stringsAsFactors=FALSE, 
+                        row.names=c("1","2"))
+    stopifnot(all.equal(check, tts$links))
+
+    check <- data.frame(bottom='R', 
+                        intermediate='C', 
+                        top='P',
+                        Llower=2.52287874528033739807,
+                        Lupper=1.56066730616973736723, 
+                        two.span=4.08354605145007454325,
+                        Alower=-75.34856290594565564334,
+                        Aupper=-11.28584933963889191944,
+                        Abetween=64.06271356630675484212,
+                        stringsAsFactors=FALSE)
+    attr(check, 'link.cols') <- c('bottom', 'intermediate', 'top')
+    class(check) <- c('Chains', 'data.frame')
+    stopifnot(all.equal(check, tts$three.node.chains))
+
+    check <- data.frame(Node.1='R',
+                        Node.2='C', 
+                        Node.3='P', 
+                        chain.span=4.08354605145007454325,
+                        count.chain.length=2.00000000000000000000,
+                        sum.chain.length=4.08354605145007454325,
+                        stringsAsFactors=FALSE)
+    attr(check, 'link.cols') <- c('Node.1', 'Node.2', 'Node.3')
+    class(check) <- c('Chains', 'data.frame')
+    stopifnot(all.equal(check, tts$trophic.chains))
 }
 
 TestNodesWithoutMOrN <- function()
