@@ -59,52 +59,51 @@ $M$ - $N$ tritrophic statistics are not affected but the network statistics in
 the last four rows of the table would be different to those in the paper. 
 <<>>=
 data(TL84, TL86, YthanEstuary)
-res <- NULL
-for(community in list(TL84, TL86, YthanEstuary))
+res <- lapply(list(TL84, TL86, YthanEstuary), function(community)
 {
-    # NvMTriTrophicStatistics() removes nodes without M and/or N and removes 
-    # cannibalistic links. We do them here so that the network stats, shown in 
-    # the last four rows of the table, will be the same as the published table. 
     community <- RemoveNodes(community, remove=with(NPS(community), node[is.na(M) | is.na(N)]))
     community <- RemoveCannibalisticLinks(community)
-
-    # Remove isolated links for consistency with Cohen et al's Table 1 
-    # network stats
     community <- RemoveIsolatedNodes(community)
 
-    tts <- NvMTriTrophicStatistics(community)
+    tts<-NvMTriTrophicStatistics(community)
     lp <- tts[['links']]
     tncp <- tts[['three.node.chains']]
     tcp <- tts[['trophic.chains']]
-
-    community.span <- diff(range(Log10M(community))) + 
+    
+    community.span <- diff(range(Log10M(community))) +
                       diff(range(Log10N(community)))
+                      
+    wiggling <- mean(tcp$sum.chain.length) / mean(tcp$chain.span)
 
-    wiggling <- mean(tcp[,'sum.chain.length']) / mean(tcp[,'chain.span'])
+    UnsafeMean <- function(x)
+    {
+        ifelse(is.null(x), NA, mean(x))
+    }
 
-    res <- cbind(res, rbind(
-     'Mean link length'=mean(lp[,'length']), 
-     'Mean L upper'=mean(tncp[,'Lupper']),
-     'Mean L lower'=mean(tncp[,'Llower']),
-     '2 x mean link length'=2*mean(lp[,'length']), 
-     'Mean 2-span'=mean(tncp[,'two.span']), 
-     'Mean L upper + L lower'=mean(tncp[,'Lupper']+tncp[,'Llower']),
-     '2 x mean link length / mean 2-span'=2 * mean(lp[,'length']) / mean(tncp[,'two.span']), 
-     'Mean L upper + L lower / mean 2-span'=mean(tncp[,'Lupper'] + tncp[,'Llower']) / mean(tncp[,'two.span']), 
-     'Mean count chain length'=mean(tcp[,'count.chain.length']),
-     'Mean count chain length x mean link length'=mean(tcp[,'count.chain.length'])*mean(lp[,'length']), 
-     'Community span'=community.span,
-     'Mean count chain length x mean link length / community span'=mean(tcp[,'count.chain.length'])*mean(lp[,'length'])/community.span,
-     'Mean sum chain lengths'=mean(tcp[,'sum.chain.length']),
-     'Mean chain span'=mean(tcp[,'chain.span']),
-     'Mean chain span / community span'=mean(tcp[,'chain.span']) / community.span,
-     'Mean sum chain lengths / mean chain span'=mean(tcp[,'sum.chain.length']) / mean(tcp[,'chain.span']),
-     'Mean sum chain lengths / community span'=mean(tcp[,'sum.chain.length']) / community.span,
-     'L'=NumberOfTrophicLinks(community),
-     'S^2'=NumberOfNodes(community)^2,
-     'L/S^2'=DirectedConnectance(community),
-     'L/S'=NumberOfTrophicLinks(community)/NumberOfNodes(community)))
-}
+    return (c(
+         'Mean link length'=mean(lp$length),
+         'Mean L upper'=UnsafeMean(tncp$Lupper),
+         'Mean L lower'=UnsafeMean(tncp$Llower),
+         '2 x mean link length'=2*mean(lp$length),
+         'Mean 2-span'=UnsafeMean(tncp$two.span),
+         'Mean L upper + L lower'=UnsafeMean(tncp$Lupper + tncp$Llower),
+         '2 x mean link length / mean 2-span'=2 * mean(lp$length) / UnsafeMean(tncp$two.span),
+         'Mean L upper + L lower/ mean 2-span'=UnsafeMean(tncp$Lupper + tncp$Llower) / UnsafeMean(tncp$two.span),
+         'Mean count chain length'=mean(tcp$count.chain.length),
+         'Mean count chain length x mean link length'=mean(tcp$count.chain.length)*mean(lp$length),
+         'Community span'=community.span,
+         'Mean count chain length x mean link length / community span'=mean(tcp$count.chain.length)*mean(lp$length)/community.span,
+         'Mean sum chain lengths'=mean(tcp$sum.chain.length),
+         'Mean chain span'=mean(tcp$chain.span),
+         'Mean chain span / community span'=mean(tcp$chain.span) / community.span,
+         'Mean sum chain lengths / mean chain span'=mean(tcp$sum.chain.length) / mean(tcp$chain.span),
+         'Mean sum chain lengths / community span'=mean(tcp$sum.chain.length) / community.span,
+         'L'=NumberOfTrophicLinks(community),
+         'S^2'=NumberOfNodes(community)^2,
+         'L/S^2'=DirectedConnectance(community),
+         'L/S'=NumberOfTrophicLinks(community)/NumberOfNodes(community)))
+})
+res <- do.call('cbind', res)
 
 colnames(res) <- c('TL84', 'TL86', 'Ythan Estuary')
 print(round(res,2))
@@ -112,41 +111,35 @@ print(round(res,2))
 
 \subsection{\cite{CohenEtAl2009PNAS}, Table S3 p 8}
 <<>>=
-data(TL84, TL86, YthanEstuary)
-res <- NULL
-for(community in list(TL84, TL86, YthanEstuary))
+res <- lapply(list(TL84, TL86, YthanEstuary), function(community)
 {
     community <- RemoveNodes(community, remove=with(NPS(community), node[is.na(M) | is.na(N)]))
     community <- RemoveCannibalisticLinks(community)
     community <- RemoveIsolatedNodes(community)
 
     chains <- ThreeNodeChains(community, node.properties='M')
-    MR <- chains[,'bottom.M']
-    MI <- chains[,'intermediate.M']
-    MC <- chains[,'top.M']
-
-    col <- rbind('MR<=MI<=MC'=sum(MR<=MI & MI<=MC), 
-                 'MR<=MC<MI'=sum(MR<=MC & MC<MI), 
-                 'MI<MR<=MC'=sum(MI<MR  & MR<=MC), 
-                 'MI<=MC<MR'=sum(MI<=MC & MC<MR), 
-                 'MC<MR<MI'=sum(MC<MR  & MR<MI), 
-                 'MC<MI<MR'=sum(MC<MI  & MI<MR), 
-                 'All 2-chains'=nrow(chains))
+    MR <- chains$bottom.M
+    MI <- chains$intermediate.M
+    MC <- chains$top.M
 
     lp <- TLPS(community, node.properties='M')
-    MR <- lp[,'resource.M']
-    MC <- lp[,'consumer.M']
-    col <- rbind(col, 
-                 'MR<MC'=sum(MR<MC), 
-                 'MR=MC'=sum(MR==MC), 
-                 'MR>MC'=sum(MR>MC), 
-                 'All links'=nrow(lp))
 
-    res <- cbind(res, col)
-}
+    return (c('MR<=MI<=MC'=sum(MR<=MI & MI<=MC), 
+              'MR<=MC<MI'=sum(MR<=MC & MC<MI), 
+              'MI<MR<=MC'=sum(MI<MR  & MR<=MC), 
+              'MI<=MC<MR'=sum(MI<=MC & MC<MR), 
+              'MC<MR<MI'=sum(MC<MR  & MR<MI), 
+              'MC<MI<MR'=sum(MC<MI  & MI<MR), 
+              'All 2-chains'=nrow(chains),
+              'MR<MC'=sum(lp$resource.M<lp$consumer.M), 
+              'MR=MC'=sum(lp$resource.M==lp$consumer.M), 
+              'MR>MC'=sum(lp$resource.M>lp$consumer.M), 
+              'All links'=nrow(lp)))
+})
+res <- do.call('cbind', res)
 
 colnames(res) <- c('TL84', 'TL86', 'Ythan Estuary')
-print(res)
+print(round(res,2))
 @
 
 \subsection{\cite{CohenEtAl2009PNAS}, Fig. 1 p 22336}

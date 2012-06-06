@@ -118,76 +118,53 @@ TestNvMTriTrophic1 <- function()
     communities <- lapply(communities, RemoveIsolatedNodes)
 
     # Table 1
-    res <- NULL
-    for(community in communities)
+    res <- lapply(communities, function(community)
     {
-        if(TRUE)
-        {
-            # The newer way
-            tts <- NvMTriTrophicStatistics(community)
-            lp <- tts[['links']]
-            tncp <- tts[['three.node.chains']]
-            tcp <- tts[['trophic.chains']]
-        }
-        else
-        {
-            # The older way
-            lp <- NvMTrophicLinkProperties(community)
-            tncp <- NvMTriTrophicChainProperties(community)
-            tcp <- NvMTrophicChainsProperties(community)
-        }
+        community <- RemoveNodes(community, remove=with(NPS(community), node[is.na(M) | is.na(N)]))
+        community <- RemoveCannibalisticLinks(community)
+        community <- RemoveIsolatedNodes(community)
 
-        community.span <- diff(range(Log10M(community))) + 
+        tts<-NvMTriTrophicStatistics(community)
+        lp <- tts[['links']]
+        tncp <- tts[['three.node.chains']]
+        tcp <- tts[['trophic.chains']]
+        
+        community.span <- diff(range(Log10M(community))) +
                           diff(range(Log10N(community)))
+                          
+        wiggling <- mean(tcp$sum.chain.length) / mean(tcp$chain.span)
 
-        wiggling <- mean(tcp[,'sum.chain.length']) / mean(tcp[,'chain.span'])
+        UnsafeMean <- function(x)
+        {
+            ifelse(is.null(x), NA, mean(x))
+        }
 
-        res <- cbind(res, rbind(
-         mean(lp[,'length']), 
-         mean(tncp[,'Lupper']),
-         mean(tncp[,'Llower']),
-         2*mean(lp[,'length']), 
-         mean(tncp[,'two.span']), 
-         mean(tncp[,'Lupper']+tncp[,'Llower']),
-         2 * mean(lp[,'length']) / mean(tncp[,'two.span']), 
-         mean(tncp[,'Lupper'] + tncp[,'Llower']) / mean(tncp[,'two.span']), 
-         mean(tcp[,'count.chain.length']),
-         mean(tcp[,'count.chain.length'])*mean(lp[,'length']), 
-         community.span,
-         mean(tcp[,'count.chain.length'])*mean(lp[,'length'])/community.span,
-         mean(tcp[,'sum.chain.length']),
-         mean(tcp[,'chain.span']),
-         mean(tcp[,'chain.span']) / community.span,
-         mean(tcp[,'sum.chain.length']) / mean(tcp[,'chain.span']),
-         mean(tcp[,'sum.chain.length']) / community.span,
-         NumberOfTrophicLinks(community),
-         NumberOfNodes(community)^2,
-         DirectedConnectance(community),
-         NumberOfTrophicLinks(community)/NumberOfNodes(community)))
-    }
+        return (c(
+             'Mean link length'=mean(lp$length),
+             'Mean L upper'=UnsafeMean(tncp$Lupper),
+             'Mean L lower'=UnsafeMean(tncp$Llower),
+             '2 x mean link length'=2*mean(lp$length),
+             'Mean 2-span'=UnsafeMean(tncp$two.span),
+             'Mean L upper + L lower'=UnsafeMean(tncp$Lupper + tncp$Llower),
+             '2 x mean link length / mean 2-span'=2 * mean(lp$length) / UnsafeMean(tncp$two.span),
+             'Mean L upper + L lower/ mean 2-span'=UnsafeMean(tncp$Lupper + tncp$Llower) / UnsafeMean(tncp$two.span),
+             'Mean count chain length'=mean(tcp$count.chain.length),
+             'Mean count chain length x mean link length'=mean(tcp$count.chain.length)*mean(lp$length),
+             'Community span'=community.span,
+             'Mean count chain length x mean link length / community span'=mean(tcp$count.chain.length)*mean(lp$length)/community.span,
+             'Mean sum chain lengths'=mean(tcp$sum.chain.length),
+             'Mean chain span'=mean(tcp$chain.span),
+             'Mean chain span / community span'=mean(tcp$chain.span) / community.span,
+             'Mean sum chain lengths / mean chain span'=mean(tcp$sum.chain.length) / mean(tcp$chain.span),
+             'Mean sum chain lengths / community span'=mean(tcp$sum.chain.length) / community.span,
+             'L'=NumberOfTrophicLinks(community),
+             'S^2'=NumberOfNodes(community)^2,
+             'L/S^2'=DirectedConnectance(community),
+             'L/S'=NumberOfTrophicLinks(community)/NumberOfNodes(community)))
+    })
+    res <- do.call('cbind', res)
 
     colnames(res) <- c('TL84', 'TL86', 'Ythan Estuary')
-    rownames(res) <- c('Mean link length', 
-               'Mean L upper',
-               'Mean L lower',
-               '2 x mean link length',
-               'Mean 2-span',
-               'Mean L upper + L lower',
-               '2 x mean link length / mean 2-span',
-               'Mean L upper + L lower / mean 2-span',
-               'Mean count chain length',
-               'Mean count chain length x mean link length',
-               'Community span',
-               'Mean count chain length x mean link length / community span',
-               'Mean sum chain lengths',
-               'Mean chain span',
-               'Mean chain span / community span',
-               'Mean sum chain lengths / mean chain span',
-               'Mean sum chain lengths / community span',
-               'L',
-               'S^2',
-               'L/S^2',
-               'L/S')
 
     # The data from the paper
     check <- matrix(c(
@@ -225,46 +202,30 @@ TestNvMTriTrophic2 <- function()
     communities <- lapply(communities, RemoveIsolatedNodes)
     communities <- lapply(communities, RemoveCannibalisticLinks)
 
-    res <- NULL
-    for(community in communities)
+    res <- lapply(communities, function(community)
     {
         chains <- ThreeNodeChains(community, node.properties='M')
-        MR <- chains[,'bottom.M']
-        MI <- chains[,'intermediate.M']
-        MC <- chains[,'top.M']
-
-        col <- rbind(sum(MR<=MI & MI<=MC), 
-                     sum(MR<=MC & MC<MI), 
-                     sum(MI<MR  & MR<=MC), 
-                     sum(MI<=MC & MC<MR), 
-                     sum(MC<MR  & MR<MI), 
-                     sum(MC<MI  & MI<MR), 
-                     nrow(chains))
+        MR <- chains$bottom.M
+        MI <- chains$intermediate.M
+        MC <- chains$top.M
 
         lp <- TLPS(community, node.properties='M')
-        MR <- lp[,'resource.M']
-        MC <- lp[,'consumer.M']
-        col <- rbind(col, 
-                     sum(MR<MC), 
-                     sum(MR==MC), 
-                     sum(MR>MC), 
-                     nrow(lp))
 
-        res <- cbind(res, col)
-    }
+        return (c('MR<=MI<=MC'=sum(MR<=MI & MI<=MC), 
+                  'MR<=MC<MI'=sum(MR<=MC & MC<MI), 
+                  'MI<MR<=MC'=sum(MI<MR  & MR<=MC), 
+                  'MI<=MC<MR'=sum(MI<=MC & MC<MR), 
+                  'MC<MR<MI'=sum(MC<MR  & MR<MI), 
+                  'MC<MI<MR'=sum(MC<MI  & MI<MR), 
+                  'All 2-chains'=nrow(chains),
+                  'MR<MC'=sum(lp$resource.M<lp$consumer.M), 
+                  'MR=MC'=sum(lp$resource.M==lp$consumer.M), 
+                  'MR>MC'=sum(lp$resource.M>lp$consumer.M), 
+                  'All links'=nrow(lp)))
+    })
+    res <- do.call('cbind', res)
 
     colnames(res) <- c('TL84', 'TL86', 'Ythan Estuary')
-    rownames(res) <- c('MR<=MI<=MC', 
-                       'MR<=MC<MI', 
-                       'MI<MR<=MC', 
-                       'MI<=MC<MR', 
-                       'MC<MR<MI', 
-                       'MC<MI<MR', 
-                       'All 2-chains', 
-                       'MR<MC', 
-                       'MR=MC', 
-                       'MR>MC',
-                       'All links')
 
     # The data from the paper
     check <- matrix(c(  1001,  577,  1232,
@@ -281,7 +242,7 @@ TestNvMTriTrophic2 <- function()
 
     colnames(check) <- colnames(res)
     rownames(check) <- rownames(res)
-    stopifnot(all.equal(round(res, 2), check))
+    stopifnot(all.equal(res, check))
 }
 
 TestNvMTriTrophic3 <- function()
