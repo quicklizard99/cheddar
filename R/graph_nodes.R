@@ -692,8 +692,6 @@ PlotCircularWeb <- function(community,
     # origin.degrees=0 will plot the first species at the 12 o'clock position. 
     if(!is.Community(community)) stop('Not a Community')
 
-    .RequireTrophicLinks(community)
-
     stopifnot(proportional.radius>0 && proportional.radius<=1)
 
     # Create a sequence of unit vectors
