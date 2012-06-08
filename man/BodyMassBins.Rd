@@ -17,7 +17,7 @@ BodyMassBins(community, lower=min(NP(community,'M'), na.rm=TRUE),
 }
 
 \details{Divides the range \code{lower} to \code{upper} into \code{n.bins} 
-equally-spaced log10(M) bins. Assigns each each node in the 
+equally-spaced log10(M) bins. Assigns each node in the 
 \code{community} to one of these bins and returns the bins numbers. 
 The returned vector has attributes \code{bin.centres} and \code{breaks}.
 }
