@@ -640,7 +640,9 @@ PlotPredationMatrix(TL84.increasing.M,
                     main=paste('Order by M - sum diet gaps', 
                                SumDietGaps(TL84.increasing.M)))
 res <- MinimiseSumDietGaps(TL84)
-PlotPredationMatrix(res$reordered)
+PlotPredationMatrix(res$reordered,
+                    main=paste('Reordered - sum diet gaps', 
+                               SumDietGaps(res$reordered)))
 @
 \end{center}
 \code{MinimiseSumConsumerGaps} uses the same method to 
@@ -654,7 +656,9 @@ PlotPredationMatrix(TL84.increasing.M,
                     main=paste('Order by M - sum consumer gaps', 
                                SumConsumerGaps(TL84.increasing.M)))
 res <- MinimiseSumConsumerGaps(TL84)
-PlotPredationMatrix(res$reordered)
+PlotPredationMatrix(res$reordered, 
+                    main=paste('Reordered - sum diet gaps', 
+                               SumDietGaps(res$reordered)))
 @
 \end{center}
 
