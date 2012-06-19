@@ -56,6 +56,19 @@ c6 <- Community(nodes=data.frame(node=c('R','C','P'),
                 properties=list(title='c6', M.units='g', 
                                 N.units='m^-3'))
 
+# A community with three nodes:
+#   A is a cannibal with no resources other than itself
+#   B consumes A
+#   C is a cannibal that consumers B
+#   D is a cannibal and has no other resources or consumers
+#   E has no resources or consumers
+# This community is biologically silly but mathematically interesting for 
+# testing node status: basal, intermediate, top-level etc
+c7 <- Community(properties=list(title='Test'),
+                nodes=data.frame(node=c('A', 'B', 'C', 'D', 'E')), 
+                trophic.links=data.frame(resource=c('A', 'A', 'B', 'C', 'D'), 
+                                         consumer=c('A', 'B', 'C', 'C', 'D')))
+
 RunTests <- function(tests)
 {
     # tests should be a vector of function names

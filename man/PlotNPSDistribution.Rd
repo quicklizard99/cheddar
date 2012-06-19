@@ -12,6 +12,7 @@ properties.}
 PlotNPSDistribution(community, 
                     property, 
                     main = CPS(community)$title, 
+                    density.args = list(), 
                     \dots)
 
 PlotBDistribution(community, 
@@ -35,7 +36,8 @@ PlotDegreeDistribution(community,
   \item{community}{an object of class \code{Community}.}
   \item{property}{the name of a property that is plotted on the y axis. Must 
     meet the criteria of the \code{properties} parameter of \code{NPS}.}
-  \item{main}{title of the plot}
+  \item{main}{title of the plot.}
+  \item{density.args}{arguments passed to R's \code{density} function.}
   \item{xlab}{title of the x axis.}
   \item{\dots}{other values to plot functions.}
 }
@@ -60,6 +62,10 @@ PlotDegreeDistribution(community,
 data(TL84)
 
 PlotMDistribution(TL84)
+
+# A bandwidth of 3
+PlotMDistribution(TL84, density.args=list(bw=3))
+
 PlotDegreeDistribution(TL84)
 }
 \keyword{hplot}

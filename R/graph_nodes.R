@@ -471,17 +471,18 @@ PlotBvRankB <- function(community,
 }
 
 PlotNPSDistribution <- function(community, property, main=CPS(community)$title, 
-                                ...)
+                                density.args=list(), ...)
 {
     if(!is.Community(community)) stop('Not a Community')
 
     values <- NPS(community, property)[,property]
     values <- values[!is.na(values)]
-    plot(density(values), main=main, ...)
+    stopifnot(!'x' %in% names(density.args))
+    density.args$x <- values
+    plot(do.call('density', args=density.args), main=main, ...)
     rug(values)
     .AddAxisTicks(...)
 }
-
 
 PlotMDistribution <- function(community, xlab=Log10MLabel(community), ...)
 {

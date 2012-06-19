@@ -2,40 +2,38 @@
 .PlotPyramid <- function(community, values, xlim, xlab, ylab, col, main, 
                          show.level.labels, ...)
 {
-    # Plots a pyramid of log10 transformed values
-
+    # Plots a pyramid of values
     if(is.null(xlim))
     {
-        xlim <- log10(range(values))
+        xlim <- range(values)
     }
 
-    # Log10-transformed values can be -ve so offset them
-    lv.to.plot <- log10(values) - xlim[1] + 1
-    lv.to.plot[is.infinite(lv.to.plot)] <- 0
-    stopifnot(min(lv.to.plot)>=0)
+    # Values can be -ve so offset them
+    v <- values - xlim[1] + 1
+    v[is.infinite(v)] <- 0
+    stopifnot(min(v)>=0)
 
     # The largest value that we can show
     max.lxl <- xlim[2] - xlim[1] + 1
 
     if(!is.null(names(col)))
     {
-        col <- col[names(lv.to.plot)]
+        col <- col[names(v)]
     }
 
     plot(NA, NA, type='n', xlim=c(-max.lxl/2, max.lxl/2), xaxt='n', xlab=xlab, 
-         ylim=c(1,1+length(values)), yaxt='n', ylab=ylab, main=main, 
+         ylim=c(1,1+length(v)), yaxt='n', ylab=ylab, main=main, 
          frame.plot=FALSE, ...)
 
-    rect(-abs(lv.to.plot)/2, 1:length(lv.to.plot), abs(lv.to.plot)/2, 
-         1+(1:length(lv.to.plot)), col=col)
+    rect(-abs(v)/2, 1:length(v), abs(v)/2, 1+(1:length(v)), 
+         col=col)
 
-    to.print <- sprintf('%.2f', log10(values))
-    to.print[is.infinite(log10(values))] <- ''
-    text(0, y=1:length(values)+0.5, to.print, ...)
+    to.print <- sprintf('%.2f', values)
+    to.print[is.infinite(values)] <- ''
+    text(0, y=1:length(v)+0.5, to.print, ...)
     if(show.level.labels)
     {
-        axis(2, at=1:length(values)+0.5, labels=names(values), las=1, 
-             tick=FALSE, ...)
+        axis(2, at=1:length(v)+0.5, labels=names(v), las=1, tick=FALSE, ...)
     }
 }
 
@@ -52,7 +50,7 @@ PlotNPyramid <- function(community,
     if(!is.Community(community)) stop('Not a Community')
 
     .RequireN(community)
-    values <- SumNByClass(community, class=level)
+    values <- log10(SumNByClass(community, class=level))
     .PlotPyramid(community, values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
                  col=col, main=main, show.level.labels=show.level.labels, ...)
 }
@@ -71,7 +69,7 @@ PlotBPyramid <- function(community,
 
     .RequireM(community)
     .RequireN(community)
-    values <- SumBiomassByClass(community, class=level)
+    values <- log10(SumBiomassByClass(community, class=level))
     .PlotPyramid(community, values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
                  col=col, main=main, show.level.labels=show.level.labels, ...)
 }

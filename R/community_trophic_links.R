@@ -184,7 +184,11 @@ NormalisedTrophicVulnerability <- function(community)
 
 IsBasalNode <- function(community)
 {
-    # TRUE for those nodes that consume no others
+    # TRUE for those nodes that consume no others, excluding 
+    # themselves; will therefore return TRUE for nodes that are cannibalistic, 
+    # have no resources and some consumers. Biologically, this should not 
+    # happen, but mathematically, it should be accounted for.
+    community <- RemoveCannibalisticLinks(community)
     return (0==NumberOfResources(community) & 0<NumberOfConsumers(community))
 }
 

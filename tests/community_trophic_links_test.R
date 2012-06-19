@@ -86,6 +86,8 @@ TestBasalNodes <- function()
     stopifnot(all('R'==BasalNodes(c5)))
     stopifnot(all(c(TRUE, FALSE, FALSE)==IsBasalNode(c6)))
     stopifnot(all('R'==BasalNodes(c6)))
+    stopifnot(all(c(TRUE, FALSE, FALSE, FALSE, FALSE)==IsBasalNode(c7)))
+    stopifnot(all('A'==BasalNodes(c7)))
     stopifnot(all(c(TRUE,TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,TRUE,
                     TRUE,FALSE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,TRUE,
                     TRUE,TRUE,TRUE,TRUE,TRUE,FALSE,TRUE,FALSE,FALSE,TRUE,
@@ -121,6 +123,8 @@ TestNonBasalNodes <- function()
     stopifnot(all(c('C','O')==NonBasalNodes(c5)))
     stopifnot(all(c(FALSE,TRUE,TRUE)==IsNonBasalNode(c6)))
     stopifnot(all(c('C','P')==NonBasalNodes(c6)))
+    stopifnot(all(c(FALSE,TRUE,TRUE,TRUE,TRUE)==IsNonBasalNode(c7)))
+    stopifnot(all(c('B','C','D','E')==NonBasalNodes(c7)))
 }
 
 TestTopLevelNodes <- function()
@@ -135,8 +139,10 @@ TestTopLevelNodes <- function()
     stopifnot(all('P'==TopLevelNodes(c4)))
     stopifnot(all(c(FALSE,FALSE,TRUE)==IsTopLevelNode(c5)))
     stopifnot(all('O'==TopLevelNodes(c5)))
-    stopifnot(all(c(FALSE,FALSE,TRUE)==IsTopLevelNode(c5)))
+    stopifnot(all(c(FALSE,FALSE,TRUE)==IsTopLevelNode(c6)))
     stopifnot(all('P'==TopLevelNodes(c6)))
+    stopifnot(all(c(FALSE,FALSE,TRUE,FALSE,FALSE)==IsTopLevelNode(c7)))
+    stopifnot(all('C'==TopLevelNodes(c7)))
     stopifnot(all(c(rep(FALSE,55), TRUE)==IsTopLevelNode(TL84)))
     stopifnot(all('Umbra limi'==TopLevelNodes(TL84)))
 }
@@ -155,6 +161,8 @@ TestNonTopLevelNodes <- function()
     stopifnot(all(c('R','C')==NonTopLevelNodes(c5)))
     stopifnot(all(c(TRUE,TRUE,FALSE)==IsNonTopLevelNode(c6)))
     stopifnot(all(c('R','C')==NonTopLevelNodes(c6)))
+    stopifnot(all(c(TRUE,TRUE,FALSE,TRUE,TRUE)==IsNonTopLevelNode(c7)))
+    stopifnot(all(c('A','B','D','E')==NonTopLevelNodes(c7)))
     stopifnot(all(c(rep(TRUE,55), FALSE)==IsNonTopLevelNode(TL84)))
     stopifnot(all(c('Nostoc sp.','Arthrodesmus sp.','Asterionella formosa',
                     'Cryptomonas sp. 1','Cryptomonas sp. 2',
@@ -199,6 +207,8 @@ TestIntermediateNodes <- function()
     stopifnot(all('C'==IntermediateNodes(c5)))
     stopifnot(all(c(FALSE,TRUE,FALSE)==IsIntermediateNode(c6)))
     stopifnot(all('C'==IntermediateNodes(c6)))
+    stopifnot(all(c(FALSE,TRUE,FALSE,FALSE,FALSE)==IsIntermediateNode(c7)))
+    stopifnot(all('B'==IntermediateNodes(c7)))
     stopifnot(all(c(rep(FALSE,31), rep(TRUE,24), FALSE) == 
                   IsIntermediateNode(TL84)))
     stopifnot(all(c('Ascomorpha eucadis','Synchaeta sp.',
@@ -231,6 +241,8 @@ TestIsolatedNodes <- function()
     stopifnot(all(0==length(IsolatedNodes(c5))))
     stopifnot(all(c(FALSE,FALSE,FALSE)==IsIsolatedNode(c6)))
     stopifnot(all(0==length(IsolatedNodes(c6))))
+    stopifnot(all(c(FALSE,FALSE,FALSE,TRUE,TRUE)==IsIsolatedNode(c7)))
+    stopifnot(all(c('D','E')==IsolatedNodes(c7)))
     target <- rep(FALSE, 56)
     target[c(3,8,12,26,28,29)] <- TRUE
     stopifnot(all(target == IsIsolatedNode(TL84)))
@@ -253,6 +265,8 @@ TestConnectedNodes <- function()
     stopifnot(all(c('R','C','O')==ConnectedNodes(c5)))
     stopifnot(all(c(TRUE,TRUE,TRUE)==IsConnectedNode(c6)))
     stopifnot(all(c('R','C','P')==ConnectedNodes(c6)))
+    stopifnot(all(c(TRUE,TRUE,TRUE,FALSE,FALSE)==IsConnectedNode(c7)))
+    stopifnot(all(c('A','B','C')==ConnectedNodes(c7)))
     target <- rep(TRUE, 56)
     target[c(3,8,12,26,28,29)] <- FALSE
     stopifnot(all(target == IsConnectedNode(TL84)))
@@ -290,6 +304,7 @@ TestFractionBasalNodes <- function()
     stopifnot(1/3==FractionBasalNodes(c4))
     stopifnot(1/3==FractionBasalNodes(c5))
     stopifnot(1/3==FractionBasalNodes(c6))
+    stopifnot(1/5==FractionBasalNodes(c7))
     stopifnot(25/56==FractionBasalNodes(TL84))
 }
 
@@ -301,6 +316,7 @@ TestFractionNonBasalNodes <- function()
     stopifnot(2/3==FractionNonBasalNodes(c4))
     stopifnot(2/3==FractionNonBasalNodes(c5))
     stopifnot(2/3==FractionNonBasalNodes(c6))
+    stopifnot(4/5==FractionNonBasalNodes(c7))
     stopifnot(31/56==FractionNonBasalNodes(TL84))
 }
 
@@ -312,6 +328,7 @@ TestFractionIntermediateNodes <- function()
     stopifnot(1/3==FractionIntermediateNodes(c4))
     stopifnot(1/3==FractionIntermediateNodes(c5))
     stopifnot(1/3==FractionIntermediateNodes(c6))
+    stopifnot(1/5==FractionIntermediateNodes(c7))
     stopifnot(24/56==FractionIntermediateNodes(TL84))
 }
 
@@ -323,6 +340,7 @@ TestFractionTopLevelNodes <- function()
     stopifnot(1/3==FractionTopLevelNodes(c4))
     stopifnot(1/3==FractionTopLevelNodes(c5))
     stopifnot(1/3==FractionTopLevelNodes(c6))
+    stopifnot(1/5==FractionTopLevelNodes(c7))
     stopifnot(1/56==FractionTopLevelNodes(TL84))
 }
 
@@ -334,6 +352,7 @@ TestFractionNonTopLevelNodes <- function()
     stopifnot(2/3==FractionNonTopLevelNodes(c4))
     stopifnot(2/3==FractionNonTopLevelNodes(c5))
     stopifnot(2/3==FractionNonTopLevelNodes(c6))
+    stopifnot(4/5==FractionNonTopLevelNodes(c7))
     stopifnot(55/56==FractionNonTopLevelNodes(TL84))
 }
 
@@ -345,6 +364,7 @@ TestFractionIsolatedNodes <- function()
     stopifnot(0==FractionIsolatedNodes(c4))
     stopifnot(0==FractionIsolatedNodes(c5))
     stopifnot(0==FractionIsolatedNodes(c6))
+    stopifnot(2/5==FractionIsolatedNodes(c7))
     stopifnot(6/56==FractionIsolatedNodes(TL84))
 }
 
@@ -356,13 +376,14 @@ TestFractionConnectedNodes <- function()
     stopifnot(1==FractionConnectedNodes(c4))
     stopifnot(1==FractionConnectedNodes(c5))
     stopifnot(1==FractionConnectedNodes(c6))
+    stopifnot(3/5==FractionConnectedNodes(c7))
     stopifnot(50/56==FractionConnectedNodes(TL84))
 }
 
 TestFractions <- function()
 {
     # These should sum to 1
-    for(community in list(c1,c2,c3,c4,c5,c6,TL84))
+    for(community in list(c1,c2,c3,c4,c5,c6,c7,TL84))
     {
         stopifnot(1==sum(FractionBasalNodes(community), 
                          FractionIntermediateNodes(community), 
@@ -461,6 +482,9 @@ TestNumberOfTrophicLinks <- function()
     stopifnot(1==NumberOfTrophicLinks(c3))
     stopifnot(2==NumberOfTrophicLinks(c4))
     stopifnot(3==NumberOfTrophicLinks(c5))
+    stopifnot(2==NumberOfTrophicLinks(c6))
+    stopifnot(5==NumberOfTrophicLinks(c7))
+    stopifnot(5==NumberOfTrophicLinks(c7))
     stopifnot(269==NumberOfTrophicLinks(TL84))
     stopifnot(264==NumberOfTrophicLinks(RemoveCannibalisticLinks(TL84)))
 }
@@ -524,6 +548,8 @@ TestCannibals <- function()
     stopifnot(0==length(Cannibals(c4)))
     stopifnot(all(rep(FALSE, 3)==IsCannibal(c5)))
     stopifnot(0==length(Cannibals(c5)))
+    stopifnot(all(c(TRUE,FALSE,TRUE,TRUE,FALSE)==IsCannibal(c7)))
+    stopifnot(all(c('A','C','D')==Cannibals(c7)))
 }
 
 TestTrophicChains <- function()
@@ -580,13 +606,14 @@ TestTrophicChains <- function()
                        properties=list(title='test2'))
 
 
-    communities <- list(c1, c2, c3, c4, c5, c6, test1, test2)
+    communities <- list(c1, c2, c3, c4, c5, c6, c7, test1, test2)
     expected <- list(NULL, 
                      NULL, 
                      c('R','C'), 
                      c('R','C','P'), 
                      matrix(c('R','O','', 'R','C','O'), nrow=2, byrow=TRUE), 
                      c('R','C','P'), 
+                     c('A','B','C'),
                      c('A', 'B', 'C'), 
                      matrix(c('A','C','', 'A','B','C'), nrow=2, byrow=TRUE))
     for(index in 1:length(communities))
@@ -675,10 +702,11 @@ TestThreeNodeChains <- function()
         stopifnot(is.null(ThreeNodeChains(community, exclude.loops=TRUE)))
     }
 
-    communities <- list(c4, c5, c6)
+    communities <- list(c4, c5, c6, c7)
     expected <- list(c('R','C','P'), 
                      c('R','C','O'), 
-                     c('R','C','P'))
+                     c('R','C','P'),
+                     c('A','B','C'))
     for(index in 1:length(communities))
     {
         chains <- ThreeNodeChains(communities[[index]])
@@ -739,6 +767,9 @@ TestTrophicHeight <- function()
     stopifnot(all(c(1,2,2.5)==TrophicHeight(c5, include.isolated=FALSE)))
     stopifnot(all(c(1,2,3)==TrophicHeight(c6, include.isolated=TRUE)))
     stopifnot(all(c(1,2,3)==TrophicHeight(c6, include.isolated=FALSE)))
+    stopifnot(all(c(1,2,3,1,1)==TrophicHeight(c7, include.isolated=TRUE)))
+    stopifnot(all.equal(c(1,2,3,NA,NA), 
+                        unname(TrophicHeight(c7, include.isolated=FALSE))))
 
     # Lower tolerance required for Mac Pro in GIS lab.
     stopifnot(all.equal(c(rep(1,31),2,2,2,2,10/3,2,2.41860465116279055309,2,2,
@@ -779,6 +810,11 @@ TestTrophicLevel <- function()
                   PreyAveragedTrophicLevel(c4, include.isolated=FALSE)))
     stopifnot(all(c(1,2,2.5) == 
                   PreyAveragedTrophicLevel(c5, include.isolated=FALSE)))
+
+    # c7 is not energetically feasible so all trophic levels are NA
+    stopifnot(all(is.na(PreyAveragedTrophicLevel(c7, include.isolated=FALSE))))
+    stopifnot(all(is.na(PreyAveragedTrophicLevel(c7, include.isolated=TRUE))))
+
     stopifnot(all.equal(c(1,1,NA,1,1,1,1,NA,1,1,1,NA,1,1,1,1,1,1,1,1,1,1,1,1,
                           1,NA,1,NA,NA,1,1,2,2,2,2,3.14285714285714,2,
                           2.10714285714286,2,2,2,2,2,2,2,2,3.20535714285714,
@@ -898,9 +934,11 @@ TestRemoveCannibalisticLinks <- function()
     stopifnot(1==NumberOfTrophicLinks(RemoveCannibalisticLinks(c3)))
     stopifnot(2==NumberOfTrophicLinks(RemoveCannibalisticLinks(c4)))
     stopifnot(3==NumberOfTrophicLinks(RemoveCannibalisticLinks(c5)))
+    stopifnot(2==NumberOfTrophicLinks(RemoveCannibalisticLinks(c7)))
     stopifnot(269==NumberOfTrophicLinks(TL84))
     stopifnot(5==length(Cannibals(TL84)))
     stopifnot(264==NumberOfTrophicLinks(RemoveCannibalisticLinks(TL84)))
+    stopifnot(0==length(Cannibals(RemoveCannibalisticLinks(TL84))))
 }
 
 TestShortestPathLengths <- function()

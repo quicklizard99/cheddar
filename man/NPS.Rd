@@ -18,6 +18,12 @@ either a vector of length \code{NumberOfNodes} or a \code{matrix} or
 \code{data.frame} containing the column `node' and any requested properties. 
 If \code{properties} is \code{NULL}, all first-class node properties are 
 included in the returned \code{data.frame}.
+
+\code{properties} should be either a vector or a list that contains either 
+names of first class properties, names of functions that take only a community 
+or lists in which the first element is the name of a function that takes 
+a community and subsequent elements are named arguments to that function. 
+Names of \code{properties} are column names in the returned \code{data.frame}.
 }
 
 \value{A \code{data.frame} with \code{NumberOfNodes} rows.}

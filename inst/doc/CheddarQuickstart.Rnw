@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
+\usepackage[top=2cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}            % /eqref
 \usepackage[authoryear,round]{natbib}
@@ -37,6 +37,9 @@ options(SweaveHooks = list(fig=function() par(mgp=c(2.5,1,0),
                                               cex.main=0.8)))
 @
 
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.5\textwidth}
+
 \section{Introduction}
 The Cheddar \R package provides a flexible, extendable representation of an 
 ecological community and a range of functions for analysis and visualisation, 
@@ -44,7 +47,7 @@ focusing on food web, body mass and numerical abundance data. It also allows
 inter-web comparisons such as examining changes in community structure over 
 environmental, temporal or spatial gradients. This vignette is a brief 
 introduction to some different areas of Cheddar. Each area is discussed in 
-detail in it's own vignette, listed in Section \ref{sec:further_reading}.
+detail in its own vignette, listed in Section \ref{sec:further_reading}.
 
 \section{Community basics}
 The examples below use the pelagic epilimnion community of Tuesday Lake, 
@@ -57,7 +60,6 @@ print(TL84)     # A description of the data
 NumberOfNodes(TL84)
 NumberOfTrophicLinks(TL84)
 @
-
 \code{NPS} assembles node properties into an \R \code{data.frame}. Let's look 
 at the first 10 rows of such a table.
 <<>>=
@@ -74,18 +76,16 @@ properties to plot on the x and y axes. Just as with \code{NPS}, node
 properties can be either `first-class' or computed. The example below plots 
 $\log_{10}$-transformed numerical abundance against 
 $\log_{10}$-transformed body mass.
-
 \begin{center}
 <<fig=TRUE>>=
 PlotNPS(TL84, 'Log10M', 'Log10N')
 @
 \end{center}
-
 Producers are shown by green circles, invertebrates by blue squares and 
-vertebrate ectotherms by purple diamonds. The \code{NvMLinearRegressions} and 
-\code{PlotLinearModels} functions can be used to add regression lines 
-through each of these three categories.
-
+vertebrate ectotherms by purple diamonds, cannibals shown by lighter-coloured 
+circles and trophic links shown by grey lines. 
+The \code{NvMLinearRegressions} and \code{PlotLinearModels} functions can be 
+used to add regression lines through each of the three categories.
 \begin{center}
 <<fig=TRUE>>=
 PlotNvM(TL84)
@@ -94,33 +94,27 @@ colours <- PlotLinearModels(models)
 legend("topright", sapply(models, FormatLM), lty=1, col=colours)
 @
 \end{center}
-
 The following example shows trophic level against $\log_{10}$-transformed body 
 mass.
-
 \begin{center}
 <<fig=TRUE>>=
 PlotNPS(TL84, 'Log10M', 'PreyAveragedTrophicLevel')
 @
 \end{center}
-
-Similarly, \code{PlotTLPS} plots one trophic link property against another. 
+Similarly, \code{PlotTLPS} plots one trophic-link property against another. 
 Names prefixed with either `resource.' or `consumer.' are taken to be node 
 properties. The following example therefore plots the $\log_{10}$-transformed 
-body mass against of the consumer against that of the resource for every 
-trophic link in the community.
-
+body mass of the consumer against that of the resource for every trophic link 
+in the community.
 \begin{center}
 <<fig=TRUE>>=
 PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M')
 @
 \end{center}
-
 Colours in this plot are the same as in the \code{PlotNPS} examples and denote 
 the resource's category. The example below shows the food web as a 
 predation matrix: a binary matrix with species shown in node order, starting at 
 the top-left. Points on the dashed line indicate cannibals. 
-
 \begin{center}
 <<fig=TRUE>>=
 PlotPredationMatrix(TL84)
@@ -150,13 +144,11 @@ CollectionCPS(pHWebs,
 
 \section{Further reading}
 \label{sec:further_reading}
-You should read the `Community' vignette. Plotting communities is covered in 
-the `Plots' vignette. The `ImportExport' vignette shows how to get your 
-community data in-to and out-of Cheddar. If you have data from several 
-communities and are interested in seeing how community structure changes among 
-them, read the `Collections' vignette. The `TriTrophic' vignette describes 
-Cheddar's support for a novel analysis that simultaneously considers body 
-mass, numerical abundance, and a food web \cite{CohenEtAl2009PNAS}.
+You should read the `Community' vignette. Plotting and anlysis of communities 
+is covered in the `PlotsAndStats' vignette. The `ImportExport' vignette shows 
+how to get your community data into and out of Cheddar. If you have data from 
+several communities and are interested in seeing how community structure changes 
+among them, read the `Collections' vignette.
 
 \bibliographystyle{plainnat}
 \bibliography{cheddar} 

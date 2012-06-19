@@ -1,5 +1,5 @@
 \documentclass[11pt]{article}
-\usepackage[top=3cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
+\usepackage[top=2cm, bottom=3cm, left=2cm, right=2cm]{geometry} % Page margins
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath}            % /eqref
 \usepackage[authoryear,round]{natbib}
@@ -37,13 +37,16 @@ options(SweaveHooks = list(fig=function() par(mgp=c(2.5,1,0),
                                               cex.main=0.8)))
 @
 
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.5\textwidth}
+
 \section{Introduction}
 Cheddar provides functions for managing collections of communities, allowing 
 you to perform inter-web comparisons such as examining changes in 
 community structure over environmental, temporal and spatial gradients. 
-You should read the `CheddarIntro' and 'Plots' vignettes before reading this 
-one. The `ImportExport' vignette shows how to get collections of communities 
-into Cheddar.
+You should read the `CheddarQuickstart' and 'Community' vignettes before 
+reading this one. The `ImportExport' vignette shows how to get collections of 
+communities into Cheddar.
 
 \section{Datasets}
 Cheddar contains some published empirical food web collection datasets 
@@ -328,7 +331,7 @@ the plot below is not an exact recreation of the published figure.
 
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=0.5\textwidth}
 <<fig=TRUE>>=
 properties <- CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
 with(properties, plot(pH, S))
@@ -339,7 +342,7 @@ with(properties, plot(pH, S))
 
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=0.5\textwidth}
 <<fig=TRUE>>=
 n.links <- sapply(pHWebs, NumberOfTrophicLinks)
 n.links <- n.links[order(n.links, decreasing=TRUE)]
