@@ -670,12 +670,12 @@ figures.
 \subsection{\cite{JonssonEtAl2005AER}}
 
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 3 (p 30)}
-\SweaveOpts{width=4,height=8}
-\setkeys{Gin}{width=0.4\textwidth}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=0.8\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 data(TL84, TL86)
-par(mfrow=c(2,1))
+par(mfrow=c(1,2))
 PlotMvN(TL84, show.nodes.as='both', cex=2, xlim=c(-2, 10), ylim=c(-14, 0), 
         highlight.nodes=NULL, highlight.links=NULL, main='')
 PlotMvN(TL86, show.nodes.as='both', cex=2, xlim=c(-2, 10), ylim=c(-14, 0), 
@@ -684,12 +684,13 @@ title(main='Jonsson et al. (2005) AER, Fig. 3 (p 30)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 4 (p 33)}
-\SweaveOpts{width=4,height=8}
-\setkeys{Gin}{width=0.4\textwidth}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=0.8\textwidth}
 \begin{center}
 <<fig=TRUE>>=
-par(mfrow=c(2,1))
+par(mfrow=c(1,2))
 PlotMCvMR(TL84, xlim=c(-14, 0), ylim=c(-14, 0), main='')
 abline(a=0, b=1, lty=2)
 PlotMCvMR(TL86, xlim=c(-14, 0), ylim=c(-14, 0), main='')
@@ -789,8 +790,8 @@ title(main='Jonsson et al. (2005) AER, Fig. 11 (p 60)', outer=TRUE)
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 12 (p 61)}
 In this example, we write a small function that plots one community against 
 another.
-\SweaveOpts{width=4,height=8}
-\setkeys{Gin}{width=0.4\textwidth}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=0.8\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 PlotCommunityVCommunity <- function(a, b, property, xlim=NULL, ylim=NULL, ...)
@@ -810,7 +811,7 @@ PlotCommunityVCommunity <- function(a, b, property, xlim=NULL, ylim=NULL, ...)
     abline(a=0, b=1, lty=2)
 }
 
-par(mfrow=c(2,1))
+par(mfrow=c(1,2))
 PlotCommunityVCommunity(TL84, TL86, 'Log10N', xlim=c(-2,10), ylim=c(-2,10), 
                         xlab=~log[10]~(N~of~84), ylab=~log[10]~(N~of~86))
 PlotCommunityVCommunity(TL84, TL86, 'Log10Biomass', 
@@ -878,15 +879,15 @@ title(main='Layer et al. (2011) AER, Fig. 6 (p 282)', outer=TRUE)
 
 \newpage
 \subsection{\cite{WoodwardEtAl2005AER}}
-\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 4. (p 108)}
-The top panel shows all trophic links. The bottom panel shows just links for 
+\subsubsection{\cite{WoodwardEtAl2005AER}, Fig.\ 4. (p 108)}
+The left panel shows all trophic links. The right panel shows just links for 
 which the resource has a larger body mass than the consumer.
 \begin{center}
-\SweaveOpts{width=4,height=8}
-\setkeys{Gin}{width=0.4\textwidth}
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=0.8\textwidth}
 <<fig=TRUE>>=
 data(BroadstoneStream)
-par(mfrow=c(2,1))
+par(mfrow=c(1,2))
 PlotMvN(BroadstoneStream, show.nodes.as='labels', cex=1, label.cex=1, 
         xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
         highlight.links=NULL)
