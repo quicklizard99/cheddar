@@ -121,9 +121,11 @@ PlotNPS(TL84, 'Log10M', 'Log10N')
 decide plotting colours and symbols. Producers are shown by green circles, 
 invertebrates by blue squares and vertebrate ectotherms by purple diamonds. 
 This is explored more in Section \ref{sec:nps_colours and symbols}. 
-The \code{TL84} datasets include trophic links so \code{PlotNPS} 
+
+\newpage
+\noindent The \code{TL84} datasets include trophic links so \code{PlotNPS} 
 will show the food web and highlights cannibals by plotting them in a 
-light-coloured circle with a dark border, as in the previous example. 
+light-coloured circle with a dark border, as shown in the previous example. 
 We can turn off these behaviours.
 \begin{center}
 <<fig=TRUE>>=
@@ -179,7 +181,7 @@ examine allometric degree distributions \citep{JonssonEtAl2005AER,
 OttoEtAl2007Nature, DigelEtAl2011Oikos}, which describe how species' numbers of 
 trophic links scale with their log-transformed body masses.
 \begin{center}
-\SweaveOpts{width=8,height=3}
+\SweaveOpts{width=8,height=2.7}
 \setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,3))
@@ -217,8 +219,10 @@ PlotNPS(TL84, 'Log10M', 'ChainAveragedTrophicLevel')
 Cheddar offers the six different measures of trophic level described by 
 \cite{WilliamsAndMartinez2004AmNat}; see the `Communities' vignette and the 
 help page for \code{TrophicLevels} for details. 
-\code{PlotNPS} accepts the range of graphical parameters provided by \R's 
-plotting system, such as \code{ylim} and \code{main}. To directly compare 
+
+\newpage
+\noindent \code{PlotNPS} accepts the range of graphical parameters provided by 
+\R's plotting system, such as \code{ylim} and \code{main}. To directly compare 
 prey-averaged and chain-averaged trophic level we can produce side-by-side 
 plots with the same y-axis limits.
 \begin{center}
@@ -232,7 +236,9 @@ PlotNPS(TL84, 'Log10M', 'ChainAveragedTrophicLevel', ylim=c(1, 6),
         main='Chain-averaged')
 @
 \end{center}
-It is common to plot some combination of $\log_{10}$-transformed body 
+
+\newpage
+\noindent It is common to plot some combination of $\log_{10}$-transformed body 
 mass, $M$, numerical abundance, $N$, or biomass, $B$ (e.g.\ 
 \citealp{CohenEtAl2003PNAS, JonssonEtAl2005AER, 
 WoodwardEtAl2005AER}). The convenience functions \code{PlotMvN}, 
@@ -253,6 +259,7 @@ All of the modifying parameters that can be sent to \code{PlotNPS} to do things
 like changing the highlighting etc., can also be sent to to these convenience 
 functions.
 
+\newpage
 \subsection{Rank of properties}
 \code{PlotRankNPS} plots the rank of a property. As with \code{PlotNPS}, 
 properties can be either first-class or computed. To plot $\log_{10}(N)$ 
@@ -283,7 +290,9 @@ To plot trophic level against rank of $M$ \citep{JonssonEtAl2005AER}:
 PlotRankNPS(TL84, 'PreyAveragedTrophicLevel', rank.by='M')
 @
 \end{center}
-The \code{PlotRankNPS} function can log-transform the rank values 
+
+\newpage
+\noindent The \code{PlotRankNPS} function can log-transform the rank values 
 shown on the x axis \citep{JonssonEtAl2005AER}:
 \begin{center}
 <<fig=TRUE>>=
@@ -308,6 +317,7 @@ All of the modifying parameters that can be sent to \code{PlotNPS} to do things
 like changing the highlighting etc., can also be sent to to these convenience 
 functions.
 
+\newpage
 \subsection{Distribution of a property}
 The \code{PlotNPSDistribution} function plots the distribution of a node 
 property.
@@ -346,7 +356,9 @@ the specifications given in \code{DefaultCategoryColours} and
 PlotNvM(TL84, col=1, pch=1, highlight.nodes=NULL)
 @
 \end{center}
-Plot each node in different colour by providing a vector of colours.
+
+\newpage
+\noindent Plot each node in different colour by providing a vector of colours.
 \begin{center}
 <<fig=TRUE>>=
 PlotNvM(TL84, col=1:56, pch=19, highlight.nodes=NULL)
@@ -362,8 +374,10 @@ colours.
 PlotNvM(TL84, colour.by='resolved.to', pch=19, highlight.nodes=NULL)
 @
 \end{center}
-We can improve on this by showing each level of taxonomic resolution in a 
-specific colour by providing the `colour.spec' parameter.
+
+\newpage
+\noindent We can improve on this by showing each level of taxonomic resolution 
+in a specific colour by providing the `colour.spec' parameter.
 \begin{center}
 <<fig=TRUE>>=
 colour.spec <- c(Species='purple3', Genus='green3', Group='red3')
@@ -372,7 +386,9 @@ PlotNvM(TL84, colour.by='resolved.to', colour.spec=colour.spec, pch=19,
 legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 @
 \end{center}
-The more complex example below uses the `kingdom' level of 
+
+\newpage
+\noindent The more complex example below uses the `kingdom' level of 
 classification with a different colour and symbol.
 \begin{center}
 <<fig=TRUE>>=
@@ -387,7 +403,9 @@ PlotNvM(TL84,
 legend("topright", legend=names(colour.spec), pch=symbol.spec, col=colour.spec)
 @
 \end{center}
-You can use \code{pch=NA} to turn off symbols and just show the food 
+
+\newpage
+\noindent You can use \code{pch=NA} to turn off symbols and just show the food 
 web.
 \begin{center}
 <<fig=TRUE>>=
@@ -397,6 +415,7 @@ PlotNvM(TL84, pch=NA, highlight.nodes=NULL)
 See the help page for the \R \code{par} function for more information about 
 colours and symbols.
 
+\newpage
 \subsection{Highlights and lowlights}
 \code{PlotNPS} (and by extension all of the other node plotting functions) 
 allow individual nodes to be highlighted or lowlighted using the 
@@ -447,6 +466,7 @@ PlotNvM(TL84, highlight.nodes='Chaoborus punctipennis',
 @
 \end{center}
 
+\newpage
 \subsection{Nodes that lack properties}
 Communities are never completely sampled and some species may be 
 represented by too few individuals for properties such as $M$ and $N$ to be 
@@ -465,15 +485,17 @@ data(YthanEstuary)
 PlotNvM(YthanEstuary)
 @
 \end{center}
-The location of the detritus node is determined by the extent of the data, 
-or by the axes limits, if given.
+
+\newpage
+\noindent The location of the detritus node is determined by the extent of the 
+data, or by the axes limits, if given.
 \begin{center}
 <<fig=TRUE>>=
 PlotNvM(YthanEstuary, xlim=c(-10, 4), ylim=c(-10, 13))
 @
 \end{center}
-The example below shows how \code{PlotNPS} behaves in four different cases - 
-node lacks x property, node lacks y property, node lacks both x and y 
+The example below shows how \code{PlotNPS} behaves in four different 
+cases - node lacks x property, node lacks y property, node lacks both x and y 
 properties and many nodes lack both x and y properties. 
 \code{lowlight.nodes} defaults to nodes that lack either one of the 
 properties being plotted, so the plots below lowlight the node(s) lacking 
@@ -508,6 +530,7 @@ PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)),
 @
 \end{center}
 
+\newpage
 \section{Plotting trophic-link properties}
 \subsection{\code{PlotTLPS}}
 \code{PlotTLPS} (for Plot Trophic-Link PropertieS) plots one trophic-link 
@@ -529,9 +552,11 @@ against $\log_{10}(M)$ of consumers we can use the helper function
 PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M')
 @
 \end{center}
-We can make the plot more informative if the the limits of both the x and y 
-axes are the same. Setting the `axes.limits.equal' parameter to \code{TRUE} 
-instructs \code{PlotTLPS} to do just that, as shown below.
+
+\newpage
+\noindent We can make the plot more informative if the the limits of both the 
+x and y axes are the same. Setting the `axes.limits.equal' parameter to 
+\code{TRUE} instructs \code{PlotTLPS} to do just that, as shown below.
 \begin{center}
 <<fig=TRUE>>=
 PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M', axes.limits.equal=TRUE)
@@ -562,6 +587,7 @@ PlotBRvBC(TL84)
 @
 \end{center}
 
+\newpage
 \subsection{Colours and symbols}
 \label{sec:tlps_colours and symbols}
 \code{PlotTLPS} uses a similar mechanism to \code{PlotNPS}. If the 
@@ -575,8 +601,10 @@ consumer-versus-resource $\log_{10}$-transormed body mass:
 PlotMRvMC(TL84)
 @
 \end{center}
-To plot the same data using the consumer's category to decide colours and 
-symbols.
+
+\newpage
+\noindent To plot the same data using the consumer's category to decide colours 
+and symbols.
 \begin{center}
 <<fig=TRUE>>=
 PlotMRvMC(TL84, colour.by='consumer.category', bg.by='consumer.category', 
@@ -587,6 +615,7 @@ The \code{bg.by} parameter is used to determine the background colour of each
 point. See the section for `bg' in the help page for the \R \code{par} 
 function for more information.
 
+\newpage
 \section{$\log_{10}(N)$-versus-$\log_{10}(M)$ statistics}
 Cheddar contains some helper functions that assist in the commonly-performed 
 $\log_{10}(N)$-versus-$\log_{10}(M)$ statistics. 
@@ -620,6 +649,7 @@ regression through all data.
 NvMSlope(TL84)
 @
 
+\newpage
 \section{Tri-trophic statistics}
 \cite{CohenEtAl2009PNAS} proposed a novel analysis that 
 simultaneously considers body mass, $M$, numerical abundance, $N$, and the 
@@ -632,6 +662,7 @@ statistics are computed. It returns a list containing three matrices: `links',
 three matrices that it returns to reconstruct the important figures and 
 tables from \cite{CohenEtAl2009PNAS}. 
 
+\newpage
 \section{Examples through recreating figures and tables from published articles}
 The following sections show how to use Cheddar to recreate some published 
 figures.
@@ -667,6 +698,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 4 (p 33)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 5 (p 37)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
@@ -681,6 +713,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 5 (p 37)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 7 (p 47)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
@@ -699,6 +732,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 7 (p 47)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 8 (p 49)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
@@ -715,6 +749,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 8 (p 49)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 10 (p 57)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
@@ -729,6 +764,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 10 (p 57)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 11 (p 60)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
@@ -749,6 +785,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 11 (p 60)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 12 (p 61)}
 In this example, we write a small function that plots one community against 
 another.
@@ -783,6 +820,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 12 (p 61)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsection{\cite{LayerEtAl2011AER}}
 
 \subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 4 (p 280)}
@@ -799,6 +837,7 @@ title(main='Layer et al. (2011) AER, Fig. 4 (p 280)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 5 (p 281)}
 \begin{center}
 <<fig=TRUE>>=
@@ -812,6 +851,7 @@ title(main='Layer et al. (2011) AER, Fig. 5 (p 281)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 6 (p 282)}
 The first four panels from this figure.
 \begin{center}
@@ -836,6 +876,7 @@ title(main='Layer et al. (2011) AER, Fig. 6 (p 282)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsection{\cite{WoodwardEtAl2005AER}}
 \subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 4. (p 108)}
 The top panel shows all trophic links. The bottom panel shows just links for 
@@ -862,6 +903,7 @@ title(main='Woodward et al. (2005) AER, Fig. 4 (p 108)', outer=TRUE)
 @
 \end{center}
 
+\newpage
 \subsection{\cite{CohenEtAl2009PNAS}}
 \label{sec:tri_trophic_examples}
 \subsubsection{\cite{CohenEtAl2009PNAS}, Table 1 (p 22338)}
