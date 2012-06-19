@@ -637,11 +637,11 @@ as described by \cite{StoufferEtAl2006PNAS}.
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 PlotPredationMatrix(TL84.increasing.M, 
-                    main=paste('Order by M - sum diet gaps', 
+                    main=paste('Ordered by M - sum diet gaps', 
                                SumDietGaps(TL84.increasing.M)))
 res <- MinimiseSumDietGaps(TL84)
 PlotPredationMatrix(res$reordered,
-                    main=paste('Reordered - sum diet gaps', 
+                    main=paste('Optimised - sum diet gaps', 
                                SumDietGaps(res$reordered)))
 @
 \end{center}
@@ -653,12 +653,12 @@ minimise the gaps in each species' consumers \citep{ZookEtAl2011JTheorBiol}.
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 PlotPredationMatrix(TL84.increasing.M, 
-                    main=paste('Order by M - sum consumer gaps', 
+                    main=paste('Ordered by M - sum consumer gaps', 
                                SumConsumerGaps(TL84.increasing.M)))
 res <- MinimiseSumConsumerGaps(TL84)
 PlotPredationMatrix(res$reordered, 
-                    main=paste('Reordered - sum diet gaps', 
-                               SumDietGaps(res$reordered)))
+                    main=paste('Optimised - sum consumer gaps', 
+                               SumConsumerGaps(res$reordered)))
 @
 \end{center}
 
