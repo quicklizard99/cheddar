@@ -227,7 +227,7 @@ prey-averaged and chain-averaged trophic level we can produce side-by-side
 plots with the same y-axis limits.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 PlotNPS(TL84, 'Log10M', 'PreyAveragedTrophicLevel', ylim=c(1, 6), 
@@ -246,7 +246,7 @@ WoodwardEtAl2005AER}). The convenience functions \code{PlotMvN},
 \code{PlotNPS} that create these plots.
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 PlotMvN(TL84)
@@ -502,7 +502,7 @@ properties being plotted, so the plots below lowlight the node(s) lacking
 $M$ and/or $N$.
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 np <- NPS(TL84)
@@ -577,7 +577,7 @@ $\log_{10}$-transformed body mass, $M$, numerical abundance, $N$, or biomass,
 $B$.
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 PlotPredationMatrix(TL84)
@@ -671,7 +671,7 @@ figures.
 
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 3 (p 30)}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 data(TL84, TL86)
@@ -687,7 +687,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 3 (p 30)', outer=TRUE)
 \newpage
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 4 (p 33)}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
@@ -703,7 +703,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 4 (p 33)', outer=TRUE)
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 5 (p 37)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 PlotNvM(TL84, xlim=c(-14, 0), ylim=c(-2,10), show.web=FALSE, main='')
@@ -737,7 +737,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 7 (p 47)', outer=TRUE)
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 8 (p 49)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 tl84.levels <- floor(TrophicHeight(TL84))
@@ -754,7 +754,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 8 (p 49)', outer=TRUE)
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 10 (p 57)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 PlotNvRankN(TL84, xlim=c(0,60), ylim=c(-2, 10), main='')
@@ -791,7 +791,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 11 (p 60)', outer=TRUE)
 In this example, we write a small function that plots one community against 
 another.
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 PlotCommunityVCommunity <- function(a, b, property, xlim=NULL, ylim=NULL, ...)
@@ -822,25 +822,12 @@ title(main='Jonsson et al. (2005) AER, Fig. 12 (p 61)', outer=TRUE)
 \end{center}
 
 \newpage
-\subsection{\cite{LayerEtAl2011AER}}
+\subsection{\cite{LayerEtAl2010AER}}
 
-\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 4 (p 280)}
+\subsubsection{\cite{LayerEtAl2010AER}, Fig.\ 5 (p 281)}
+\begin{center}
 \SweaveOpts{width=6,height=6}
 \setkeys{Gin}{width=0.5\textwidth}
-\begin{center}
-<<fig=TRUE>>=
-data(pHWebs)
-cps <- CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
-plot(cps$pH, cps$S, xlab='pH', ylab='S')
-m1 <- lm(cps$S ~ cps$pH)
-abline(m1)
-title(main='Layer et al. (2011) AER, Fig. 4 (p 280)', outer=TRUE)
-@
-\end{center}
-
-\newpage
-\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 5 (p 281)}
-\begin{center}
 <<fig=TRUE>>=
 plot(NA, NA, xlim=c(-15,10), ylim=c(-5,15), xlab=Log10MLabel(units='mg'), 
      ylab=Log10NLabel(units='m^-2'), type='n', main='')
@@ -848,12 +835,12 @@ plot(NA, NA, xlim=c(-15,10), ylim=c(-5,15), xlab=Log10MLabel(units='mg'),
 # A list of list of lm models
 models <- lapply(pHWebs, NvMLinearRegressions, class=NULL)
 sapply(models, PlotLinearModels, col=1)
-title(main='Layer et al. (2011) AER, Fig. 5 (p 281)', outer=TRUE)
+title(main='Layer et al. (2010) AER, Fig. 5 (p 281)', outer=TRUE)
 @
 \end{center}
 
 \newpage
-\subsubsection{\cite{LayerEtAl2011AER}, Fig.\ 6 (p 282)}
+\subsubsection{\cite{LayerEtAl2010AER}, Fig.\ 6 (p 282)}
 The first four panels from this figure.
 \begin{center}
 \SweaveOpts{width=6,height=6}
@@ -873,7 +860,7 @@ for(community in pHWebs[1:2])
          main='', xlab=~log[10]((M[C]/M[R])^0.75))
     rug(interaction.strength)
 }
-title(main='Layer et al. (2011) AER, Fig. 6 (p 282)', outer=TRUE)
+title(main='Layer et al. (2010) AER, Fig. 6 (p 282)', outer=TRUE)
 @
 \end{center}
 
@@ -884,11 +871,11 @@ The left panel shows all trophic links. The right panel shows just links for
 which the resource has a larger body mass than the consumer.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 data(BroadstoneStream)
 par(mfrow=c(1,2))
-PlotMvN(BroadstoneStream, show.nodes.as='labels', cex=1, label.cex=1, 
+PlotMvN(BroadstoneStream, show.nodes.as='labels', label.cex=0.8, 
         xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
         highlight.links=NULL)
 abline(a=0, b=-1)
@@ -896,7 +883,7 @@ abline(a=0, b=-1)
 tlps <- TLPS(BroadstoneStream, node.properties='M')
 lty <- rep(0, NumberOfTrophicLinks(BroadstoneStream))
 lty[tlps$resource.M > tlps$consumer.M] <- 1
-PlotMvN(BroadstoneStream, show.nodes.as='labels', cex=1, label.cex=1, 
+PlotMvN(BroadstoneStream, show.nodes.as='labels', label.cex=0.8, 
         xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
         highlight.links=NULL, link.lty=lty)
 abline(a=0, b=-1)
@@ -924,7 +911,7 @@ res <- lapply(list(TL84, TL86, YthanEstuary), function(community)
     lp <- tts[['links']]
     tncp <- tts[['three.node.chains']]
     tcp <- tts[['trophic.chains']]
-    
+
     community.span <- diff(range(Log10M(community))) +
                       diff(range(Log10N(community)))
                       
@@ -936,27 +923,33 @@ res <- lapply(list(TL84, TL86, YthanEstuary), function(community)
     }
 
     return (c(
-         'Mean link length'=mean(lp$length),
-         'Mean L upper'=UnsafeMean(tncp$Lupper),
-         'Mean L lower'=UnsafeMean(tncp$Llower),
-         '2 x mean link length'=2*mean(lp$length),
-         'Mean 2-span'=UnsafeMean(tncp$two.span),
-         'Mean L upper + L lower'=UnsafeMean(tncp$Lupper + tncp$Llower),
-         '2 x mean link length / mean 2-span'=2 * mean(lp$length) / UnsafeMean(tncp$two.span),
-         'Mean L upper + L lower/ mean 2-span'=UnsafeMean(tncp$Lupper + tncp$Llower) / UnsafeMean(tncp$two.span),
-         'Mean count chain length'=mean(tcp$count.chain.length),
-         'Mean count chain length x mean link length'=mean(tcp$count.chain.length)*mean(lp$length),
-         'Community span'=community.span,
-         'Mean count chain length x mean link length / community span'=mean(tcp$count.chain.length)*mean(lp$length)/community.span,
-         'Mean sum chain lengths'=mean(tcp$sum.chain.length),
-         'Mean chain span'=mean(tcp$chain.span),
-         'Mean chain span / community span'=mean(tcp$chain.span) / community.span,
-         'Mean sum chain lengths / mean chain span'=mean(tcp$sum.chain.length) / mean(tcp$chain.span),
-         'Mean sum chain lengths / community span'=mean(tcp$sum.chain.length) / community.span,
-         'L'=NumberOfTrophicLinks(community),
-         'S^2'=NumberOfNodes(community)^2,
-         'L/S^2'=DirectedConnectance(community),
-         'L/S'=LinkageDensity(community)))
+     'Mean link length'=mean(lp$length),
+     'Mean L upper'=UnsafeMean(tncp$Lupper),
+     'Mean L lower'=UnsafeMean(tncp$Llower),
+     '2 x mean link length'=2*mean(lp$length),
+     'Mean 2-span'=UnsafeMean(tncp$two.span),
+     'Mean L upper + L lower'=UnsafeMean(tncp$Lupper + tncp$Llower),
+     '2 x mean link length / mean 2-span'=
+            2 * mean(lp$length) / UnsafeMean(tncp$two.span),
+     'Mean L upper + L lower/ mean 2-span'=
+            UnsafeMean(tncp$Lupper + tncp$Llower) / UnsafeMean(tncp$two.span),
+     'Mean count chain length'=mean(tcp$count.chain.length),
+     'Mean count chain length x mean link length'=
+            mean(tcp$count.chain.length)*mean(lp$length),
+     'Community span'=community.span,
+     'Mean count chain length x mean link length / community span'=
+            mean(tcp$count.chain.length) * mean(lp$length)/community.span,
+     'Mean sum chain lengths'=mean(tcp$sum.chain.length),
+     'Mean chain span'=mean(tcp$chain.span),
+     'Mean chain span / community span'=mean(tcp$chain.span) / community.span,
+     'Mean sum chain lengths / mean chain span'=
+            mean(tcp$sum.chain.length) / mean(tcp$chain.span),
+     'Mean sum chain lengths / community span'=
+            mean(tcp$sum.chain.length) / community.span,
+     'L'=NumberOfTrophicLinks(community),
+     'S^2'=NumberOfNodes(community)^2,
+     'L/S^2'=DirectedConnectance(community),
+     'L/S'=LinkageDensity(community)))
 })
 res <- do.call('cbind', res)
 

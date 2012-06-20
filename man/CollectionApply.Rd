@@ -10,7 +10,7 @@
 \arguments{
   \item{collection}{an object of class \code{CommunityCollection}.}
   \item{f}{a function to be applied to each \code{Community}.}
-  \item{\dots}{values passed to \code{AggregateCommunities}.}
+  \item{\dots}{optional arguments passed to \code{f}.}
 }
 
 \value{A new object of class \code{CommunityCollection}.}
@@ -18,12 +18,26 @@
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{CommunityCollection}}, \code{\link{lapply}}}
+
 \examples{
 data(pHWebs)
-CollectionCPS(pHWebs, 'FractionIsolatedNodes')
 
+# Remove isolated nodes from each community
+CollectionCPS(pHWebs, 'FractionIsolatedNodes')
 pHWebs.no.iso <- CollectionApply(pHWebs, RemoveIsolatedNodes)
 CollectionCPS(pHWebs.no.iso, 'FractionIsolatedNodes')
+
+
+# Remove cannibalistic links from each community
+sapply(pHWebs, function(community) length(Cannibals(community)))
+pHWebs.no.can <- CollectionApply(pHWebs, RemoveCannibalisticLinks)
+sapply(pHWebs.no.can, function(community) length(Cannibals(community)))
+
+
+# Order the nodes each community by body mass
+head(CollectionNPS(pHWebs))
+pHWebs.by.M <- CollectionApply(pHWebs, OrderCommunity, 'M')
+head(CollectionNPS(pHWebs.by.M))
 }
 \keyword{utilities}
 

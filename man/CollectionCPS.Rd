@@ -11,7 +11,12 @@ of communities in a \code{CommunityCollection}.}
 }
 
 \details{This function is named CollectionCPS for Collection Community 
-PropertieS. If \code{properties} is \code{NULL}, all first-class properties 
+PropertieS. 
+
+The properties argument is a vector whose entries are either names of 
+first-class properties or names of functions which take as single required 
+argument a \code{\link{CommunityCollection}} and return a single value. 
+If \code{properties} is \code{NULL}, all first-class properties 
 are included in the returned \code{data.frame}.
 }
 \value{A \code{data.frame}.}

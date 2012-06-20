@@ -1,4 +1,4 @@
-\name{AggregateHelpers}
+\name{Aggregate helpers}
 \alias{AggregateHelpers}
 \alias{MaxNaRm}
 \alias{MeanNaRm}
@@ -35,7 +35,7 @@ values removed.
 \code{JoinUnique} pastes together unique values in \code{x}, separated by a 
 comma. \code{ExpectSingleUnique} throws an errror if there is more than one 
 unique value in \code{x}. \code{ExpectSingleUniqueEmptyRm} is the same as 
-code{ExpectSingleUnique} but empty values are ignored.
+\code{ExpectSingleUnique} but empty values are ignored.
 }
 
 \value{Either a single number or character string.}

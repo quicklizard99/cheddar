@@ -71,6 +71,7 @@ Cheddar contains some published empirical food web collection datasets
 
 \section{Community collection representation}
 \subsection{Basic operations}
+\label{sec:basic_operations}
 Cheddar's \code{CommunityCollection} is a sub-class of \R's \code{list}.
 <<>>=
 data(pHWebs)
@@ -104,6 +105,17 @@ executed.
 length(pHWebs) <- 2 # You can't do this
 pHWebs[1] <- "This will not work"
 @
+\code{CommunityCollection} guarantees that the title of each \code{Community} 
+will be unique within a collection. The following will therefore always be 
+\code{TRUE}.
+<<>>=
+all(FALSE==duplicated(names(pHWebs)))
+@
+If the \code{Community} objects within a collection have body mass, 
+\code{CommunityCollection} also guarantees that they will have the same 
+units, as given in the community property `M.units'. Similarly, all communities 
+in a collection will have the same `N.units', if they contain numerical 
+abundance data.
 
 \subsection{Subsets}
 You can use list operators to take subsets of collections or to reorder them.
@@ -125,10 +137,22 @@ The \code{CollectionCPS} (for \textbf{Collection} \textbf{C}ommunity
 CollectionCPS(pHWebs)
 @
 The table above shows all `first-class' properties in all of the contained 
-communities. \code{CollectionCPS} takes a `properties' parameter that defines 
-which properties will be returned. Just as with \code{CPS}, properties can be 
-both `first-class` and computed. \code{CollectionCPS} is an powerful function 
-that allows you to build up a \code{data.frame} of predictors and responses. 
+communities. 
+\code{CommunityCollection} places no restrictions on first-class properties 
+such as pH - it is possible for a \code{Community} within a collection to not 
+have the pH property, to have a pH of \code{NA} or even to have an invalid pH, 
+for example a negative value. 
+
+\code{CollectionCPS} takes a `properties' parameter that defines 
+which properties will be returned. 
+The properties argument is a vector whose entries are either names of 
+first-class properties or names of functions which take as single required 
+argument a \code{CommunityCollection} and return a single value. 
+If \code{properties} is \code{NULL}, all first-class properties 
+are included in the returned \code{data.frame}.
+Just as with \code{CPS}, properties can be both `first-class` and computed. 
+\code{CollectionCPS} is a powerful function that allows you to build up a 
+\code{data.frame} of predictors and responses. 
 For example, the code fragment below allows us to see how diversity varies with 
 pH.
 <<>>=
@@ -141,8 +165,29 @@ data.
 model <- lm(NumberOfNodes ~ pH, data=res)
 model
 @
+\noindent Let's examine the model's fit to the data.
+<<>>=
+summary(model)
+@
+pH has a significant effect on number of nodes.
 
-The example below contains four computed properties.
+\newpage
+\noindent Let's plot the data and the model regression line.
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.5\textwidth}
+\begin{center}
+<<fig=TRUE>>=
+with(res, plot(pH, NumberOfNodes))
+abline(model)
+@
+\end{center}
+The above figure is similar to \citep{LayerEtAl2010AER}, Fig.\ 4A (p 281). 
+Cheddar's \code{pHWebs} dataset contains ten of the twenty food webs analysed 
+by \cite{LayerEtAl2010AER} so the plot is not an exact recreation of the 
+published figure.
+
+The example below uses \code{CollectionCPS} to assemble a table of four 
+computed properties.
 <<>>=
 CollectionCPS(pHWebs, c('pH',
                         'NumberOfNodes',
@@ -158,7 +203,6 @@ CollectionCPS(pHWebs, c('pH',
                         C='DirectedConnectance',
                         Slope='NvMSlope'))
 @
-
 The functions in the above examples each return a single value. Functions 
 are permitted to return more than one value, such as \code{SumBiomassByClass}, 
 which returns the total biomass in each class, which defaults to `category'.
@@ -180,7 +224,6 @@ CollectionCPS(pHWebs, c('pH',
                         Slope='NvMSlope',
                         B='SumBiomassByClass'))
 @
-
 The example below shows a table of `node connectivity' for each community.
 <<>>=
 CollectionCPS(pHWebs, c(Basal='FractionBasalNodes', 
@@ -188,6 +231,24 @@ CollectionCPS(pHWebs, c(Basal='FractionBasalNodes',
                         TopLevel='FractionTopLevelNodes', 
                         Isolated='FractionIsolatedNodes'))
 @
+The plot below shows the relationship between the number of links and 
+diversity of the \code{pHWebs} communities.
+\begin{center}
+\SweaveOpts{width=8,height=3}
+\setkeys{Gin}{width=\textwidth}
+<<fig=TRUE>>=
+properties <- CollectionCPS(pHWebs, c(S='NumberOfNodes', 
+                                      L='NumberOfTrophicLinks', 
+                                      'LinkageDensity', 
+                                      C='DirectedConnectance'))
+par(mfrow=c(1,3))
+with(properties, plot(S, L))
+with(properties, plot(S, LinkageDensity))
+with(properties, plot(S, C))
+@
+\end{center}
+These plots are similar to those in \cite{RiedeEtAl2010AER}, Fig.\ 1 (p 143) 
+and \cite{BrownEtAl2011JAnimEcol}, Fig.\ 7 (p 891) but using different data.
 
 \subsection{Node properties}
 \code{CollectionNPS} returns a \code{data.frame} with a row for every node 
@@ -205,28 +266,29 @@ head(CollectionNPS(pHWebs, 'M'))
 head(CollectionNPS(pHWebs, c('M','N','Biomass','Degree','IsBasalNode')))
 
 # Named properties
-head(CollectionNPS(pHWebs, c('M','N',B='Biomass', 'Degree', 
-                             Basal='IsBasalNode')))
+head(CollectionNPS(pHWebs, c('M','N',B='Biomass', 'Degree', Basal='IsBasalNode')))
 @
 
 \subsection{Trophic link properties}
 \code{CollectionTLPS} returns a \code{data.frame} containing a row for 
-every trophic link in every community.
+every trophic link in every community:
 <<>>=
-# All properties
 head(CollectionTLPS(pHWebs))
-
-# Community names and resource and consumer M
+@
+Community names and resource and consumer M:
+<<>>=
 head(CollectionTLPS(pHWebs, 'M'))
-
-# Several properties
+@
+Several properties:
+<<>>=
 head(CollectionTLPS(pHWebs, c('M','N','Biomass','Degree','IsBasalNode')))
-
-# Property names
-head(CollectionTLPS(pHWebs, c('M','N', B='Biomass', D='Degree', 
-                              Basal='IsBasalNode')))
+@
+Several properties with shorter column names:
+<<>>=
+head(CollectionTLPS(pHWebs, c('M','N', B='Biomass', D='Degree', Basal='IsBasalNode')))
 @
 
+\newpage
 \section{Plotting}
 \subsection{Plot-per-community}
 You can use R's \code{plot} function to `eyeball' webs in a collection.
@@ -238,131 +300,108 @@ You can use R's \code{plot} function to `eyeball' webs in a collection.
 plot(pHWebs)
 @
 \end{center}
-
 You can use R's plot parameters `xlim' and `ylim' to set limits for the x and 
 y axes.
-
 \begin{center}
 <<fig=TRUE>>=
 plot(pHWebs, xlim=c(-14,6), ylim=c(-3,13))
 @
 \end{center}
-
 Cheddar examines the properties of the communities in the collection in order 
-to decide which which \code{Community}-level plot function to use. You can 
-change this behaviour using the `plot.fn' parameter. 
+to decide which \code{Community}-level plot function to use. You can change 
+this behaviour using the `plot.fn' parameter. 
 The \code{PlotWebByLevel} allows the webs to be viewed by trophic level.
-
 \begin{center}
 <<fig=TRUE>>=
 plot(pHWebs, plot.fn=PlotWebByLevel)
 @
 \end{center}
-
 As in the previous example, the y axis limits can be made consistent.
 \begin{center}
 <<fig=TRUE>>=
 plot(pHWebs, plot.fn=PlotWebByLevel, ylim=c(1, 4.5))
 @
 \end{center}
-
 We can use the general-purpose function \code{PlotNPS} to plot any node 
-properties that we like. All of the power of \code{PlotNPS} is available. 
-The example below plots trophic level as a function 
-of $\log_{10}$-transformed body mass. Each plot has the same axis limits. We 
-have turned off plotting of the food web and highlighting of cannibals.
-
+properties that we like and all of the power of \code{PlotNPS} is available. 
+The example below plots trophic level as a function of 
+$\log_{10}$-transformed body mass. Each plot has the same axis limits. 
+We have turned off plotting of the food web and highlighting of cannibals.
 \begin{center}
 <<fig=TRUE>>=
 plot(pHWebs, plot.fn=PlotNPS, X='Log10M', Y='PreyAveragedTrophicLevel', 
      show.web=FALSE, highlight.nodes=NULL, xlim=c(-14,6), ylim=c(1,4.2))
 @
 \end{center}
-
 We can also use \code{PlotTLPS}, as shown below.
-
 \begin{center}
 <<fig=TRUE>>=
-plot(pHWebs, plot.fn=PlotTLPS, X='resource.Log10M', 
-     Y='resource.PreyAveragedTrophicLevel', xlim=c(-14,6), ylim=c(1,4.2))
+plot(pHWebs, plot.fn=PlotTLPS, X='consumer.Log10M', 
+     Y='resource.Log10M', xlim=c(-2.5, 5.5), ylim=c(-13.8, 5.5))
 @
 \end{center}
 
-\subsection{Plot-per-collection}
-\subsubsection{Distribution of body masses}
-Distributions of body masses across habitat types \citep{DigelEtAl2011Oikos}. 
-\code{CollectionNPS} makes it trivial to assemble the $\log_{10}$-transformed 
-body masses of every node in a collection, which can then be plotted using \R's 
-\code{hist} function.
-
-\begin{center}
-<<fig=TRUE>>=
-all.log10M <- CollectionNPS(pHWebs, 'Log10M')
-hist(all.log10M$Log10M)
-@
-\end{center}
+%\subsection{Plot-per-collection}
+%\subsubsection{Distribution of body masses}
+%Distributions of body masses \citep{DigelEtAl2011Oikos}. 
+%\code{CollectionNPS} makes it trivial to assemble the $\log_{10}$-transformed 
+%body masses of every node in a collection, which can then be plotted using \R's 
+%\code{hist} function.
+%\begin{center}
+%<<fig=TRUE>>=
+%all.log10M <- CollectionNPS(pHWebs, 'Log10M')
+%hist(all.log10M$Log10M, xlab=Log10MLabel(pHWebs[[1]]))
+%@
+%\end{center}
 
 %connectance v pH - check Kat's paper
 %log10(N links) vs log10(S) (Brown et al 2011 J Anim Ecol)
 
-\subsubsection{Connectedness}
-A plot similar to \cite{RiedeEtAl2010AER}, Fig.\ 1 (p 143) and 
-\cite{BrownEtAl2011JAnimEcol}, Fig.\ 7 (p 891) but using different 
-data.
+%\subsubsection{Number of links vs rank number of links}
+%\begin{center}
+%\SweaveOpts{width=6,height=6}
+%\setkeys{Gin}{width=0.5\textwidth}
+%<<fig=TRUE>>=
+%n.links <- sapply(pHWebs, NumberOfTrophicLinks)
+%n.links <- n.links[order(n.links, decreasing=TRUE)]
+%plot(1:length(n.links), n.links, xlab='Rank number of links', 
+%     ylab='Number of links')
+%@
+%\end{center}
 
-\begin{center}
-\SweaveOpts{width=8,height=3}
-\setkeys{Gin}{width=\textwidth}
-<<fig=TRUE>>=
-properties <- CollectionCPS(pHWebs, c(S='NumberOfNodes', 
-                                      L='NumberOfTrophicLinks', 
-                                      'LinkageDensity', 
-                                      C='DirectedConnectance'))
-par(mfrow=c(1,3))
-with(properties, plot(S, L))
-with(properties, plot(S, LinkageDensity))
-with(properties, plot(S, C))
-@
-\end{center}
-
-\citep{LayerEtAl2010AER}, Fig.\ 4 (p 280). Cheddar's \code{pHWebs} dataset 
-contains ten of the twenty food webs analysed by \cite{LayerEtAl2010AER} so 
-the plot below is not an exact recreation of the published figure. 
-
-\begin{center}
-\SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.5\textwidth}
-<<fig=TRUE>>=
-properties <- CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
-with(properties, plot(pH, S))
-@
-\end{center}
-
-\subsubsection{Number of links vs rank number of links}
-
-\begin{center}
-\SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.5\textwidth}
-<<fig=TRUE>>=
-n.links <- sapply(pHWebs, NumberOfTrophicLinks)
-n.links <- n.links[order(n.links, decreasing=TRUE)]
-plot(1:length(n.links), n.links)
-@
-\end{center}
-
+\newpage
 \section{Modifying communities}
-For some analyses it can be desirable to remove isolated nodes.
+As mentioned previously, collections cannot be modified directly because 
+many checks for data consistency are run when collections are constructed 
+(Section \ref{sec:basic_operations}). However, the function 
+\code{CollectionApply} is provided to assist with modifying collections.
+For example, with certain analyses it can be desirable to remove isolated nodes.
 <<>>=
 CollectionCPS(pHWebs, 'FractionIsolatedNodes')
-
 pHWebs.no.iso <- CollectionApply(pHWebs, RemoveIsolatedNodes)
 CollectionCPS(pHWebs.no.iso, 'FractionIsolatedNodes')
 @
+The \code{CollectionApply} function can be used with any function that 
+modifies communities, such as \code{RemoveCannibalisticLinks}.
+<<>>=
+sapply(pHWebs, function(community) length(Cannibals(community)))
+pHWebs.no.can <- CollectionApply(pHWebs, RemoveCannibalisticLinks)
+sapply(pHWebs.no.can, function(community) length(Cannibals(community)))
+@
+The function to be applied to each community can also take additional 
+parameters. The following example reorders the nodes each community by body 
+mass.
+<<>>=
+head(CollectionNPS(pHWebs))
+pHWebs.by.M <- CollectionApply(pHWebs, OrderCommunity, 'M')
+head(CollectionNPS(pHWebs.by.M))
+@
 
+\newpage
 \section{Ordering collections}
 \label{sec:ordering_collections}
-\code{OrderCollection} allows to order collections by whatever properties 
-you please. To order the webs by decreasing pH.
+\code{OrderCollection} allows you to order collections by whatever properties 
+you please. To order the webs by decreasing pH:
 <<>>=
 pHWebs.decreasing.pH <- OrderCollection(pHWebs, 'pH', decreasing=TRUE)
 CollectionCPS(pHWebs.decreasing.pH)
@@ -378,6 +417,7 @@ pHWebs.lat.and.pH <- OrderCollection(pHWebs, 'lat', 'pH')
 CollectionCPS(pHWebs.lat.and.pH, c('lat', 'pH'))
 @
 
+\newpage
 \section{Aggregating communities}
 \code{AggregateCommunities} aggregates the communities within a collection 
 into a new single community object.
@@ -388,7 +428,6 @@ a <- AggregateCommunities(pHWebs)
 length(unique(CollectionNPS(pHWebs)$node))
 NumberOfNodes(a)
 @
-
 The way that node, trophic-link and whole-community values are aggregated 
 is controlled using two parameters.
 \begin{verbatim}
@@ -398,13 +437,14 @@ class.behaviour=list(integer=MeanNaRm,
                      logical=JoinUnique)
 column.behaviour=NULL
 \end{verbatim}
-`class.behaviour' describes the behaviour for each R type. `column.behaviour' 
-allows for deviations from `class.behaviour' for specific columns. 
+The parameter `class.behaviour' describes the behaviour for each R type. 
+The parameter `column.behaviour' allows for deviations from `class.behaviour' 
+for specific columns. 
 The functions \code{MeanNaRm} and \code{JoinUnique} are provided by 
 Cheddar. 
-The default behaviour for numeric columns is therefore to computed a mean. This 
-behaviour can be changed per-column, for example we can could have computed 
-the median body mass.
+The default behaviour for numeric columns is therefore to compute a mean. 
+This behaviour can be changed per-column, for example we can could have 
+computed the median body mass.
 <<>>=
 b <- AggregateCommunities(pHWebs, column.behaviour=list(M=median))
 @
@@ -418,7 +458,6 @@ respectively.
 <<>>=
 CollectionCPS(pHWebs[c('Duddon Pike Beck', 'Mosedal Beck')])
 @
-
 Aggregating by the `lat' property therefore results in a new collection of nine 
 communities.
 <<>>=
@@ -427,6 +466,7 @@ CollectionCPS(AggregateCommunitiesBy(pHWebs, 'lat'))
 The aggregation of Duddon Pike Beck and Mosedal Beck has a pH of 6: the mean 
 of the two pH values of the two communities.
 
+\newpage
 \section{`Global' node IDs}
 This section describes how to assign a unique ID number to every species in 
 a \code{CommunityCollection}. This is a common requirement for studies 
@@ -464,13 +504,12 @@ data.frame(ID=1:NumberOfNodes(all.TL),
            row.names=NULL)
 @
 This code fragment could be easily extended to include any node property that 
-\code{NPS} can properties such as body mass, $M$, numerical abundance, $N$', 
-and trophic level. 
+\code{NPS} can compute.
 
+\newpage
 \subsection{Plot IDs}
 The following code fragment show how to produce a plot of the two communities 
 side by side, showing global IDs.
-
 \SweaveOpts{width=8,height=4}
 \setkeys{Gin}{width=\textwidth}
 \begin{center}
@@ -484,10 +523,9 @@ for(community in TL)
 }
 @
 \end{center}
-
 By default \code{PlotNvM} highlights species that are cannibals, which are 
-shown in a darker colour. See the \code{PlotNPS} function and the `Plots' 
-vignette for more information.
+shown in a darker colour. See help for the \code{PlotNPS} function and the 
+`PlotsAndStats' vignette for more information.
 
 \bibliographystyle{plainnat}
 \bibliography{cheddar} 

@@ -37,8 +37,17 @@
 \code{Community} objects. \code{CommunityCollection} is a subclass of 
 \code{list}. \code{CommunityCollection} objects can not be modified directly.
 
-An error is raised if the \code{Community} objects in \code{communities} do not 
-all have the same value of the community properties `M.units' and `N.units'.
+An error is raised if any \code{Community} objects in \code{communities} share 
+the same `title' community property.
+An error is also raised if the \code{Community} objects in \code{communities} 
+do not all have the same value of the community properties `M.units' and 
+`N.units'.
+\code{CommunityCollection} places no restrictions on other properties. 
+For example, all of the ten communities with the \code{\link{pHWebs}} 
+collection has a valid pH property but this is not enforced by 
+\code{CommunityCollection} - it would be possible for a \code{Community} 
+within a collection to not have a pH property, to have a pH of \code{NA} or 
+even to have an invalid pH, for example a negative value. 
 
 \code{Community} supports standard generic functions \code{plot}, \code{print}, 
 \code{subset} and \code{summary}.
@@ -54,12 +63,14 @@ all have the same value of the community properties `M.units' and `N.units'.
          \code{\link{OrderCollection}}, 
          \code{\link{subset.CommunityCollection}}, 
          \code{\link{AggregateCommunitiesBy}},
-         \code{\link{AggregateCommunities}}}
+         \code{\link{AggregateCommunities}}, 
+         \code{\link{pHWebs}}}
 
 \examples{
 # 10 stream webs sampled over a wide pH gradient
 data(pHWebs)
 pHWebs
+
 
 # Eyeball the webs
 plot(pHWebs)
@@ -69,6 +80,7 @@ plot(pHWebs, xlim=c(-14,6), ylim=c(-3,13))
 
 # Different plot function
 plot(pHWebs, plot.fn=PlotWebByLevel, ylim=c(1,4.5))
+
 
 # list-like operations
 length(pHWebs)
@@ -81,6 +93,7 @@ pHWebs[seq(1, 10, by=2)]
 # A new CommunityCollection containing two webs
 pHWebs[c('Old Lodge','Bere Stream')]
 
+
 # CollectionCPS gets community properties
 CollectionCPS(pHWebs)   # Webs are sorted by increasing pH
 
@@ -92,10 +105,15 @@ CollectionCPS(pHWebs.decreasing.pH)
 pHWebs.name <- OrderCollection(pHWebs, 'title')
 CollectionCPS(pHWebs.name, c('pH', 'NumberOfNodes'))
 
+# The following will always be TRUE.
+all(FALSE==duplicated(names(pHWebs)))
+
+
 # A new collection of the two Tuesday Lake communities
 data(TL84, TL86)
 BothTL <- CommunityCollection(list(TL84, TL86))
 CollectionCPS(BothTL)
+
 
 # You can't modify CommunityCollections
 \dontrun{pHWebs[1] <- 'silly'}

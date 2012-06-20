@@ -561,6 +561,7 @@ tail(TrophicLevels(TL84), 10)
 See the help page for \code{TrophicLevels} for more information on these 
 different measures.
 
+\newpage
 \section{Community manipulations}
 \subsection{Node order}
 The ordering of nodes within a community can be important both for presentation 
@@ -613,7 +614,7 @@ The \code{PlotPredationMatrix} function allows us to graphically compare the
 effect of these different orderings.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 PlotPredationMatrix(TL84.increasing.M)
@@ -633,7 +634,7 @@ learning (a stochastic optimisation method) to minimise \code{SumDietGaps},
 as described by \cite{StoufferEtAl2006PNAS}.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 PlotPredationMatrix(TL84.increasing.M, 
@@ -645,11 +646,13 @@ PlotPredationMatrix(res$reordered,
                                SumDietGaps(res$reordered)))
 @
 \end{center}
-\code{MinimiseSumConsumerGaps} uses the same method to 
+
+\newpage
+\noindent \code{MinimiseSumConsumerGaps} uses the same method to 
 minimise the gaps in each species' consumers \citep{ZookEtAl2011JTheorBiol}.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 PlotPredationMatrix(TL84.increasing.M, 
@@ -728,11 +731,12 @@ TL84.lumped <- LumpTrophicSpecies(TL84)
 length(unique(TrophicSpecies(TL84)))    # 22 trophic species in TL84...
 NumberOfNodes(TL84.lumped)              # ... and 22 nodes in the lumped web
 @
-The plot below shows the lumped and unlumped webs.
 
+\newpage
+\noindent The plot below shows the lumped and unlumped webs.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
 plot(TL84)
@@ -769,15 +773,13 @@ Or the maximum body mass.
 <<>>=
 TL84.lumped <- LumpNodes(TL84, lump, column.behaviour=list(M=max))
 @
-
 This trivial example shows that no nodes are lumped if values in lump are 
 unique to each node.
 <<>>=
 lump <- NP(TL84, 'node')
 identical(TL84, LumpNodes(TL84, lump, title=CP(TL84, 'title')))
 @
-
-Ythan Estuary dataset contains two species that are split by life stage: 
+The Ythan Estuary dataset contains two species that are split by life stage: 
 \textit{Platichthys flesus} (european flounder) and 
 \textit{Somateria mollissima} (common eider). The code fragment below shows how 
 to lump these into a single node for each species. 
@@ -801,11 +803,12 @@ YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
 NumberOfNodes(YthanEstuary)         # 92
 NumberOfNodes(YthanEstuary.lumped)  # 90
 @
-Graphically compare the two communities.
 
+\newpage
+\noindent Graphically compare the two communities.
 \begin{center}
 \SweaveOpts{width=8,height=4}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 # Plot the original and lumped communities
 par(mfrow=c(1,2))
