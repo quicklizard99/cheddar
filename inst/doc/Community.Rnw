@@ -193,9 +193,9 @@ head(NPS(TL84))
 @
 `node' in the only node property that a community is guaranteed to contain. 
 Many of Cheddar's plotting an analysis functions make use of the `category' 
-node property; this property is optional but, if given, it should contain one 
-of `producer', `invertebrate', `vert.ecto', `vert.endo' or should be empty. 
-We can get a subset of node properties.
+node property; this property is optional but, if included in a community, it 
+should contain one of `producer', `invertebrate', `vert.ecto', `vert.endo' or 
+should be empty. 
 <<>>=
 # Just body mass
 head(NPS(TL84, 'M'))

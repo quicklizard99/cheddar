@@ -120,6 +120,10 @@ PlotNPS(TL84, 'Log10M', 'Log10N')
 \code{PlotNPS} uses the `category' node property, if present, to 
 decide plotting colours and symbols. Producers are shown by green circles, 
 invertebrates by blue squares and vertebrate ectotherms by purple diamonds. 
+Many of Cheddar's plotting an analysis functions make use of the `category' 
+node property; this property is optional but, if included in a community, it 
+should contain one of `producer', `invertebrate', `vert.ecto', `vert.endo' or 
+should be empty. 
 This is explored more in Section \ref{sec:nps_colours and symbols}. 
 
 \newpage
@@ -374,6 +378,8 @@ colours.
 PlotNvM(TL84, colour.by='resolved.to', pch=19, highlight.nodes=NULL)
 @
 \end{center}
+The node shown in red is described as `Unclassified flagellates' in the 
+\code{TL84} dataset.
 
 \newpage
 \noindent We can improve on this by showing each level of taxonomic resolution 
@@ -392,10 +398,10 @@ legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 classification with a different colour and symbol.
 \begin{center}
 <<fig=TRUE>>=
-symbol.spec = c(5, Bacteria=19, Plantae=1, Chromista=2, Protozoa=3, 
-                Animalia=4)
-colour.spec = c('black', Bacteria='pink2', Plantae='green2', 
-                Chromista='blue3', Protozoa='yellow2', Animalia='red3')
+symbol.spec = c(Bacteria=19, Plantae=1, Chromista=2, Protozoa=3, 
+                Animalia=4, 5)
+colour.spec = c(Bacteria='pink2', Plantae='green2', Chromista='blue3', 
+                Protozoa='grey20', Animalia='red3', 'black')
 PlotNvM(TL84, 
         symbol.by='kingdom', symbol.spec=symbol.spec, 
         colour.by='kingdom', colour.spec=colour.spec, 
@@ -403,6 +409,9 @@ PlotNvM(TL84,
 legend("topright", legend=names(colour.spec), pch=symbol.spec, col=colour.spec)
 @
 \end{center}
+The black diamond is for the `Unclassified flagellates' node. This node 
+does not have any associated classification and is matched by the unnamed 
+values in \code{symbol.spec} and \code{colour.spec}.
 
 \newpage
 \noindent You can use \code{pch=NA} to turn off symbols and just show the food 
