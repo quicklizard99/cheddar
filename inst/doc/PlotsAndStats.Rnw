@@ -568,16 +568,18 @@ if present, to decide plotting colours and symbols. Resources that
 are producers are shown by green circles, invertebrates by blue squares and 
 vertebrate ectotherms by purple diamonds. This is explored more in 
 Section \ref{sec:nps_colours and symbols}. 
-The convenience functions \code{PlotPredationMatrix}, \code{PlotMRvMC}, 
-\code{PlotMCvMR}, \code{PlotNRvNC}, \code{PlotNCvNR}, \code{PlotBRvBC}, 
-\code{PlotBCvBR} are `wrappers' around \code{PlotTLPS} that plot a 
-predation matrix (a binary matrix with species shown in node order, starting 
-at the top-left, points on the dashed line are cannibals) or 
+
+\newpage
+\noindent The convenience functions \code{PlotPredationMatrix}, 
+\code{PlotMRvMC}, \code{PlotMCvMR}, \code{PlotNRvNC}, \code{PlotNCvNR}, 
+\code{PlotBRvBC}, \code{PlotBCvBR} are `wrappers' around \code{PlotTLPS} that 
+plot a predation matrix (a binary matrix with species shown in node 
+order, starting at the top-left, points on the dashed line are cannibals) or 
 $\log_{10}$-transformed body mass, $M$, numerical abundance, $N$, or biomass, 
 $B$.
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=\textwidth}
+\setkeys{Gin}{width=0.7\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 PlotPredationMatrix(TL84)
@@ -823,29 +825,15 @@ title(main='Jonsson et al. (2005) AER, Fig. 12 (p 61)', outer=TRUE)
 
 \newpage
 \subsection{\cite{LayerEtAl2010AER}}
-
-\subsubsection{\cite{LayerEtAl2010AER}, Fig.\ 5 (p 281)}
-\begin{center}
-\SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.5\textwidth}
-<<fig=TRUE>>=
-plot(NA, NA, xlim=c(-15,10), ylim=c(-5,15), xlab=Log10MLabel(units='mg'), 
-     ylab=Log10NLabel(units='m^-2'), type='n', main='')
-
-# A list of list of lm models
-models <- lapply(pHWebs, NvMLinearRegressions, class=NULL)
-sapply(models, PlotLinearModels, col=1)
-title(main='Layer et al. (2010) AER, Fig. 5 (p 281)', outer=TRUE)
-@
-\end{center}
-
-\newpage
 \subsubsection{\cite{LayerEtAl2010AER}, Fig.\ 6 (p 282)}
-The first four panels from this figure.
+Four of the panels from the published figure. This example uses the `pHWebs' 
+community collection dataset; see the `Collections' vignette for more 
+information about community collections.
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=0.8\textwidth}
+\setkeys{Gin}{width=0.7\textwidth}
 <<fig=TRUE>>=
+data(pHWebs)
 par(mfrow=c(2,2))
 for(community in pHWebs[1:2])
 {

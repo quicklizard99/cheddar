@@ -16,8 +16,8 @@ PredationMatrixToLinks(pm)
 \code{pm}. A 1 indicates a trophic link between a resource (row) and consumer 
 (column). \code{pm} should have both row names and column names; row names must 
 equal column names. The returned \code{data.frame} contains the columns 
-`resource' and `consumer'. This function can be useful when importing data into 
-Cheddar.
+`resource' and `consumer'. This function can be useful when importing data in 
+to Cheddar.
 }
 
 \value{A \code{data.frame}}

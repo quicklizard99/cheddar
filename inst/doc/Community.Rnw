@@ -191,6 +191,10 @@ the full table of 56 rows, the examples below use \R's \code{head} and
 <<>>=
 head(NPS(TL84))
 @
+`node' in the only node property that a community is guaranteed to contain. 
+Many of Cheddar's plotting an analysis functions make use of the `category' 
+node property; this property is optional but, if given, it should contain one 
+of `producer', `invertebrate', `vert.ecto', `vert.endo' or should be empty. 
 We can get a subset of node properties.
 <<>>=
 # Just body mass
@@ -216,14 +220,14 @@ tail(NPS(TL84, c('Log10M', 'Log10N', 'category', 'phylum')))
 @
 The \code{Log10MNBiomass} function returns a \code{matrix} of 
 $\log_{10}$-transformed body mass, $M$, numerical abundance, $N$, and 
-biomass, $B$, and is a convenient way to get all three of these properties into 
-a table.
+biomass, $B$, and is a convenient way to get all three of these properties in 
+to a table.
 <<>>=
 tail(NPS(TL84, c('Log10MNBiomass')))
 @
 
 We can use \code{NPS} to assemble a table showing node degree: the number of 
-trophic links into and out of that node. Cheddar contains three functions that 
+trophic links in to and out of that node. Cheddar contains three functions that 
 compute a different aspect of node degree.
 <<>>=
 nps <- NPS(TL84, c('InDegree','OutDegree','Degree'))
@@ -427,7 +431,7 @@ pm <- PredationMatrix(Benguela, weight='diet.fraction')
 
 \subsubsection{Node connectivity}
 \label{sec:node_connectivity}
-A node in a community can be defined as falling into one of four categories 
+A node in a community can be defined as falling in to one of four categories 
 (Table \ref{tab:node_connectivity}).
 \begin{table}[h!]
   \begin{center}
@@ -782,7 +786,7 @@ identical(TL84, LumpNodes(TL84, lump, title=CP(TL84, 'title')))
 The Ythan Estuary dataset contains two species that are split by life stage: 
 \textit{Platichthys flesus} (european flounder) and 
 \textit{Somateria mollissima} (common eider). The code fragment below shows how 
-to lump these into a single node for each species. 
+to lump these in to a single node for each species. 
 <<>>=
 data(YthanEstuary)
 
@@ -791,12 +795,12 @@ lump <- NP(YthanEstuary, 'node')
 
 # European flounder:
 # "Platichthys flesus" and "Platichthys flesus (juvenile)"
-# Lump these into one node
+# Lump these in to one node
 lump["Platichthys flesus (juvenile)"==lump] <- "Platichthys flesus"
 
 # Common eider:
 # "Somateria mollissima" and "Somateria mollissima (juvenile)"
-# Lump these into one node
+# Lump these in to one node
 lump["Somateria mollissima (juvenile)"==lump] <- "Somateria mollissima"
 YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
 

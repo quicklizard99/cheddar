@@ -4,7 +4,7 @@
 \title{Loading and saving Community objects}
 \description{
 \code{LoadCommunity} and \code{SaveCommunity} are functions for loading and 
-saving code{Community} objects to CSV files.}
+saving \code{Community} objects to CSV files.}
 \usage{
 LoadCommunity(dir)
 SaveCommunity(community, dir)}
@@ -30,10 +30,9 @@ associated properties such as mean body mass, mean numerical abundance and
 classification. This file must contain a column called `node' that must contain 
 node names. Many of Cheddar's plot and analysis functions make use of the 
 `category' node property by default, following previously-used metabolic 
-groupings \cite{YodzisAndInnes1992AmNat BroseEtAl2006Ecology}. The `category' 
-column of \code{nodes.csv} is optional but, if given, it should contain one of 
-`producer', `invertebrate', `vert.ecto', `vert.endo' or should be an empty 
-string.
+groupings (Yodzis \& Innes, 1992). The `category' column of \code{nodes.csv} 
+is optional but, if given, it should contain one of `producer', 
+`invertebrate', `vert.ecto', `vert.endo' or should be an empty string.
 
 \code{trophic.links.csv} is optional. It defines trophic links in columns 
 `resource' and `consumer', which should be names of nodes. Properties 
@@ -42,6 +41,9 @@ empirically observed or inferred from literature) can be added to this file.
 }
 
 \value{\code{LoadCommunity} returns a new \code{Community}.}
+
+\references{Yodzis, P. and Innes, S. (1992) Body size and 
+resource-consumer dynamics. The American Naturalist \bold{139}, 1151--1175.}
 
 \author{Lawrence Hudson}
 

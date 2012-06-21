@@ -13,7 +13,7 @@
 
 \begin{document}
 
-\title{Importing and exporting data in-to and out-of Cheddar
+\title{Importing and exporting data in to and out of Cheddar
        (\Sexpr{packageDescription('cheddar', fields='Version')})}
 \author{Lawrence Hudson}
 \date{\Sexpr{packageDescription('cheddar', fields='Date')}}
@@ -49,8 +49,8 @@ reading this one.
 
 Researchers typically use their own bespoke data formats. This means that there 
 are probably as many data formats as there are researchers! It is therefore 
-extremely hard to write a generic 'import my data into Cheddar' function. 
-Help is at hand! If you have community data that you would like to import into 
+extremely hard to write a generic 'import my data in to Cheddar' function. 
+Help is at hand! If you have community data that you would like to import in to 
 Cheddar, please contact me (lawrence.hudson08 (at) imperial.ac.uk) - I will 
 either provide example data-import R code for you to modify or will write the 
 required R code for you.
@@ -80,7 +80,7 @@ different aspect of the community (Table \ref{tab:community_files}).
 You can add properties to any aspect of the community simply by adding columns 
 to the relevant CSV file. All properties added to these files are available 
 to Cheddar's plotting and analysis functions. 
-The following sections show how to import community into Cheddar using these 
+The following sections show how to import a community in to Cheddar using these 
 three files and the \code{LoadCommunity} function. The data are from a 
 fictitious community named `Stream 12'.
 
@@ -100,8 +100,10 @@ This file must contain one row of data only (Table
     \label{tab:example_properties_csv} 
   \end{center}
 \end{table}
-The contents of this file can be accessed using the \code{CPS} function, 
-which returns a \code{list}.
+This file must contain the `title' column. The `M.units' and/or `N.units' 
+must be present if the \code{properties.csv} file contains columns called 
+`M' and/or `N'. The contents of this file can be accessed using the 
+\code{CPS} function, which returns a \code{list}.
 
 \subsection{nodes.csv}
 This file contains one row for every species in the community (Table 
@@ -124,9 +126,10 @@ junk <- apply(NPS(stream12), 1,
     \label{tab:example_nodes_csv} 
   \end{center}
 \end{table}
-The `node' column is the only mandatory column; all of the others are optional 
-`node' must contain node names. An error is raised if any node names are 
-duplicated. Whitespace is stripped from the beginning and end of node names. 
+The `node' column is the only mandatory column; all of the others are optional. 
+The column `node' must contain node names. An error is raised if any node 
+names are duplicated. 
+Whitespace is stripped from the beginning and end of node names. 
 If provided, columns called `M' and/or `N' must represent mean body mass and 
 mean numerical abundance respectively. All values in `M' and `N' must be 
 either empty or greater than 0 and less than infinity. If the columns `M' 
@@ -137,7 +140,7 @@ which returns a \code{data.frame}.
 
 Many of Cheddar's plot and analysis functions make use of the `category' node 
 property by default, following previously-used metabolic groupings 
-\cite{YodzisAndInnes1992AmNat, BroseEtAl2006EcolLett}. The `category' column of 
+\citep{YodzisAndInnes1992AmNat}. The `category' column of 
 \code{nodes.csv} is optional but, if given, it should contain one of 
 `producer', `invertebrate', `vert.ecto', `vert.endo' or should be empty. 
 The `Detritus' and `Fungi' nodes do not have a metabolic category so have no 
@@ -205,13 +208,14 @@ You can easily get the total biomass in each `functional.group'.
 SumBiomassByClass(stream12, class='functional.group')
 @
 
+\newpage
 \section{Importing a collection of communities}
 <<echo=FALSE>>=
 grassland <- LoadCollection('Grassland1994')
 @
 Cheddar's \code{LoadCollection} and \code{SaveCollection} functions provide 
 a standard data format for collections of communities. Each community in a 
-collection is stored in it's own directory using the CSV format described in 
+collection is stored in its own directory using the CSV format described in 
 Section \ref{sec:introduction}.
 For example, the following fictitious collection `Grassland1994' contains 
 three communities: `Plot 1', `Plot 2' and `Plot 3'.
@@ -237,7 +241,7 @@ three communities: `Plot 1', `Plot 2' and `Plot 3'.
           | - properties.csv
           | - trophic.links.csv
 \end{verbatim}
-The \code{LoadCommunity} function loads the collection into \R.
+The \code{LoadCommunity} function loads the collection in to \R.
 <<eval=FALSE>>=
 grassland <- LoadCommunity('c:/Grassland1994')
 @
@@ -248,6 +252,7 @@ length(grassland)
 The `Collections' vignette explains information community collections in 
 detail.
 
+\newpage
 \section{Export}
 The \code{SaveCommunity} and \code{SaveCollection} functions export 
 communities and collections respectively to CSV files.

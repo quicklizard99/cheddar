@@ -45,20 +45,23 @@ Community(nodes, properties, trophic.links = NULL)
   \item{\dots}{further arguments passed to other methods.}
 }
 
-\details{The most convenient way to import community data into Cheddar is 
-to put data into CSV files and use the \code{LoadCommunity} function.
+\details{The most convenient way to import community data in to Cheddar is 
+to put data in to CSV files and use the \code{LoadCommunity} function.
 
 Many of Cheddar's plot and analysis functions make use of the `category' node 
 property by default, following previously-used metabolic groupings 
-\cite{YodzisAndInnes1992AmNat BroseEtAl2006Ecology}. The column nodes$category 
-is optional but, if given, it should contain one of `producer', `invertebrate', 
-`vert.ecto', `vert.endo' or should be an empty string.
+(Yodzis and Innes, 1992). The column nodes$category is optional but, if given, 
+it should contain one of `producer', `invertebrate', `vert.ecto', `vert.endo' 
+or should be an empty string.
 
 \code{Community} supports standard generic functions \code{plot}, 
 \code{print}, and \code{summary}.
 }
 
 \value{A new object of class \code{Community}.}
+
+\references{Yodzis, P. and Innes, S. (1992) Body size and 
+resource-consumer dynamics. The American Naturalist \bold{139}, 1151--1175.}
 
 \author{Lawrence Hudson}
 

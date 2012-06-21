@@ -56,7 +56,7 @@ Rounded values are used by the \code{x.layout} and \code{y.layout} engines.
 If \code{x.layout} is 'skinny' then nodes are spaced one x unit apart and 
 \code{max.nodes.per.row} is ignored. If \code{x.layout} is 'narrow', 
 nodes are spaced one x unit apart if fewer than \code{max.nodes.per.row} on 
-that row, otherwise nodes are squashed into the available x space. If 
+that row, otherwise nodes are squashed in to the available x space. If 
 \code{x.layout} is 'wide', nodes are spaced widely.
 
 If \code{y.layout} is 'compress', then nodes are always shown at the values in 

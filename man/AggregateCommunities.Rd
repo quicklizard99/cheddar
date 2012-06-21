@@ -34,7 +34,7 @@ AggregateCommunitiesBy(collection, aggregate.by, \dots)
 }
 
 \details{\code{AggregateCommunities} combines communities given in 
-\code{aggregate} into a single new \code{Community}. 
+\code{aggregate} in to a single new \code{Community}. 
 
 \code{AggregateCommunitiesBy} aggregates by a property of the communities, 
 either first-class or computed. If there is more than one unique value of the 

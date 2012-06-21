@@ -63,8 +63,8 @@ lump <- NP(TL84, 'node')
 identical(TL84, LumpNodes(TL84, lump, title=CP(TL84, 'title')))
 
 
-# Ythan Estuary contains two species that are split into adult and 
-# juvenile forms. The example below lumps these into single species.
+# Ythan Estuary contains two species that are split in to adult and 
+# juvenile forms. The example below lumps these in to single species.
 data(YthanEstuary)
 
 # The names of nodes in YthanEstuary
@@ -72,12 +72,12 @@ lump <- NP(YthanEstuary, 'node')
 
 # European flounder:
 # "Platichthys flesus" and "Platichthys flesus (juvenile)"
-# Lump these into one node
+# Lump these in to one node
 lump["Platichthys flesus (juvenile)"==lump] <- "Platichthys flesus"
 
 # Common eider:
 # "Somateria mollissima" and "Somateria mollissima (juvenile)"
-# Lump these into one node
+# Lump these in to one node
 lump["Somateria mollissima (juvenile)"==lump] <- "Somateria mollissima"
 YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
 

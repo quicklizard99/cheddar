@@ -60,7 +60,7 @@ print(TL84)     # A description of the data
 NumberOfNodes(TL84)
 NumberOfTrophicLinks(TL84)
 @
-\code{NPS} assembles node properties into an \R \code{data.frame}. Let's look 
+\code{NPS} assembles node properties in to an \R \code{data.frame}. Let's look 
 at the first 10 rows of such a table.
 <<>>=
 head(NPS(TL84, c('category', 
@@ -146,7 +146,7 @@ CollectionCPS(pHWebs,
 \label{sec:further_reading}
 You should read the `Community' vignette. Plotting and anlysis of communities 
 is covered in the `PlotsAndStats' vignette. The `ImportExport' vignette shows 
-how to get your community data into and out of Cheddar. If you have data from 
+how to get your community data in to and out of Cheddar. If you have data from 
 several communities and are interested in seeing how community structure changes 
 among them, read the `Collections' vignette.
 

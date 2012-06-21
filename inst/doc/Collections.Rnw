@@ -46,7 +46,7 @@ you to perform inter-web comparisons such as examining changes in
 community structure over environmental, temporal and spatial gradients. 
 You should read the `CheddarQuickstart' and 'Community' vignettes before 
 reading this one. The `ImportExport' vignette shows how to get collections of 
-communities into Cheddar.
+communities in to Cheddar.
 
 \section{Datasets}
 Cheddar contains some published empirical food web collection datasets 
@@ -99,7 +99,7 @@ sapply(pHWebs, 'NumberOfTrophicLinks')
 In contrast to \R's \code{lists}, you can't change collections directly. This 
 is because many checks are enforced when community collection objects are 
 created, so you can not, for example, modify a collection's length or insert 
-values into the collection. The following operations would raise errors if 
+values in to the collection. The following operations would raise errors if 
 executed.
 <<eval=FALSE>>=
 length(pHWebs) <- 2 # You can't do this
@@ -420,7 +420,7 @@ CollectionCPS(pHWebs.lat.and.pH, c('lat', 'pH'))
 \newpage
 \section{Aggregating communities}
 \code{AggregateCommunities} aggregates the communities within a collection 
-into a new single community object.
+in to a new single community object.
 <<>>=
 a <- AggregateCommunities(pHWebs)
 

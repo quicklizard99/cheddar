@@ -11,7 +11,7 @@ CharacteristicPathLength(community)}
   \item{weight.by}{the name of a property by which to weight paths.}
 }
 
-\details{\cite{ShortestPaths} uses Dijkstra's algorithm to compute the number 
+\details{ShortestPaths uses Dijkstra's algorithm to compute the number 
 of trophic links between each pair of nodes in the food web. 
 \code{CharacteristicPathLength} returns the mean of path lengths. }
 
