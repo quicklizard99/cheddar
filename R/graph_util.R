@@ -1,4 +1,5 @@
 # Helper functions for plotting.
+
 .GraphParamFromSpec <- function(property, spec, default)
 {
     # Returns a vector of parameters. 
@@ -506,23 +507,26 @@ PlaceMissingPoints <- function(x, xlim, y, ylim)
     return (cex)
 }
 
+
 .AddAxisTicks <- function(...)
 {
     # A private helper that adds tick marks to the top and right of the plot, 
     # if appropriate. 
-
-    dots <- list(...)
-
-    # Use x %in% y form (rather than equality test) to check for xaxt in dots, 
-    # as it handles NULL case
-    if('n'!=par('xaxt') && !'n' %in% dots[['xaxt']])
+    if(getOption('cheddarTopAndRightTicks', TRUE))
     {
-        axis(3, labels=FALSE)
-    }
+        dots <- list(...)
 
-    if('n'!=par('yaxt') && !'n' %in% dots[['yaxt']])
-    {
-        axis(4, labels=FALSE)
+        # Use x %in% y form (rather than equality test) to check for xaxt in 
+        # dots, as it handles NULL case
+        if('n'!=par('xaxt') && !'n' %in% dots[['xaxt']])
+        {
+            axis(3, labels=FALSE)
+        }
+
+        if('n'!=par('yaxt') && !'n' %in% dots[['yaxt']])
+        {
+            axis(4, labels=FALSE)
+        }
     }
 }
 

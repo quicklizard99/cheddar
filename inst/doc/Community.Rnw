@@ -767,16 +767,7 @@ NumberOfNodes(TL84.lumped)  # 51 nodes in lumped web
 
 IsolatedNodes(TL84.lumped)  # A single node
 @
-The `class.behaviour' and `column.behaviour' parameters control how values 
-for lumped nodes are computed. The default for numeric values is to take the 
-arithmetic mean. We could instead compute the median body mass.
-<<>>=
-TL84.lumped <- LumpNodes(TL84, lump, column.behaviour=list(M=median))
-@
-Or the maximum body mass.
-<<>>=
-TL84.lumped <- LumpNodes(TL84, lump, column.behaviour=list(M=max))
-@
+TODO Add details about weighting
 This trivial example shows that no nodes are lumped if values in lump are 
 unique to each node.
 <<>>=
@@ -819,9 +810,11 @@ par(mfrow=c(1,2))
 plot(YthanEstuary, highlight.nodes=c("Platichthys flesus", 
                                      "Platichthys flesus (juvenile)", 
                                      "Somateria mollissima", 
-                                     "Somateria mollissima (juvenile)"))
+                                     "Somateria mollissima (juvenile)"), 
+     show.web=FALSE)
 plot(YthanEstuary.lumped, highlight.nodes=c("Platichthys flesus", 
-                                            "Somateria mollissima"))
+                                            "Somateria mollissima"), 
+     show.web=FALSE)
 @
 \end{center}
 

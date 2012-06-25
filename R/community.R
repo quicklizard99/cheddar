@@ -160,7 +160,7 @@ Community <- function(nodes, properties, trophic.links=NULL)
     {
         stop(paste('The items [', 
                    paste(names(properties)[bad.lengths], collapse=','), 
-                   "] 'properties' are not of length 1", sep=''))
+                   "] in 'properties' are not of length 1", sep=''))
     }
 
     # Check for names that appear in more than one aspect
@@ -812,18 +812,11 @@ RemoveIsolatedNodes <- function(community, title=NULL)
     return (RemoveNodes(community, isolated, title))
 }
 
-LumpNodes <- function(community, lump, title=NULL, 
-                       class.behaviour=list(integer=MeanNaRm, 
-                                            numeric=MeanNaRm, 
-                                            character=JoinUnique, 
-                                            logical=JoinUnique), 
-                       column.behaviour=NULL)
+LumpNodes <- function(community, lump, title=NULL, weight.by='N')
 {
     # Returns a community in which nodes are lumped. 
     #   lump - a vector of of length NumberOfNodes containing names of lumped 
     #          nodes
-    #   class.behaviour - 
-    #   column.behaviour - 
     if(!is.Community(community)) stop('Not a Community')
 
     # Must have one entry per node
@@ -831,12 +824,6 @@ LumpNodes <- function(community, lump, title=NULL,
     stopifnot(length(lump)==NumberOfNodes(community))
     stopifnot(all(nchar(lump)>0))
     names(lump) <- unname(NP(community, 'node'))
-    
-    # Functions for aggregating values
-    stopifnot("function" == unique(lapply(class.behaviour, class)))
-    stopifnot(is.null(column.behaviour) || 
-              ('list'==class(column.behaviour) && 
-               !is.null(names(column.behaviour))))
 
     if(is.null(title))
     {
@@ -844,13 +831,12 @@ LumpNodes <- function(community, lump, title=NULL,
     }
 
     # Lump node properties
-    new.nodes <- .AggregateDataFrame(NPS(community)[,-1], 
-                                     lump, 
-                                     column.behaviour, 
-                                     class.behaviour)
+    new.nodes <- .AggregateDataFrame(data=NPS(community)[,-1], 
+                                     aggregate.by=lump, 
+                                     weight.by=weight.by)
     new.nodes <- cbind(node=unique(lump), new.nodes)
 
-    # Lump trophic links and properties
+    # trophic links and properties
     old.tlp <- new.tlp <- TLPS(community)
     if(!is.null(old.tlp))
     {
@@ -868,10 +854,10 @@ LumpNodes <- function(community, lump, title=NULL,
             # Aggregate columns other than 'resource' and 'consumer'
             select.cols <- !colnames(old.tlp) %in% c('resource', 'consumer')
             old.tlp <- old.tlp[,select.cols,drop=FALSE]
-            new.tlp <- cbind(new.tlp, .AggregateDataFrame(old.tlp, 
-                                                          aggregate.by, 
-                                                          column.behaviour, 
-                                                          class.behaviour))
+            new.tlp <- cbind(new.tlp, 
+                             .AggregateDataFrame(data=old.tlp,
+                                             aggregate.by=aggregate.by, 
+                                             weight.by=NULL))
         }
     }
 

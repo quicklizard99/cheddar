@@ -265,23 +265,12 @@ AggregateCommunitiesBy <- function(collection, aggregate.by, ...)
 
 AggregateCommunities <- function(collection, 
                                  aggregate=names(collection), 
-                                 class.behaviour=list(integer=MeanNaRm, 
-                                                      numeric=MeanNaRm, 
-                                                      character=JoinUnique, 
-                                                      logical=JoinUnique), 
-                                 column.behaviour=NULL, 
+                                 weight.by='N', 
                                  title=NULL)
 {
     # Returns a new Community object
 
     if(!is.CommunityCollection(collection)) stop('Not a CommunityCollection')
-
-    # Functions for aggregating values across communities
-    stopifnot("function" == unique(lapply(class.behaviour, class)))
-    stopifnot(is.null(column.behaviour) || 
-              ('list'==class(column.behaviour) && 
-               !is.null(names(column.behaviour)) && 
-               all("function" == sapply(column.behaviour, class))))
 
     if(is.null(title))
     {
@@ -325,12 +314,38 @@ AggregateCommunities <- function(collection,
     # Aggregate node properties
     if(ncol(node.properties)>2)
     {
+        # Add a row for species X where X is not in community A
+        setdiff.data.frame <- function(A, B)
+        {
+            # setdiff for data.frames
+            # https://stat.ethz.ch/pipermail/r-devel/2007-December/047708.html
+            a <- do.call("paste", c(A, sep = "\r"))
+            b <- do.call("paste", c(B, sep = "\r"))
+            return (A[match(setdiff(a, b),a), ])
+        }
+
+        possible <- expand.grid(community=unique(node.properties$community), 
+                                node=unique(node.properties$node), 
+                                stringsAsFactors=FALSE)
+        actual <- node.properties[,c('community', 'node')]
+        missing <- setdiff.data.frame(possible, actual)
+
+        if(nrow(missing)>0)
+        {
+            # Add rows with missing numeric and integer values to 0
+            before <- nrow(node.properties)
+            node.properties <- .SimpleRBindFill(node.properties, missing)
+            after <- nrow(node.properties)
+            classes <- sapply(node.properties, class)
+            node.properties[(1+before):after,classes %in% c('numeric', 'integer')] <- 0
+#            node.properties[(1+before):after,classes %in% c('character')] <- ''
+        }
+
         select.cols <- !colnames(node.properties) %in% c('community', 'node')
         new.nodes <- cbind(new.nodes, 
-                       .AggregateDataFrame(node.properties[,select.cols],
-                                           node.properties$node, 
-                                           column.behaviour, 
-                                           class.behaviour))
+                       .AggregateDataFrame(data=node.properties[,select.cols],
+                                           aggregate.by=node.properties$node, 
+                                           weight.by=weight.by))
     }
 
     # Aggregate trophic links
@@ -339,10 +354,9 @@ AggregateCommunities <- function(collection,
     {
         new.tl <- new.tl[new.tl$community %in% aggregate,]
         select.cols <- !colnames(new.tl) %in% 'community'
-        new.tl <- .AggregateDataFrame(new.tl[,select.cols], 
-                                 paste(new.tl[,'resource'],new.tl[,'consumer']),
-                                 column.behaviour, 
-                                 class.behaviour)
+        new.tl <- .AggregateDataFrame(data=new.tl[,select.cols], 
+                  aggregate.by=paste(new.tl[,'resource'],new.tl[,'consumer']),
+                  weight.by=NULL)
         stopifnot(!any(duplicated(new.tl)))
     }
 
@@ -353,10 +367,9 @@ AggregateCommunities <- function(collection,
     if(ncol(new.properties)>1)
     {
         select.cols <- !colnames(new.properties) %in% 'title'
-        new.properties <- .AggregateDataFrame(new.properties[,select.cols],
-                                              rep(1, nrow(new.properties)), 
-                                              column.behaviour, 
-                                              class.behaviour)
+        new.properties <- .AggregateDataFrame(data=new.properties[,select.cols],
+                              aggregate.by=rep(1, nrow(new.properties)), 
+                              weight.by=NULL)
     }
 
     stopifnot(1==nrow(new.properties))

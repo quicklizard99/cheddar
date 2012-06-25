@@ -425,6 +425,22 @@ See the help page for the \R \code{par} function for more information about
 colours and symbols.
 
 \newpage
+All of Cheddar's plot functions add axis ticks to the top and right of the 
+plot by default. This can be turned off by using the 
+\code{cheddarTopAndRightTicks} option.
+<<>>=
+par(mfrow=c(1,2))
+
+# Don't add ticks
+options(cheddarTopAndRightTicks=FALSE)
+PlotNvM(TL84)
+
+# Add ticks
+options(cheddarTopAndRightTicks=TRUE)
+PlotNvM(TL84)
+@
+
+\newpage
 \subsection{Highlights and lowlights}
 \code{PlotNPS} (and by extension all of the other node plotting functions) 
 allow individual nodes to be highlighted or lowlighted using the 

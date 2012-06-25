@@ -166,6 +166,7 @@ TestAggregateCommunitiesFailures <- function()
 TestAggregateCommunitiesProperties <- function()
 {
     # TODO Test that union of trophic links taken
+
     # Test aggregation of properties for TL84 and TL86
     a <- CommunityCollection(list(TL84, TL86))
 
@@ -174,7 +175,6 @@ TestAggregateCommunitiesProperties <- function()
     a.nodes <- factor(CollectionNPS(a)[,'node'], 
                       levels=unique(CollectionNPS(a)[,'node']))
 
-    # 1. mean
     b <- AggregateCommunities(a)
 
     # Sanity check
@@ -182,35 +182,291 @@ TestAggregateCommunitiesProperties <- function()
     stopifnot(all(all.spp==sort(unique(CollectionNPS(a)[,'node']))))
     stopifnot(all(sort(NP(b, 'node')) == all.spp))
 
-    # Check M and N averaged correctly
-    stopifnot(all(NP(b,'M') == tapply(CollectionNPS(a)[,'M'], a.nodes, mean)))
-    stopifnot(all(NP(b,'N') == tapply(CollectionNPS(a)[,'N'], a.nodes, mean)))
-
     # Check category
     stopifnot(all(NP(b,'category') == tapply(CollectionNPS(a)[,'category'], 
                                              a.nodes, unique)))
+}
 
-    # 2. median M
-    b <- AggregateCommunities(a, column.behaviour=list(M=median))
+TestAggregateCommunityMeans <- function()
+{
+    # Cases for aggregating numeric values
 
-    # Sanity check
-    stopifnot(all(sort(NP(b, 'node')) == all.spp))
+    CheckResults <- function(A, B, expected.M, expected.N, weight.by)
+    {
+        collection <- CommunityCollection(list(A, B))
+        res <- NPS(AggregateCommunities(collection, weight.by=weight.by))
+        check <- data.frame(node=c('S1','S2'), M=expected.M, N=expected.N, 
+                            row.names=c('S1','S2'), stringsAsFactors=FALSE)
+        stopifnot(all.equal(res, check))
+    }
 
-    # Check M and N averaged correctly
-    stopifnot(all(NP(b,'M') == tapply(CollectionNPS(a)[,'M'], a.nodes, median)))
-    stopifnot(all(NP(b,'N') == tapply(CollectionNPS(a)[,'N'], a.nodes, median)))
+    # 1. Both species are in both communities. Valid M and N in both communities.
+    #  community node  M N
+    #         A   S1 20 1
+    #         A   S2 20 1
+    #         B   S1  5 2
+    #         B   S2  5 2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c(1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5, 5), N=c(2, 2)))
 
-    # 3. min M and max N
-    b <- AggregateCommunities(a, column.behaviour=list(M=min, N=max))
+    # Weight by N
+    #   node  M   N
+    #     S1 10 1.5
+    #     S2 10 1.5
+    CheckResults(A, B, c(10,10), c(1.5, 1.5), 'N')
 
-    # Sanity check
-    stopifnot(all(sort(NP(b, 'node')) == all.spp))
+    # No weighting
+    #   node  M   N
+    #     S1 12.5 1.5
+    #     S2 12.5 1.5
+    CheckResults(A, B, c(12.5,12.5), c(1.5, 1.5), NULL)
 
-    # Check M is min
-    stopifnot(all(NP(b,'M') == tapply(CollectionNPS(a)[,'M'], a.nodes, min)))
 
-    # Check N is max
-    stopifnot(all(NP(b,'N') == tapply(CollectionNPS(a)[,'N'], a.nodes, max)))
+    # 2. Both species are in both communities. Species 2 lacks N in community B.
+    #  community node  M  N
+    #         A   S1 20  1
+    #         A   S2 20  1
+    #         B   S1  5  2
+    #         B   S2  5 NA
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c( 1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5, 5), N=c( 2,NA)))
+
+    # Weight by N
+    #   node  M   N
+    #     S1 10  1.5
+    #     S2 NA  NA
+    CheckResults(A, B, c(10, NA), c(1.5, NA), 'N')
+
+    # No weighting
+    #   node  M    N
+    #     S1 12.5  1.5
+    #     S2 12.5  NA
+    CheckResults(A, B, c(12.5, 12.5), c(1.5, NA), NULL)
+
+
+    # 3. Both species are in both communities. Species 2 lacks M in community B
+    #  community node  M N
+    #         A   S1 20 1
+    #         A   S2 20 1
+    #         B   S1  5 2
+    #         B   S2 NA 2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c( 1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5,NA), N=c( 2, 2)))
+
+    # Weight by N
+    #   node  M   N
+    #   S1   10  1.5
+    #   S2   NA  1.5
+    CheckResults(A, B, c(10, NA), c(1.5, 1.5), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1 12.5  1.5
+    #   S2   NA  1.5
+    CheckResults(A, B, c(12.5, NA), c(1.5, 1.5), NULL)
+
+
+    # 4. Both species are in both communities. Species 2 lacks M and N in 
+    #    community B
+    #  community node  M  N
+    #         A   S1 20  1
+    #         A   S2 20  1
+    #         B   S1  5  2
+    #         B   S2 NA NA
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c( 1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5,NA), N=c( 2,NA)))
+
+    # Weight by N
+    #   node  M   N
+    #   S1   10  1.5
+    #   S2   NA  NA
+    CheckResults(A, B, c(10, NA), c(1.5, NA), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1 12.5  1.5
+    #   S2   NA  NA
+    CheckResults(A, B, c(12.5, NA), c(1.5, NA), NULL)
+
+    # 5. Species 2 is in community A only. Valid M and N.
+    #  community node  M N
+    #         A   S1 20 1
+    #         A   S2 20 1
+    #         B   S1  5 2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c(1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1'),      M=c( 5),    N=c(2)))
+
+    # Weight by N
+    #   node  M   N
+    #   S1   10 1.5
+    #   S2   20 0.5
+    CheckResults(A, B, c(10, 20), c(1.5, 0.5), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1  12.5 1.5
+    #   S2  10   0.5
+    CheckResults(A, B, c(12.5, 10), c(1.5, 0.5), NULL)
+
+
+    # 6. Species 2 is in community A only and lacks N.
+    #  community node  M  N
+    #         A   S1 20  1
+    #         A   S2 20 NA
+    #         B   S1  5  2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c(1, NA)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1'),      M=c( 5),    N=c(2)))
+    CollectionNPS(CommunityCollection(list(A, B)))
+    NPS(AggregateCommunities(CommunityCollection(list(A, B))))
+
+    # Weight by N
+    #   node  M   N
+    #   S1   10 1.5
+    #   S2   NA  NA
+    CheckResults(A, B, c(10, NA), c(1.5, NA), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1  12.5 1.5
+    #   S2  10   NA
+    CheckResults(A, B, c(12.5, 10), c(1.5, NA), NULL)
+
+
+    # 7. Species 2 is in community A only and lacks M.
+    #  community node M N
+    #         A   S1 20 1
+    #         A   S2 NA 1
+    #         B   S1  5 2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,NA), N=c(1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1'),      M=c( 5),    N=c(2)))
+    CollectionNPS(CommunityCollection(list(A, B)))
+    NPS(AggregateCommunities(CommunityCollection(list(A, B))))
+
+    # Weight by N
+    #   node  M   N
+    #   S1   10  1.5
+    #   S2   NA  0.5
+    CheckResults(A, B, c(10, NA), c(1.5, 0.5), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1   12.5 1.5
+    #   S2   NA   0.5
+    CheckResults(A, B, c(12.5, NA), c(1.5, 0.5), NULL)
+
+
+    # 8. Species 2 is in community A only and lacks M and N.
+    #  community node  M  N
+    #         A   S1 20  1
+    #         A   S2 NA NA
+    #         B   S1  5  2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,NA), N=c(1,NA)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1'),      M=c( 5),    N=c(2)))
+    CollectionNPS(CommunityCollection(list(A, B)))
+    NPS(AggregateCommunities(CommunityCollection(list(A, B))))
+
+    # Weight by N
+    #   node  M   N
+    #     S1  10  1.5
+    #     S2  NA  NA
+    CheckResults(A, B, c(10, NA), c(1.5, NA), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1   12.5 1.5
+    #   S2   NA   NA
+    CheckResults(A, B, c(12.5, NA), c(1.5, NA), NULL)
+
+
+    # 9. Both species are in both communities. Species 2 has missing M in both 
+    #    communities
+    #  community node  M N
+    #         A   S1 20 1
+    #         A   S2 NA 1
+    #         B   S1  5 2
+    #         B   S2 NA 2
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,NA), N=c(1, 1)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5,NA), N=c(2, 2)))
+
+    # Weight by N
+    #   node  M   N
+    #   S1  10  1.5
+    #   S2  NA  1.5
+    CheckResults(A, B, c(10, NA), c(1.5, 1.5), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1   12.5 1.5
+    #   S2   NA   1.5
+    CheckResults(A, B, c(12.5, NA), c(1.5, 1.5), NULL)
+
+
+    # 10. Both species are in both communities. Species 2 has missing N in both 
+    #     communities
+    #  community node  M  N
+    #         A   S1 20  1
+    #         A   S2 20 NA
+    #         B   S1  5  2
+    #         B   S2  5 NA
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,20), N=c(1,NA)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5, 5), N=c(2,NA)))
+
+    # Weight by N
+    #   node  M   N
+    #    S1  10  1.5
+    #    S2  NA  NA
+    CheckResults(A, B, c(10, NA), c(1.5, NA), 'N')
+
+    # No weighting
+    #   node  M   N
+    #   S1   12.5 1.5
+    #   S2   12.5 NA
+    CheckResults(A, B, c(12.5, 12.5), c(1.5, NA), NULL)
+
+
+    # 11. Both species are in both communities. Species 2 has missing M and N in 
+    #     both communities
+    #  community node  M  N
+    #         A   S1 20  1
+    #         A   S2 NA NA
+    #         B   S1  5  2
+    #         B   S2 NA NA
+    A <- Community(properties=list(title='A', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c(20,NA), N=c(1,NA)))
+    B <- Community(properties=list(title='B', M.units='g', N.units='m^-2'), 
+                   nodes=data.frame(node=c('S1','S2'), M=c( 5,NA), N=c(2,NA)))
+
+    # Weight by N
+    #   node  M   N
+    #    S1  10  1.5
+    #     S2 NA  NA
+    CheckResults(A, B, c(12.5, NA), c(1.5, NA), NULL)
+
+    # No weighting
+    #   node  M   N
+    #   S1   12.5 1.5
+    #   S2   NA   NA
+    CheckResults(A, B, c(12.5, NA), c(1.5, NA), NULL)
 }
 
 TestAggregateCommunitiesBy <- function()

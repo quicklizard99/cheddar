@@ -428,27 +428,7 @@ a <- AggregateCommunities(pHWebs)
 length(unique(CollectionNPS(pHWebs)$node))
 NumberOfNodes(a)
 @
-The way that node, trophic-link and whole-community values are aggregated 
-is controlled using two parameters.
-\begin{verbatim}
-class.behaviour=list(integer=MeanNaRm, 
-                     numeric=MeanNaRm, 
-                     character=JoinUnique, 
-                     logical=JoinUnique)
-column.behaviour=NULL
-\end{verbatim}
-The parameter `class.behaviour' describes the behaviour for each R type. 
-The parameter `column.behaviour' allows for deviations from `class.behaviour' 
-for specific columns. 
-The functions \code{MeanNaRm} and \code{JoinUnique} are provided by 
-Cheddar. 
-The default behaviour for numeric columns is therefore to compute a mean. 
-This behaviour can be changed per-column, for example we can could have 
-computed the median body mass.
-<<>>=
-b <- AggregateCommunities(pHWebs, column.behaviour=list(M=median))
-@
-
+TODO Add details about weighting
 \code{AggregateCommunitiesBy} aggregates by a single property, either 
 first-class or computed, of the contained communities. Each food web 
 in the pHWebs dataset has a different pH, so aggregating by pH would result in 

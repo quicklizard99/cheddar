@@ -69,12 +69,13 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     return (gsub('^\\s+|\\s+$', '', v, perl=TRUE))
 }
 
-.SimpleRBindFill <- function(...)
+.SimpleRBindFill <- function(..., fill.with=NA)
 {
     # A quick and dirty wrapper around rbind.data.frame() that fills 
     # missing columns with NA.
     allargs <- list(...)
     stopifnot(all(sapply(allargs, is.data.frame)))
+    stopifnot(all(sapply(allargs, nrow)>0))
 
     allcnames <- unique(unlist(sapply(allargs, colnames)))
 
@@ -82,7 +83,7 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     for(d in 1:length(allargs))
     {
         missing <- setdiff(allcnames, colnames(allargs[[d]]))
-        allargs[[d]][,missing] <- NA
+        allargs[[d]][,missing] <- fill.with
     }
 
     res <- do.call('rbind.data.frame', allargs)
