@@ -767,7 +767,8 @@ NumberOfNodes(TL84.lumped)  # 51 nodes in lumped web
 
 IsolatedNodes(TL84.lumped)  # A single node
 @
-TODO Add details about weighting
+By default, numeric values are weighted by numerical abundance, $N$. 
+
 This trivial example shows that no nodes are lumped if values in lump are 
 unique to each node.
 <<>>=
@@ -817,6 +818,36 @@ plot(YthanEstuary.lumped, highlight.nodes=c("Platichthys flesus",
      show.web=FALSE)
 @
 \end{center}
+
+\noindent The default behaviour of \code{LumpNodes} and 
+\code{LumpTrophicSpecies} is to aggregate numeric node properties by computing 
+the $N$-weighted mean.
+<<>>=
+NPS(YthanEstuary.lumped)["Platichthys flesus", c('M','N')]
+
+# These values were computed as follows
+nps <- NPS(YthanEstuary)
+M <- nps[c("Platichthys flesus", "Platichthys flesus (juvenile)"), 'M']
+N <- nps[c("Platichthys flesus", "Platichthys flesus (juvenile)"), 'N']
+
+# Arithmetic mean of N
+mean(N)
+
+# N-weighted mean of M
+weighted.mean(M, N)
+@
+
+\noindent The `weight.by' parameter controls this behaviour:
+<<>>=
+YthanEstuary.lumped2 <- LumpNodes(YthanEstuary, lump, weight.by=NULL)
+NPS(YthanEstuary.lumped2)["Platichthys flesus", c('M','N')]
+
+# Computed as the arithmetic means of M and N
+mean(M)
+mean(N)
+
+@
+
 
 \bibliographystyle{plainnat}
 \bibliography{cheddar} 

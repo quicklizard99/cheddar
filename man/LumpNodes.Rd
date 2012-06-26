@@ -13,8 +13,18 @@ LumpNodes(community,
   \item{lump}{a vector of of length \code{NumberOfNodes} containing names of 
     lumped nodes. Nodes with the same value of \code{lump} will be merged.}
   \item{title}{the title of the new \code{Community}.}
-  \item{weight.by}{the name of a column by which to take weighted mean of 
+  \item{weight.by}{the name of a column by which to compute weighted mean of 
     numeric values.}
+}
+
+\details{If \code{weight.by} is not \code{NULL} and it is the name of 
+a node property, it is used to compute weighted means of all the other 
+numeric node properties. The arithmetic mean of \code{weight.by} is 
+computed. 
+If \code{weight.by} is \code{NULL} or is not the name of a node property, 
+the arithmetic mean is computed for each numeric node property.
+Node properties that are characters or logicals are aggregated by joining 
+unique values with a `,'. Empty character strings are ignored.
 }
 
 \value{A new object of class \code{Community}.}
@@ -22,7 +32,8 @@ LumpNodes(community,
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{LumpTrophicSpecies}}, 
-         \code{\link{IsIsolatedNode}}, \code{\link{IsolatedNodes}}}
+         \code{\link{IsIsolatedNode}}, \code{\link{IsolatedNodes}}, 
+         \code{\link{NPS}}, \code{\link{weighted.mean}}}
 
 \examples{
 data(TL84)
@@ -66,6 +77,21 @@ lump["Platichthys flesus (juvenile)"==lump] <- "Platichthys flesus"
 # Lump these in to one node
 lump["Somateria mollissima (juvenile)"==lump] <- "Somateria mollissima"
 YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
+
+
+# Examine the computed means for Somateria mollissima
+# Arithmetic mean of N is 2592
+NP(YthanEstuary.lumped, 'N')['Somateria mollissima']
+mean(NP(YthanEstuary, 'N')[c("Somateria mollissima (juvenile)", 
+                             "Somateria mollissima")])
+
+# N-weighted mean of M is 1637.018
+NP(YthanEstuary.lumped, 'M')['Somateria mollissima']
+weighted.mean(NP(YthanEstuary, 'M')[c("Somateria mollissima (juvenile)", 
+                                    "Somateria mollissima")], 
+              NP(YthanEstuary, 'N')[c("Somateria mollissima (juvenile)", 
+                                    "Somateria mollissima")], )
+
 
 # Plot the original community and the community with lumped nodes
 par(mfrow=c(1,2))

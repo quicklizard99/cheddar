@@ -1,3 +1,7 @@
+% This file is called BodyMassB.Rd in order for the windows build to work.
+% Both R 2.14.2 + Rtools 2.14 and R 2.15.1 + Rtools 2.15 on 32-bit XP and 
+% 64-bit Windows 7 failed to detect a file called BodyMassBins.Rd. 
+% Renaming the file to BodyMassB.Rd fixes the problem.
 \name{BodyMassBins}
 \alias{BodyMassBins}
 \title{Body-mass bins}

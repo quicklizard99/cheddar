@@ -421,20 +421,88 @@ CollectionCPS(pHWebs.lat.and.pH, c('lat', 'pH'))
 \section{Aggregating communities}
 \code{AggregateCommunities} aggregates the communities within a collection 
 in to a new single community object.
+The way that node, trophic link and community properties are aggregated are 
+shown here using the \code{Millstream} data set 
+\citep{LedgerEtAl2008Oecologia, LedgerEtAl2011GlobChangeBiol}. 
+The `c4' community was a control and the `d4' community was exposed to 
+a drought treatment.
 <<>>=
-a <- AggregateCommunities(pHWebs)
+data(Millstream)
+Millstream
+names(Millstream)
+@
+The herbivorous insect \textit{Synorthocladius sp.} appears in both 
+communities but with a different mean $M$ and $N$.
+<<>>=
+nps <- CollectionNPS(Millstream)
+nps['Synorthocladius sp.'==nps$node,c('community','M','N')]
+@
+Now let's perform the aggregation of these two communities, weighting 
+by $N$:
+<<>>=
+aggregation1 <- AggregateCommunities(Millstream, weight.by='N')
 
 # Satisfy ourselves that each node has been included in the aggregated community
-length(unique(CollectionNPS(pHWebs)$node))
-NumberOfNodes(a)
+all(sort(unique(nps$node))==sort(NPS(aggregation1)$node))
 @
-TODO Add details about weighting
-\code{AggregateCommunitiesBy} aggregates by a single property, either 
+Now let's examine how `M' and `N' have been computed for 
+\textit{Synorthocladius sp.}:
+<<>>=
+NPS(aggregation1)['Synorthocladius sp.',c('M','N')]
+@
+These values were computed from the values in the collection as follows:
+<<>>=
+# Arithmetic mean of N
+mean(nps['Synorthocladius sp.'==nps$node,'N'])
+
+# N-weighted mean of M
+weighted.mean(nps['Synorthocladius sp.'==nps$node,'M'], 
+              nps['Synorthocladius sp.'==nps$node,'N'])
+@
+
+\noindent Now let's see what happens when we perform the aggregation of these 
+two communities without any weighting:
+<<>>=
+aggregation2 <- AggregateCommunities(Millstream, weight.by=NULL)
+
+NPS(aggregation2)['Synorthocladius sp.',c('M','N')]
+
+# Arithmetic mean of M
+mean(nps['Synorthocladius sp.'==nps$node,'M'])
+
+# Arithmetic mean of N
+mean(nps['Synorthocladius sp.'==nps$node,'N'])
+@
+\code{AggregateCommunities} combines character and logical node properties by 
+joining unique values with a `,'.
+\code{AggregateCommunities} aggregates trophic links by taking the 
+union of links across all communities. There are twelve trophic links in to and 
+out of \textit{Synorthocladius sp.} in `c4' and `d4'.
+<<>>=
+tlps <- CollectionTLPS(Millstream)
+tlps['Synorthocladius sp.'==tlps$resource | 
+     'Synorthocladius sp.'==tlps$consumer,]
+@
+The union of these twelve trophic links gives nine unique links:
+<<>>=
+TrophicLinksForNodes(aggregation1, 'Synorthocladius sp.')
+@
+
+\noindent Community properties are aggregated by computing the arithmetic mean 
+of numeric values and by joining unique character and logical together with a 
+`,':
+<<>>=
+CollectionCPS(Millstream)
+
+data.frame(CPS(aggregation1))
+@
+
+\noindent \code{AggregateCommunitiesBy} aggregates by a single property, either 
 first-class or computed, of the contained communities. Each food web 
-in the pHWebs dataset has a different pH, so aggregating by pH would result in 
-a collection of the same ten communities. The Duddon Pike Beck and Mosedal Beck 
-communities share the same latitude and have pH values of 6.1 and 5.9 
-respectively.
+in the \code{pHWebs} dataset has a different pH, so aggregating by pH would 
+result in a collection of the same ten communities. The Duddon Pike Beck and 
+Mosedal Beck communities share the same latitude and have pH values of 6.1 and 
+5.9 respectively.
 <<>>=
 CollectionCPS(pHWebs[c('Duddon Pike Beck', 'Mosedal Beck')])
 @
@@ -443,8 +511,8 @@ communities.
 <<>>=
 CollectionCPS(AggregateCommunitiesBy(pHWebs, 'lat'))
 @
-The aggregation of Duddon Pike Beck and Mosedal Beck has a pH of 6: the mean 
-of the two pH values of the two communities.
+The aggregation of Duddon Pike Beck and Mosedal Beck has a pH of 6: the 
+arithmetic mean of the two pH values of the two communities.
 
 \newpage
 \section{`Global' node IDs}

@@ -22,15 +22,15 @@
 Briand, F and Cohen, J. E. 1984 Community food webs have scale-invariant 
 structure Nature \bold{307}, 264--267.
 
+Jonsson, T. and Cohen, J. E. and Carpenter, S. R. 2005 
+Food webs, body size, and species abundance in ecological community 
+description. Advances in Ecological Research \bold{36}, 1--84.
+
 Pimm, S. L. and Lawton, J. H. and Cohen, J. E. 1991 Food web patterns and their 
 consequences Nature \bold{350}, 669--674.
 
 Williams, R. J. and Martinez, N. D. 2000 Simple rules yield complex food webs
-\bold{404}, 180--183.
-
-Jonsson, T. and Cohen, J. E. and Carpenter, S. R. 2005 
-Food webs, body size, and species abundance in ecological community 
-description. Advances in Ecological Research \bold{36}, 1--84.}
+\bold{404}, 180--183.}
 
 \author{Lawrence Hudson}
 

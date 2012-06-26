@@ -662,6 +662,38 @@ TestLumpNodes <- function()
     stopifnot(mean(NP(TL84, 'N')[IsolatedNodes(TL84)]) == 
               NP(TL84.lumped, 'N')['Isolated'])
     stopifnot("producer"==NP(TL84.lumped, 'category')['Isolated'])
+
+
+    # Lump Ythan Estuary nodes
+    lump <- NP(YthanEstuary, 'node')
+
+    # European flounder:
+    # "Platichthys flesus" and "Platichthys flesus (juvenile)"
+    # Lump these in to one node
+    lump["Platichthys flesus (juvenile)"==lump] <- "Platichthys flesus"
+
+    # Common eider:
+    # "Somateria mollissima" and "Somateria mollissima (juvenile)"
+    # Lump these in to one node
+    lump["Somateria mollissima (juvenile)"==lump] <- "Somateria mollissima"
+
+    # Weight by N
+    YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
+    stopifnot(all.equal(NP(YthanEstuary.lumped, 'M')["Somateria mollissima"], 
+                        1637.01774691358014024445, 
+                        check.attributes=FALSE))
+    stopifnot(all.equal(NP(YthanEstuary.lumped, 'N')["Somateria mollissima"], 
+                        2592, 
+                        check.attributes=FALSE))
+
+    # No weighting
+    YthanEstuary.lumped2 <- LumpNodes(YthanEstuary, lump, weight.by=NULL)
+    stopifnot(all.equal(NP(YthanEstuary.lumped2, 'M')["Somateria mollissima"], 
+                        1425, 
+                        check.attributes=FALSE))
+    stopifnot(all.equal(NP(YthanEstuary.lumped2, 'N')["Somateria mollissima"], 
+                        2592, 
+                        check.attributes=FALSE))
 }
 
 TestLumpTrophicSpecies <- function()
