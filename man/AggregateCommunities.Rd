@@ -37,9 +37,9 @@ the arithmetic mean is computed for each numeric node property.
 If \code{weight.by} is the name of a node property, that property is used to 
 compute weighted means of the other numeric node properties; the 
 arithmetic mean of \code{weight.by} is computed. This scheme means that 
-if a community contains both $N$ and $M$, aggregation using 
-\code{weight.by='N'} results in the arithmetic mean of $N$ and the 
-$N$-weighted mean of $M$ for each node.
+if a community contains both N and M, aggregation using 
+\code{weight.by='N'} results in the arithmetic mean of N and the 
+N-weighted mean of M for each node.
 Node properties that are characters or logicals are aggregated by joining 
 unique values with a `,'. Empty character strings are ignored. 
 Species that are not present in some communities in the collection are 
