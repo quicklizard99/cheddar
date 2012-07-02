@@ -70,7 +70,7 @@ non-basal     \tab isolated, intermediate or top-level \cr
 non-top-level \tab isolated, basal or intermediate
 }
 
-For each of the above seven definitions, `X', there three functions: 
+For each of the above seven definitions, `X', there are three functions: 
 \code{IsX}, \code{X} and \code{FractionX}. 
 The first returns a vector of \code{logical} of length \code{NumberOfNodes}; 
 values are \code{TRUE} for nodes that fit the definition of `X'.
