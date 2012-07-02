@@ -322,9 +322,11 @@ As in the previous example, the y axis limits can be made consistent.
 plot(pHWebs, plot.fn=PlotWebByLevel, ylim=c(1, 4.5))
 @
 \end{center}
-We can use the general-purpose function \code{PlotNPS} to plot any node 
-properties that we like and all of the power of \code{PlotNPS} is available. 
-The example below plots trophic level as a function of 
+
+\newpage
+\noindent We can use the general-purpose function \code{PlotNPS} to plot any 
+node properties that we like and all of the power of \code{PlotNPS} is 
+available. The example below plots trophic level as a function of 
 $\log_{10}$-transformed body mass. Each plot has the same axis limits. 
 We have turned off plotting of the food web and highlighting of cannibals.
 \begin{center}
