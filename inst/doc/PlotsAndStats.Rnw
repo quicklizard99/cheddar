@@ -118,7 +118,7 @@ PlotNPS(TL84, 'Log10M', 'Log10N')
 @
 \end{center}
 \code{PlotNPS} uses the `category' node property, if present, to 
-decide plotting colours and symbols. Producers are shown by green circles, 
+decide plotting colours and symbols. Producers are shown by open green circles, 
 invertebrates by blue squares and vertebrate ectotherms by purple diamonds. 
 Many of Cheddar's plotting an analysis functions make use of the `category' 
 node property; this property is optional but, if included in a community, it 
@@ -129,8 +129,8 @@ This is explored more in Section \ref{sec:nps_colours and symbols}.
 \newpage
 \noindent The \code{TL84} datasets include trophic links so \code{PlotNPS} 
 will show the food web and highlights cannibals by plotting them in a 
-light-coloured circle with a dark border, as shown in the previous example. 
-We can turn off these behaviours.
+light-coloured filled circle with a dark border, as shown in the previous 
+example. We can turn off these behaviours.
 \begin{center}
 <<fig=TRUE>>=
 PlotNPS(TL84, 'Log10M', 'Log10N', show.web=FALSE, highlight.nodes=NULL)
@@ -425,10 +425,13 @@ See the help page for the \R \code{par} function for more information about
 colours and symbols.
 
 \newpage
-All of Cheddar's plot functions add axis ticks to the top and right of the 
-plot by default. This can be turned off by using the 
+\noindent All of Cheddar's plot functions add axis ticks to the top and right 
+of the plot by default. This can be turned off by using the 
 \code{cheddarTopAndRightTicks} option.
-<<>>=
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=\textwidth}
+\begin{center}
+<<fig=TRUE>>=
 par(mfrow=c(1,2))
 
 # Don't add ticks
@@ -439,6 +442,7 @@ PlotNvM(TL84)
 options(cheddarTopAndRightTicks=TRUE)
 PlotNvM(TL84)
 @
+\end{center}
 
 \newpage
 \subsection{Highlights and lowlights}
@@ -449,6 +453,8 @@ parameters accept functions. Functions should take a single \code{Community}
 object and return node names. Cheddar provides many such functions, 
 such as \code{Cannibals}, which returns the names of all nodes that 
 consume themselves.
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.5\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 PlotNvM(TL84, highlight.nodes=Cannibals)
@@ -590,8 +596,8 @@ PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M', axes.limits.equal=TRUE)
 \code{PlotTLPS} uses the \code{TLPS} function to assemble data for 
 plotting. \code{PlotTLPS} uses the \code{category} node property of resources, 
 if present, to decide plotting colours and symbols. Resources that 
-are producers are shown by green circles, invertebrates by blue squares and 
-vertebrate ectotherms by purple diamonds. This is explored more in 
+are producers are shown by open green circles, invertebrates by blue squares 
+and vertebrate ectotherms by purple diamonds. This is explored more in 
 Section \ref{sec:nps_colours and symbols}. 
 
 \newpage
