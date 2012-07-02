@@ -241,7 +241,7 @@ DefaultCategoryColours <- function()
 DefaultCategorySymbols <- function()
 {
     return (c(19, 
-              producer=21, 
+              producer=1, 
               invertebrate=22, 
               vert.ecto=23, 
               vert.endo=24))
