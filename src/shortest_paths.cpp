@@ -19,6 +19,7 @@ typedef std::vector<double> DoubleVector;
 #define DEBUG(X)
 #endif
 
+#ifdef DEBUG_DIJKSTRA
 static void print_weights(const DoubleVector &weights, int n)
 {
   for(int row=0; row<n; ++row)
@@ -41,6 +42,7 @@ static void print_adjacency(const IntVector &adjacency, int n)
     Rprintf("\n");
   }
 }
+#endif
 
 static DoubleVector dijkstra(const IntVector &consumers,
                              const IntVector &resources,

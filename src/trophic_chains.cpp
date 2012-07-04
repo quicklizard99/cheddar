@@ -20,6 +20,7 @@ typedef std::queue<IntVector> Queue;
 #define DEBUG(X)
 #endif
 
+#ifdef DEBUG_TC
 static void print_adjacency(const IntVector &adjacency, const int n)
 {
   for(int i=0; i<n; ++i)
@@ -38,6 +39,7 @@ static void print_path(const char *text, const IntVector &path)
     Rprintf(" %d", *j);
   Rprintf("\n");
 }
+#endif
 
 static int append_chain(const IntVector &path, int *chains, int *n_chains_found, 
                         int *max_chains_length, int max_chains, int nodes)
