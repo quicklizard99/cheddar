@@ -15,8 +15,8 @@ environmental, temporal or spatial gradients.
     \tabular{ll}{
     Package: \tab cheddar\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-611\cr
-    Date: \tab 2012-07-03\cr
+    Version: \tab 0.1-612\cr
+    Date: \tab 2012-07-06\cr
     License: \tab BSD\cr
     }
 }
