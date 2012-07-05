@@ -57,21 +57,21 @@ Cheddar contains several published empirical food-web datasets
   \begin{center}
     \begin{tabular}{lll}
       \toprule
-        Community                     & Notes                                     & References                            \\
+        Community                     & Notes                                     & References                                 \\
       \midrule
-        \code{Benguela}               & Crude estimate of $M$; trophic links have & \citet{Yodzis1998JAnimEcol}           \\
-                                      & diet fraction                             &                                       \\
-        \code{BroadstoneStream}       & $M$ and $N$; nodes are well resolved      & \citet{WoodwardEtAl2005AER}           \\
-        \code{TL84} and \code{TL86}   & $M$ and $N$; nodes are well resolved      & \citet{CarpenterAndKitchell1996}      \\
-                                      &                                           & \citet{CohenEtAl2003PNAS}             \\
-                                      &                                           & \citet{JonssonEtAl2005AER}            \\
-        \code{SkipwithPond}           & No $M$ or $N$; trophic links have         & \citet{Warren1989Oikos}               \\
-                                      & `link.evidence' and `link.life.stage'     &                                       \\
-                                      & properties                                &                                       \\
-        \code{YthanEstuary}           & $M$ and $N$ for all nodes except          & \citet{HallAndRaffaelli1991JAnimEcol} \\
-                                      & detritus; nodes are well-resolved at      & \citet{EmmersonAndRaffaelli2004}      \\
-                                      & high trophic levels but poorly resolved   &                                       \\
-                                      & at low trophic levels                     &                                       \\
+        \code{Benguela}               & Crude estimate of $M$; trophic links have & \citet{Yodzis1998JAnimEcol}                \\
+                                      & diet fraction                             &                                            \\
+        \code{BroadstoneStream}       & $M$ and $N$; nodes are well resolved      & \citet{WoodwardEtAl2005AER}                \\
+        \code{TL84} and \code{TL86}   & $M$ and $N$; nodes are well resolved      & \citet{CarpenterAndKitchell1996}           \\
+                                      &                                           & \citet{CohenEtAl2003PNAS}                  \\
+                                      &                                           & \citet{JonssonEtAl2005AER}                 \\
+        \code{SkipwithPond}           & No $M$ or $N$; trophic links have         & \citet{Warren1989Oikos}                    \\
+                                      & `link.evidence' and `link.life.stage'     &                                            \\
+                                      & properties                                &                                            \\
+        \code{YthanEstuary}           & $M$ and $N$ for all nodes except          & \citet{HallAndRaffaelli1991JAnimEcol}      \\
+                                      & detritus; nodes are well-resolved at      & \citet{EmmersonAndRaffaelli2004JAnimEcol}  \\
+                                      & high trophic levels but poorly resolved   &                                            \\
+                                      & at low trophic levels                     &                                            \\
       \bottomrule 
     \end{tabular} 
     \caption{Community data in Cheddar. $M$: body mass. $N$: numerical 

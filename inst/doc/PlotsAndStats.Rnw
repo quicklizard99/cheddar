@@ -94,7 +94,7 @@ The examples below use the datasets from the two pelagic epilimnion
 communities of Tuesday Lake, Michigan, USA \citep{CarpenterAndKitchell1996, 
 CohenEtAl2003PNAS, JonssonEtAl2005AER} and the community of 
 Ythan Estuary in north Scotland \citep{HallAndRaffaelli1991JAnimEcol, 
-EmmersonAndRaffaelli2004}.
+EmmersonAndRaffaelli2004JAnimEcol}.
 
 \section{Plotting node properties}
 \subsection{\code{PlotNPS}}
