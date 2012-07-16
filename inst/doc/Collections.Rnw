@@ -177,7 +177,7 @@ pH has a significant effect on number of nodes.
 \setkeys{Gin}{width=0.5\textwidth}
 \begin{center}
 <<fig=TRUE>>=
-with(res, plot(pH, NumberOfNodes))
+with(res, plot(pH, NumberOfNodes, pch=19))
 abline(model)
 @
 \end{center}
@@ -242,9 +242,9 @@ properties <- CollectionCPS(pHWebs, c(S='NumberOfNodes',
                                       'LinkageDensity', 
                                       C='DirectedConnectance'))
 par(mfrow=c(1,3))
-with(properties, plot(S, L))
-with(properties, plot(S, LinkageDensity))
-with(properties, plot(S, C))
+with(properties, plot(S, L, pch=19))
+with(properties, plot(S, LinkageDensity, pch=19))
+with(properties, plot(S, C, pch=19))
 @
 \end{center}
 These plots are similar to those in \cite{RiedeEtAl2010AER}, Fig.\ 1 (p 143) 
