@@ -394,21 +394,27 @@ legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 \end{center}
 
 \newpage
-\noindent The more complex example below uses the `kingdom' level of 
-classification with a different colour.
+\noindent The example below uses the `kingdom' level of classification 
+to determine node colours and symbols.
 \begin{center}
 <<fig=TRUE>>=
-colour.spec = c(Bacteria='darkgoldenrod', Plantae='green3', Chromista='blue3', 
-                Protozoa='orange3', Animalia='red3', 'black')
+symbol.spec = c(Bacteria=21, Plantae=22, Chromista=23, 
+                Protozoa=24, Animalia=25, 19)
+colour.spec = c(Bacteria='purple3', Plantae='green3', 
+                Chromista='blue3', Protozoa='orange3', 
+                Animalia='red3', 'black')
 PlotNvM(TL84, 
-        colour.by='kingdom', colour.spec=colour.spec, pch=19, 
+        symbol.by='kingdom', symbol.spec=symbol.spec, 
+        bg.by='kingdom', bg.spec=colour.spec, 
+        colour.by='kingdom', colour.spec=colour.spec, 
         highlight.nodes=NULL)
-legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
+legend("topright", legend=names(colour.spec), pch=symbol.spec, 
+       col=colour.spec, pt.bg=colour.spec)
 @
 \end{center}
-The black cirlce is for the `Unclassified flagellates' node. This node 
+The black circle is for the `Unclassified flagellates' node. This node 
 does not have any associated classification and is matched by the unnamed 
-values in \code{colour.spec}.
+values in \code{symbol.spec} and \code{colour.spec}.
 
 \newpage
 \noindent You can use \code{pch=NA} to turn off symbols and just show the food 
