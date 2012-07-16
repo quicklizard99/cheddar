@@ -357,7 +357,7 @@ the specifications given in \code{DefaultCategoryColours} and
 \code{DefaultCategorySymbols}.
 \begin{center}
 <<fig=TRUE>>=
-PlotNvM(TL84, col=1, pch=1, highlight.nodes=NULL)
+PlotNvM(TL84, col=1, pch=19, highlight.nodes=NULL)
 @
 \end{center}
 
@@ -395,23 +395,20 @@ legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 
 \newpage
 \noindent The more complex example below uses the `kingdom' level of 
-classification with a different colour and symbol.
+classification with a different colour.
 \begin{center}
 <<fig=TRUE>>=
-symbol.spec = c(Bacteria=19, Plantae=1, Chromista=2, Protozoa=3, 
-                Animalia=4, 5)
-colour.spec = c(Bacteria='pink2', Plantae='green2', Chromista='blue3', 
-                Protozoa='grey20', Animalia='red3', 'black')
+colour.spec = c(Bacteria='darkgoldenrod', Plantae='green3', Chromista='blue3', 
+                Protozoa='orange3', Animalia='red3', 'black')
 PlotNvM(TL84, 
-        symbol.by='kingdom', symbol.spec=symbol.spec, 
-        colour.by='kingdom', colour.spec=colour.spec, 
+        colour.by='kingdom', colour.spec=colour.spec, pch=19, 
         highlight.nodes=NULL)
-legend("topright", legend=names(colour.spec), pch=symbol.spec, col=colour.spec)
+legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 @
 \end{center}
-The black diamond is for the `Unclassified flagellates' node. This node 
+The black cirlce is for the `Unclassified flagellates' node. This node 
 does not have any associated classification and is matched by the unnamed 
-values in \code{symbol.spec} and \code{colour.spec}.
+values in \code{colour.spec}.
 
 \newpage
 \noindent You can use \code{pch=NA} to turn off symbols and just show the food 
@@ -846,10 +843,10 @@ PlotCommunityVCommunity <- function(a, b, property, xlim=NULL, ylim=NULL, ...)
 
 par(mfrow=c(1,2))
 PlotCommunityVCommunity(TL84, TL86, 'Log10N', xlim=c(-2,10), ylim=c(-2,10), 
-                        xlab=~log[10]~(N~of~84), ylab=~log[10]~(N~of~86))
+                        xlab=~log[10]~(N~of~84), ylab=~log[10]~(N~of~86),pch=19)
 PlotCommunityVCommunity(TL84, TL86, 'Log10Biomass', 
                         xlim=c(-8,-2), ylim=c(-8,-2), 
-                        xlab=~log[10]~(B~of~84), ylab=~log[10]~(B~of~86))
+                        xlab=~log[10]~(B~of~84), ylab=~log[10]~(B~of~86),pch=19)
 title(main='Jonsson et al. (2005) AER, Fig. 12 (p 61)', outer=TRUE)
 @
 \end{center}
