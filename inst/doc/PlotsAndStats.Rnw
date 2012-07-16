@@ -118,7 +118,7 @@ PlotNPS(TL84, 'Log10M', 'Log10N')
 @
 \end{center}
 \code{PlotNPS} uses the `category' node property, if present, to 
-decide plotting colours and symbols. Producers are shown by open green circles, 
+decide plotting colours and symbols. Producers are shown by green circles, 
 invertebrates by blue squares and vertebrate ectotherms by purple diamonds. 
 Many of Cheddar's plotting an analysis functions make use of the `category' 
 node property; this property is optional but, if included in a community, it 
@@ -596,7 +596,7 @@ PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M', axes.limits.equal=TRUE)
 \code{PlotTLPS} uses the \code{TLPS} function to assemble data for 
 plotting. \code{PlotTLPS} uses the \code{category} node property of resources, 
 if present, to decide plotting colours and symbols. Resources that 
-are producers are shown by open green circles, invertebrates by blue squares 
+are producers are shown by green circles, invertebrates by blue squares 
 and vertebrate ectotherms by purple diamonds. This is explored more in 
 Section \ref{sec:nps_colours and symbols}. 
 
