@@ -89,7 +89,7 @@ static DoubleVector dijkstra(const IntVector &consumers,
         }
       }
 
-      if(-1==u || !isfinite(lengths[source + n*u]))
+      if(-1==u || !R_FINITE(lengths[source + n*u]))
       {
         break;
       }
