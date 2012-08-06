@@ -49,8 +49,8 @@ collection has a valid pH property but this is not enforced by
 within a collection to not have a pH property, to have a pH of \code{NA} or 
 even to have an invalid pH, for example a negative value. 
 
-\code{Community} supports standard generic functions \code{plot}, \code{print}, 
-\code{subset} and \code{summary}.
+\code{CommunityCollection} supports standard generic functions \code{plot}, 
+\code{print}, \code{subset} and \code{summary}.
 }
 
 \value{A new object of class \code{CommunityCollection}.}
