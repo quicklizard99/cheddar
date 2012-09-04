@@ -511,16 +511,19 @@ CPS <- function(community, properties=NULL)
 
 HasM <- function(community)
 {
+    if(!is.Community(community)) stop('Not a Community')
     return ('M' %in% NodePropertyNames(community))
 }
 
 HasN <- function(community)
 {
+    if(!is.Community(community)) stop('Not a Community')
     return ('N' %in% NodePropertyNames(community))
 }
 
 HasTrophicLinks <- function(community)
 {
+    if(!is.Community(community)) stop('Not a Community')
     return (!is.null(TLPS(community)))
 }
 
