@@ -68,6 +68,13 @@ par(mfrow=c(1,2))
 PlotPredationMatrix(TL84, main=paste('Sum diet gap', SumDietGaps(TL84)))
 res <- MinimiseSumDietGaps(TL84)
 PlotPredationMatrix(res$reordered)
+
+# The method is stochastic so several optimisations might be required to 
+# find the global minimum. Repeat 10 times and find the run that resulted in 
+# the minimum sum diet gaps.
+res <- replicate(10, MinimiseSumDietGaps(TL84), simplify=FALSE)
+sum.gaps <- sapply(res, '[[', 'sum.gaps')
+res[[which.min(sum.gaps)]]$reordered
 }
 
 \keyword{utilities}
