@@ -46,7 +46,7 @@ deviations comparable across different food webs.
 
 \value{A vector of length \code{NumberOfNodes}.}
 
-\references{Williams, R. J. and Martinez, N. D. (2000) Simple rules yield 
+\references{Williams, R.J. and Martinez, N.D. (2000) Simple rules yield 
     complex food webs. Nature \bold{404}, 180--183.}
 
 \author{Lawrence Hudson}
