@@ -23,7 +23,7 @@ any name that meets the criteria of the \code{properties} parameter of
 \code{decreasing} are used to compute the new node ordering. 
 
 Different node orders will yield different \code{SumDietGaps} and 
-\code{SumConsumerGaps} (e.g.\ Stouffer et al 2006, Zook et al 2011).
+\code{SumConsumerGaps} (e.g. Stouffer et al 2006, Zook et al 2011).
 }
 
 \value{A \code{Community}.}
