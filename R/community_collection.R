@@ -109,11 +109,13 @@ CommunityCollection <- function(communities)
 
 print.CommunityCollection <- function(x, ...)
 {
+    if(!is.CommunityCollection(x)) stop('Not a CommunityCollection')
     cat(paste('A collection of', length(x), 'communities\n'))
 }
 
 summary.CommunityCollection <- function(object, ...)
 {
+    if(!is.CommunityCollection(object)) stop('Not a CommunityCollection')
     return (do.call('.SimpleRBindFill', lapply(object, function(o) as.data.frame(summary(o)))))
 }
 
