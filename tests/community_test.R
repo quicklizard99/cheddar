@@ -916,6 +916,8 @@ TestNumberOfNodesByClass <- function()
 {
     stopifnot(NumberOfNodesByClass(TL84) == 
               c(invertebrate=22, producer=31, vert.ecto=3))
+    stopifnot(NumberOfNodesByClass(BroadstoneStream) == 
+              c('<unnamed>'=2, invertebrate=34, producer=1))
 }
 
 FractionOfNodesByClass <- function()

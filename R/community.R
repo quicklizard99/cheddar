@@ -966,6 +966,7 @@ ApplyByClass <- function(community, property, class, fn, ...)
     stopifnot(!all(is.na(class)))
     np <- NPS(community, property)[, property]
     res <- tapply(np, class, fn, ...)
+    names(res)[names(res)==''] <- .UnnamedString()
     return(do.call("c", list(res)))
 }
 
