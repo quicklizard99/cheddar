@@ -57,8 +57,8 @@ Cheddar contains some published empirical food web collection datasets
       \toprule
         Community         & Notes                                                 & References                            \\
       \midrule
-        \code{Millstream} & The control and drought treatments from one replicate & \cite{LedgerEtAl2008Oecologia}        \\
-                          & of a long-running study investigating how drought     & \cite{LedgerEtAl2011GlobChangeBiol}   \\
+        \code{Millstream} & The control and drought treatments from one replicate & \cite{LedgerEtAl2011GlobChangeBiol}   \\
+                          & of a long-running study investigating how drought     & \cite{LedgerEtAl2012NatureClimChange} \\
                           & affects community structure                           & \cite{WoodwardEtAl2012PhilTransRSocB} \\
         \code{pHWebs}     & Ten of the twenty stream communities sampled across a & \cite{LayerEtAl2010AER}               \\
                           & wide pH gradient                                      &                                       \\
