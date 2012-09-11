@@ -28,7 +28,7 @@ DefaultLinkColour()
 PlaceMissingPoints(x, xlim, y, ylim)
 
 LMabline(model, ...)
-PlotLinearModels(models, colour.spec, col = NULL, ...)
+PlotLinearModels(models, colour.spec, col, ...)
 FormatLM(model, slope.95.ci = FALSE, ci.plus.minus.style = FALSE, 
          r = FALSE, r.squared = TRUE, model.var.names = TRUE) 
 }

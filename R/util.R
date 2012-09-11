@@ -315,3 +315,10 @@ PredationMatrixToLinks <- function(pm)
 {
     return (starts.with==substr(string, 1, nchar(starts.with)))
 }
+
+.UnnamedString <- function()
+{
+    # A string for unnamed objects
+    return ('<unnamed>')
+}
+

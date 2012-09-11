@@ -104,6 +104,12 @@ TestNvMLinearRegressions <- function()
     stopifnot(all(c(2.56, -0.41) == round(coef(res[['producer']]), 2)))
     stopifnot(all(c(1.47, -0.32) == round(coef(res[['invertebrate']]), 2)))
     stopifnot(all(c(-34.66, -11.63) == round(coef(res[['vert.ecto']]), 2)))
+
+    # Some nodes lack both a category and N and M
+    res <- NvMLinearRegressions(BroadstoneStream)
+    stopifnot(all(c(1.08, -0.74) == round(coef(res[['all']]), 2)))
+    stopifnot(all(c(1.08, -0.74) == round(coef(res[['invertebrate']]), 2)))
+    stopifnot(is.null(res[['<unnamed>']]))
 }
 
 TestNvMTriTrophic1 <- function()
@@ -369,7 +375,8 @@ TestNvMSlopeAndIntercept <- function()
 
 TestNvMSlopeAndInterceptByClass <- function()
 {
-    stopifnot(all.equal(NvMSlopeByClass(c6), c(slope.=-1.04009302605305009592)))
+    stopifnot(all.equal(NvMSlopeByClass(c6), 
+                        c(slope.all=-1.04009302605305009592)))
     stopifnot(all.equal(NvMSlopeByClass(TL84), 
                         c(slope.all=-0.82711453844476423569, 
                           slope.producer=-0.40715089579609509141, 
@@ -377,7 +384,7 @@ TestNvMSlopeAndInterceptByClass <- function()
                           slope.vert.ecto=-11.62787086769622924010)))
 
     stopifnot(all.equal(NvMInterceptByClass(c6), 
-                        c(intercept.=2.57689795300774049380)))
+                        c(intercept.all=2.57689795300774049380)))
     stopifnot(all.equal(NvMInterceptByClass(TL84), 
                         c(intercept.all=-2.68627529180856106095, 
                           intercept.producer=2.55833642234355362888, 
@@ -385,8 +392,8 @@ TestNvMSlopeAndInterceptByClass <- function()
                           intercept.vert.ecto=-34.66097278952445748246)))
 
     stopifnot(all.equal(NvMSlopeAndInterceptByClass(c6), 
-                        c(slope.=-1.04009302605305009592, 
-                          intercept.=2.57689795300774049380)))
+                        c(slope.all=-1.04009302605305009592, 
+                          intercept.all=2.57689795300774049380)))
     stopifnot(all.equal(NvMSlopeAndInterceptByClass(TL84), 
                         c(slope.all=-0.82711453844476423569, 
                           slope.producer=-0.40715089579609509141, 
@@ -396,5 +403,23 @@ TestNvMSlopeAndInterceptByClass <- function()
                           intercept.producer=2.55833642234355362888, 
                           intercept.invertebrate=1.46560619016986248830, 
                           intercept.vert.ecto=-34.66097278952445748246)))
+
+    stopifnot(all.equal(NvMSlopeAndInterceptByClass(BroadstoneStream), 
+                        c(slope.all=-0.73916494129624910059, 
+                          slope.invertebrate=-0.73916494129624910059, 
+                          'slope.<unnamed>'=NA,
+                          intercept.all=1.07951558005480174884, 
+                          intercept.invertebrate=1.07951558005480174884,
+                          'intercept.<unnamed>'=NA)))
+
+    stopifnot(all.equal(NvMSlopeAndInterceptByClass(c8), 
+                        c(slope.all=-1.13010867280292459647,
+                          slope.vert.endo=-2.46246611880339116851, 
+                          'slope.<unnamed>'=-1.87594996135075309240, 
+                          slope.vert.ecto=2.32192809488736218171,
+                          intercept.all=1.43776079409099510897, 
+                          intercept.vert.endo=2.95188840529695939452, 
+                          'intercept.<unnamed>'=1.16171181260177314165, 
+                          intercept.vert.ecto=0.00000000000000005773)))
 }
 
