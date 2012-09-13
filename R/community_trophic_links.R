@@ -1094,7 +1094,7 @@ SumConsumerGaps <- function(community)
                                         'sum', 
                                          ifelse(diet.gap, 'diet', 'consumer'), 
                                         'gap minimised to',
-                                        res$best.diet.gap))
+                                        res$sum.gaps))
         return (list(sum.gaps=res$sum.gaps, 
                      order=unname(NP(community, 'node'))[best], 
                      reordered=reordered))
