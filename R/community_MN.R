@@ -181,9 +181,9 @@ NvMSlopeAndInterceptByClass <- function(community, class)
 {
     # The slopes and intercepts of lines through log10(N) versus log10(M) data
     models <- NvMLinearRegressions(community, class)
-    slopes <- sapply(models, coef)[2,]
+    slopes <- sapply(models, function(m) ifelse(is.null(m), NA, coef(m)[2]))
     names(slopes) <- paste('slope.', names(slopes), sep='')
-    intercepts <- sapply(models, coef)[1,]
+    intercepts <- sapply(models, function(m) ifelse(is.null(m), NA, coef(m)[1]))
     names(intercepts) <- paste('intercept.', names(intercepts), sep='')
     return (c(slopes, intercepts))
 }

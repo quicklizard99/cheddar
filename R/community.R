@@ -1028,13 +1028,19 @@ LinearRegressionByClass <- function(community, X, Y, class)
         if(length(indices)>1)
         {
             model <- DoLM(indices)
-            if(!is.null(model))
+            if(is.null(model))
+            {
+                models[1+length(models)] <- list(NULL)
+            }
+            else
             {
                 models[[1+length(models)]] <- model
-                names(models)[length(models)] <- klass
             }
+            names(models)[length(models)] <- klass
         }
     }
+
+    names(models)[''==names(models)] <- .UnnamedString()
 
     return (models)
 }

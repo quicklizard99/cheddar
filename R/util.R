@@ -322,7 +322,7 @@ PredationMatrixToLinks <- function(pm)
 
 .UnnamedString <- function()
 {
-    # A name for unnamed objects :-)
+    # A string for unnamed objects
     return ('<unnamed>')
 }
 
