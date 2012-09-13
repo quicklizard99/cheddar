@@ -37,7 +37,9 @@ CollectionCPS(pHWebs, c('pH', 'NumberOfNodes'))
 # A shorter name for the 'NumberOfNodes' column
 CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
 
-# A function that returns more than one value
+# A function that returns more than one value. Some pHWebs communities contain 
+# nodes (detritus and the like) that do not have a category. These appear in 
+# <unnamed>.
 CollectionCPS(pHWebs, 'SumBiomassByClass')
 
 # A shorted name for the 'SumBiomassByClass' columns

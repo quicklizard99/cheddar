@@ -170,6 +170,11 @@ PredationMatrixToLinks <- function(pm)
         v <- t(v)
     }
 
+    if(!is.null(dim(v)))
+    {
+        colnames(v)[colnames(v)==''] <- .UnnamedString()
+    }
+
     # Check sizes
     v.length <- ifelse(is.null(dim(v)), length(v), nrow(v))
     if(expected.size!=v.length)
@@ -314,3 +319,10 @@ PredationMatrixToLinks <- function(pm)
 {
     return (starts.with==substr(string, 1, nchar(starts.with)))
 }
+
+.UnnamedString <- function()
+{
+    # A name for unnamed objects :-)
+    return ('<unnamed>')
+}
+
