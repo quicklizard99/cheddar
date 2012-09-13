@@ -4,6 +4,7 @@
 \usepackage{amsmath}            % /eqref
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
+\usepackage{url}
 
 %\VignetteIndexEntry{Importing and exporting data in-to and out-of Cheddar}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
@@ -258,11 +259,13 @@ The \code{SaveCommunity} and \code{SaveCollection} functions export
 communities and collections respectively to CSV files.
 
 \subsection{igraph}
-The following function can be used to export a Cheddar community to the igraph 
-package \citep{igraph}.
-% Don't evaulate this block because it depends upon igraph, which might not be 
-% installed
+Rather than attempt to implement, test and support the myriad complex graph 
+analyses that have been applied to food webs, we point users to the igraph \R 
+package \citep{igraph}, which is a powerful graph-analysis toolkit. The 
+following function exports a Cheddar community to igraph. 
 <<eval=FALSE>>=
+install.packages('igraph')
+library(igraph)
 ToIgraph <- function(community, weight=NULL)
 {
     if(is.null(TLPS(community)))
@@ -291,17 +294,52 @@ data(Benguela)
 Benguela.ig <- ToIgraph(Benguela, weight='diet.fraction')
 @
 
-\subsection{NetIndices}
+\subsection{NetIndices and foodweb (R forge)}
 The \code{PredationMatrix} function can be used to export a Cheddar community 
-to the NetIndices package \citep{NetIndices}.
-<<>>=
+to the NetIndices \citep{NetIndices} and foodweb \citep{foodwebLinEtAl} 
+packages, the later available only on R Forge \citep{TheusslAndZeileis2009} at 
+the time of writing.
+<<eval=FALSE>>=
+install.packages("NetIndices")
+install.packages("foodweb", repos="http://R-Forge.R-project.org")
+
+library(foodweb)    # Loads the dependency NetIndices
+
 data(TL84)
-# Unweighted network
-TL84.ni <- PredationMatrix(TL84)
+TL84.ni <- PredationMatrix(TL84, weight='diet.fraction')
+
+# Plot the predation matrix
+foodweb::imageweb(TL84.ni)
 
 data(Benguela)
 # Use diet fraction to weight network
 Benguela.ni <- PredationMatrix(Benguela, weight='diet.fraction')
+
+# Compute flow-based trophic level using both Cheddar and NetIndices. Both 
+# packages should give the same results
+cbind(ni.tl=NetIndices::TrophInd(Benguela.ni)[,'TL'], 
+      cheddar.tl=FlowBasedTrophicLevel(Benguela, weight.by='diet.fraction'))
+@
+
+\subsection{foodweb (CRAN)}
+A second package named foodweb \citealp{foodwebPerdomoEtAl} is available on 
+CRAN. This package plots 3D graphs of webs.
+<<eval=FALSE>>=
+install.packages("foodweb")
+
+library(foodweb)
+
+data(TL84)
+
+# Write the predation matrix to a csv file in the format required by foodweb.
+write.table(PredationMatrix(TL84), 'TL84.foodweb.csv', row.names=FALSE, 
+            col.names=FALSE, sep=',')
+
+# foodweb::analyse.single() creates a file called 'Results-TL84.foodweb.csv' 
+# to the current directory. This file will contain some basic food-web 
+# statistics and is required by the foodweb::plotweb() function.
+foodweb::analyse.single('TL84.foodweb.csv')
+foodweb::plotweb(cols=1:7, radii=7:1)           # A 3D plot
 @
 
 \bibliographystyle{plainnat}
