@@ -16,7 +16,8 @@
 your own plot functions.}
 
 \usage{
-Log10BLabel(community, name = "italic(B)", units = with(CPS(community), paste(M.units, "~", N.units)))
+Log10BLabel(community, name = "italic(B)", units = with(CPS(community), 
+            paste(M.units, "~", N.units)))
 Log10MLabel(community, name = "italic(M)", units = CPS(community)$M.units)
 Log10NLabel(community, name = "italic(N)", units = CPS(community)$N.units)
 
@@ -28,9 +29,9 @@ DefaultLinkColour()
 PlaceMissingPoints(x, xlim, y, ylim)
 
 LMabline(model, ...)
-PlotLinearModels(models, colour.spec, col = NULL, ...)
+PlotLinearModels(models, colour.spec, col, ...)
 FormatLM(model, slope.95.ci = FALSE, ci.plus.minus.style = FALSE, 
-         r = FALSE, r.squared = TRUE, model.var.names = TRUE) 
+         r = FALSE, r.squared = TRUE, model.var.names = TRUE, dp = 2) 
 }
 
 \arguments{
@@ -53,12 +54,13 @@ FormatLM(model, slope.95.ci = FALSE, ci.plus.minus.style = FALSE,
   \item{ci.plus.minus.style}{logical - if \code{TRUE} then the 95\% confidence 
     intervals are shown by a `plus-minus' sign. If \code{FALSE} then the 
     confidence intervals are shown by an upper and lower bound.}
-  \item{r}{logical - if \code{TRUE} the `r' is included in the description.}
-  \item{r.squared}{ - if \code{TRUE} the `r squared' is included in the 
+  \item{r}{logical - if \code{TRUE} then `r' is included in the description.}
+  \item{r.squared}{logical - if \code{TRUE} then `r squared' is included in the 
     description.}
   \item{model.var.names}{logical - if \code{TRUE} then the names of the 
     dependent and independent variables fitted in the model are included 
     in the description. If \code{FALSE}, the names `x' and `y' are used.}
+  \item{dp}{the number of decimal places to which values are presented.}
   \item{\dots}{other values passed to plotting functions.}
 }
 

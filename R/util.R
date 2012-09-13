@@ -1,66 +1,65 @@
 # Stuff that is useful and doesn't belong anywhere else
 FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE, 
-                     r=FALSE, r.squared=TRUE, model.var.names=TRUE)
+                     r=FALSE, r.squared=TRUE, model.var.names=TRUE, 
+                     dp=2)
 {
-    # A textual representation of a linear model
-    if(TRUE)
-    {
-        variables <- as.character(attr(terms(model), 'variables'))
-        # variables is in the form "list" "response name" "x name"
-        y.name <- variables[1+attr(terms(model), 'response')]
-        x.name <- names(model$coefficients)[2]
+    if(is.null(model))    return('')
 
-        co <- model$coefficients
-        a <- sprintf('%.2f', co[1])
+    # An expression representation of a linear model equation
 
-        b <- co[2]
-        # Put space after '+' or '-'
-        if(b>=0)     b <- paste('+', sprintf('%.2f', b))
-        else if(b<0) b <- paste('-', sprintf('%.2f', abs(b)))
+    # See "Automation of Mathematical Annotation in Plots", Uwe Liggs, R News, 
+    # Vol. 2/3, December 2002
 
-        if(model.var.names)
-        {
-            l <- paste(y.name, ' = ', a, ' ', b, x.name, sep='')
-        }
-        else
-        {
-            l <- paste('y = ', a, ' ', b, 'x', sep='')
-        }
-    }
+    variables <- as.character(attr(terms(model), 'variables'))
+    y.name <- variables[1+attr(terms(model), 'response')]
+    x.name <- names(model$coefficients)[2]
 
     # Slope confidence interavals
+    confint <- ''
     if(slope.95.ci && !ci.plus.minus.style)
     {
-        ci <- confint(model, level=0.95)[x.name,]
-        l <- paste(l, ' (95% CI ', sprintf('%.2f', ci[1]), ',', 
-                   sprintf('%.2f', ci[2]), ')',sep='')
+        ci <- round(confint(model, level=0.95)[x.name,], dp)
+        confint <- paste("~'(95% CI ", ci[1], ',', ci[2], ")'", sep='')
+        confint <- parse(text=confint)[[1]]
     }
     else if(slope.95.ci && ci.plus.minus.style)
     {
-        ci <- diff(as.vector(confint(model, x.name, level=0.95)))/2
+        ci <- round(diff(as.vector(confint(model, x.name, level=0.95)))/2, dp)
         n <- nrow(model$model)
-        plus.minus <- list(as.raw(c(0xc2, 0xb1)))  # The UTF-8 encoding of ±
-        l <- paste(l, ' ', iconv(plus.minus, 'utf-8', ''), ' ', 
-                   sprintf('%.2f', ci), '(95% CI, n=', n, ')', sep='')
+        confint <- paste("'' %+-%", ci, "~'(95% CI, n=", n, ")'", sep='')
+        confint <- parse(text=confint)[[1]]
     }
 
     # Correlation coefficient
+    r.val = ''
     if(r)
     {
-        r <- sign(model$coefficients[x.name]) * summary(model)$r.squared^0.5
-        l <- paste(l, ', r = ', sprintf('%.2f', r), sep='')
+        r.val <- sign(model$coefficients[x.name]) * summary(model)$r.squared^0.5
+        r.val <- paste(', r =', round(r.val, dp))
     }
 
     # Coefficient of determination
+    r2 <- ''
     if(r.squared)
     {
-        r.squared <- sprintf('%.2f', summary(model)$r.squared)
-        squared <- list(as.raw(c(0xc2, 0xb2)))   # The UTF-8 encoding of ²
-        l <- paste(l, ', r', iconv(squared, 'utf-8', ''), ' = ', r.squared, 
-                   sep='')
+        r2 <- substitute(expression(','~r^2 == r2), 
+                         list(r2=round(summary(model)$r.squared, dp)))
+        r2 <- paste("','~r^2==", round(summary(model)$r.squared, dp))
+        r2 <- parse(text=r2)[[1]]
     }
 
-    return (l)
+    # Coefficients
+    co <- round(model$coefficients, dp)
+
+    return (eval(substitute(expression(y == a~sign~b * x * confint * r * r2), 
+                            list(y=ifelse(model.var.names, y.name, 'y'),
+                                 a=co[1], 
+                                 sign=ifelse(co[2]<0, '-', '+'),
+                                 b=abs(co[2]), 
+                                 x=ifelse(model.var.names, x.name, 'x'),
+                                 confint=confint, 
+                                 r=r.val,
+                                 r2=r2))))
 }
 
 .StripWhitespace <- function(v)
