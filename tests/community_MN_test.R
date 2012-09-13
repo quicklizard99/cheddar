@@ -41,9 +41,12 @@ TestSumNByClass <- function()
     stopifnot(all(c(NP(c6,'N')[3], sum(NP(c6,'N')[1:2])) == 
                   SumNByClass(c6, class=c('a','a',''))))
 
-    res <- SumNByClass(TL84)
-    stopifnot(all(c(1.8678e+06, 3.2107e+09, 2.2350e+00) == res))
-    stopifnot(c('invertebrate', 'producer', 'vert.ecto') == names(res))
+    stopifnot(all.equal(c(invertebrate=1.8678e+06, producer=3.2107e+09, 
+                          vert.ecto=2.2350e+00), SumNByClass(TL84)))
+
+    stopifnot(all(is.na(SumNByClass(BroadstoneStream))))
+    stopifnot(all.equal(c(0, invertebrate=32081.3, producer=0.0), 
+                        SumNByClass(BroadstoneStream, na.rm=TRUE)))
 
     F(SumNByClass(c6, class=NULL))
 }
@@ -61,10 +64,14 @@ TestSumBiomassByClass <- function()
     stopifnot(all(c(Biomass(c6)[3], sum(Biomass(c6)[1:2])) == 
                   SumBiomassByClass(c6, class=c('a','a',''))))
 
-    res <- SumBiomassByClass(TL84)
-    stopifnot(all.equal(c(0.005376146,0.007438267,0.002315590), as.vector(res), 
-                        tolerance=1e-7))
-    stopifnot(c('invertebrate', 'producer', 'vert.ecto') == names(res))
+    stopifnot(all.equal(c(invertebrate=0.0054, producer=0.0074, 
+                          vert.ecto=0.0023), 
+                        round(SumBiomassByClass(TL84), 4)))
+
+    stopifnot(all(is.na(SumBiomassByClass(BroadstoneStream))))
+    stopifnot(all.equal(c(0, invertebrate=830.4337, producer=0), 
+                      round(SumBiomassByClass(BroadstoneStream, na.rm=TRUE),4)))
+
 
     F(SumBiomassByClass(c6, class=NULL))
 }

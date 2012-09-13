@@ -224,6 +224,21 @@ CollectionCPS(pHWebs, c('pH',
                         Slope='NvMSlope',
                         B='SumBiomassByClass'))
 @
+The Old Lodge, Allt a'Mharcaidh and Mill Stream communities each have some 
+invertebrates without $M$ and/or $N$ either because not enough individuals 
+could be sampled to computed these properties reliably or because no data 
+could be found in the literature. The biomasses for these nodes is \code{NA} 
+and the summed biomasses for invertebrates in Old Lodge, Allt a'Mharcaidh and 
+Mill Stream are therefore \code{NA}. We can ignore missing values by setting 
+the `na.rm' parameter.
+<<>>=
+CollectionCPS(pHWebs, list('pH',
+                           S='NumberOfNodes',
+                           L='NumberOfTrophicLinks', 
+                           C='DirectedConnectance',
+                           Slope='NvMSlope',
+                           B=list('SumBiomassByClass', na.rm=TRUE)))
+@
 The example below shows a table of `node connectivity' for each community.
 <<>>=
 CollectionCPS(pHWebs, c(Basal='FractionBasalNodes', 

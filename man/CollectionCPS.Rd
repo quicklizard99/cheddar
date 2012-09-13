@@ -40,7 +40,10 @@ CollectionCPS(pHWebs, c('pH', S='NumberOfNodes'))
 # A function that returns more than one value
 CollectionCPS(pHWebs, 'SumBiomassByClass')
 
-# A shorted name for the 'SumBiomassByClass' columns
+# Prefix columns with 'B'
 CollectionCPS(pHWebs, c(B='SumBiomassByClass'))
+
+# Remove biomasses of NA
+CollectionCPS(pHWebs, list(B=list('SumBiomassByClass', na.rm=TRUE)))
 }
 \keyword{utilities}

@@ -118,19 +118,19 @@ ResourceLargerThanConsumer <- function(community)
     }
 }
 
-SumMByClass <- function(community, class)
+SumMByClass <- function(community, class, na.rm=FALSE)
 {
-    return (ApplyByClass(community, 'M', class, sum, na.rm=TRUE))
+    return (ApplyByClass(community, 'M', class, sum, na.rm=na.rm))
 }
 
-SumNByClass <- function(community, class)
+SumNByClass <- function(community, class, na.rm=FALSE)
 {
-    return (ApplyByClass(community, 'N', class, sum, na.rm=TRUE))
+    return (ApplyByClass(community, 'N', class, sum, na.rm=na.rm))
 }
 
-SumBiomassByClass <- function(community, class)
+SumBiomassByClass <- function(community, class, na.rm=FALSE)
 {
-    return (ApplyByClass(community, 'Biomass', class, sum, na.rm=TRUE))
+    return (ApplyByClass(community, 'Biomass', class, sum, na.rm=na.rm))
 }
 
 NvMLinearRegressions <- function(community, class)

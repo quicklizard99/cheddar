@@ -8,9 +8,9 @@
 
 \usage{
 ApplyByClass(community, property, class, fn, \dots)
-SumMByClass(community, class)
-SumNByClass(community, class)
-SumBiomassByClass(community, class)
+SumMByClass(community, class, na.rm=FALSE)
+SumNByClass(community, class, na.rm=FALSE)
+SumBiomassByClass(community, class, na.rm=FALSE)
 }
 
 \arguments{
@@ -19,6 +19,7 @@ SumBiomassByClass(community, class)
   \item{class}{the property over which \code{fn} is applied. Defaults to 
   'category' if the community has a node property with that name.}
   \item{fn}{a function.}
+  \item{na.rm}{logical - if \code{TRUE} then \code{NA} values are removed.}
   \item{\dots}{Other parameters to \code{fn}.}
 }
 
@@ -54,6 +55,15 @@ ApplyByClass(TL84, 'M', 'category', max)
 
 # A list of min and max M
 ApplyByClass(TL84, 'M', 'category', range)
+
+# Broadstone Stream has some nodes without M and/or N
+data(BroadstoneStream)
+
+# All returned values are NA
+SumMByClass(BroadstoneStream)
+
+# Get rid of NAs
+SumMByClass(BroadstoneStream, na.rm=TRUE)
 }
 \keyword{utilities}
 
