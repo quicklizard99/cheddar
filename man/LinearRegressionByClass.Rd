@@ -15,7 +15,10 @@
 
 \details{A linear model is fitted through all data points and through each 
 subset of the data given by \code{class}. A list of \code{lm} objects is 
-returned. 
+returned. The list will contain \code{NULL} if it is not possible to fit a 
+linear regression to that class; this will happen for classes that contain 
+just a single node or that contain all or all but one nodes where \code{X} 
+and/or \code{Y} is \code{NA}.
 }
 
 \value{A \code{list} of \code{lm} objects.}

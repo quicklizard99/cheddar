@@ -1075,7 +1075,7 @@ TestMinimiseSumDietGaps <- function()
         }
         else
         {
-            if( (res$sum.gaps / expected[title]) > 1.7)
+            if( (res$sum.gaps / expected[title]) > 3)
             {
                 stop(paste('Best diet gap for', title, 'of', res$sum.gaps,
                            'is much higher than the expected value of', 

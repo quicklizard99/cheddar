@@ -30,13 +30,22 @@ NvMSlopeAndInterceptByClass(community, class)
 
 \value{\code{NvMLinearRegressions} returns a \code{list} of \code{lm} 
 objects, one for each \code{class} and one fitted to all data. 
+The list will contain \code{NULL} if it is not possible to fit a 
+linear regression to that class; this will happen for classes that contain 
+just a single node or that contain all or all but one nodes where \code{X} 
+and/or \code{Y} is \code{NA}.
+
 \code{NvMSlope}, \code{NvMIntercept} and \code{NvMSlopeAndIntercept} return 
 the slope, intercept and both, respectively, of a single linear regression 
 fitted to all data. 
 \code{NvMSlopeByClass}, \code{NvMInterceptByClass} and 
 \code{NvMSlopeAndInterceptByClass} return the slope, intercept and both, 
 respectively, of linear regressions fitteed to each \code{class} and one 
-to all data.}
+to all data. For classes where  it is not possible to fit a linear 
+regression (for the  reasons given above), \code{NvMSlopeByClass}, 
+\code{NvMInterceptByClass} and \code{NvMSlopeAndInterceptByClass} will 
+return \code{NA}.
+}
 
 \author{Lawrence Hudson}
 

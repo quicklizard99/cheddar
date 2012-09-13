@@ -92,20 +92,7 @@ RunTests <- function(tests)
         for(test in tests)
         {
             cat(paste('Running [', test, ']\n', sep=''))
-            res <- tryCatch(do.call(test, args=list()), error=function(e) e)
-            if(!is.null(res))
-            {
-                # Strip whitespace from error message
-                res <- gsub('\n', '', res)
-                cat(paste('[', test, '] raised unexpected error [', res, ']\n', 
-                    sep=''))
-                traceback()
-                failed <- c(failed, test)
-            }
-            else
-            {
-                
-            }
+            do.call(test, args=list())
         }
 
         cat(paste(length(tests), 'tests ran.\n'))

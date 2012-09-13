@@ -981,11 +981,6 @@ LinearRegressionByClass <- function(community, X, Y, class)
 
     if(!is.Community(community)) stop('Not a Community')
 
-    if(NumberOfNodes(community)<2)
-    {
-        return (NULL)
-    }
-
     if(missing(class) && 'category' %in% NodePropertyNames(community))
     {
         class <- 'category'
@@ -1000,10 +995,6 @@ LinearRegressionByClass <- function(community, X, Y, class)
     stopifnot(length(Y)==NumberOfNodes(community))
 
     include <- which(!is.na(X) & !is.na(Y))
-    if(0==length(include))
-    {
-        return (NULL)
-    }
 
     DoLM <- function(indices)
     {
@@ -1030,14 +1021,20 @@ LinearRegressionByClass <- function(community, X, Y, class)
             model <- DoLM(indices)
             if(is.null(model))
             {
+                # R's nasty treatment of NULL in lists
                 models[1+length(models)] <- list(NULL)
             }
             else
             {
                 models[[1+length(models)]] <- model
             }
-            names(models)[length(models)] <- klass
         }
+        else
+        {
+            models[1+length(models)] <- list(NULL)
+        }
+
+        names(models)[length(models)] <- klass
     }
 
     names(models)[''==names(models)] <- .UnnamedString()

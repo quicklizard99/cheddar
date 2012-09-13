@@ -23,17 +23,19 @@
         {
             # A named vector that is a mapping from property values to 
             # graphical parameter values.
-            # Property values that are 0, empty string or NA match unnamed 
-            # values in spec.
+            # Property values that are 0, empty string, .UnnamedString() or NA 
+            # match unnamed values in spec.
             stopifnot(length(unique(names(spec)))==length(spec))
             param <- spec[property]
 
             # Fix empty 
             if(any(''==names(spec)) && 
-                   any(is.na(property) | 0==property | ''==property))
+                   any(is.na(property) | 0==property | ''==property | 
+                       property==.UnnamedString()))
             {
                 d <- which(''==names(spec))
-                param[is.na(property) | 0==property | ''==property] <- spec[d]
+                param[is.na(property) | 0==property | ''==property | 
+                      property==.UnnamedString()] <- spec[d]
             }
 
             missing <- is.na(param)   # !property %in% names(spec)
@@ -306,11 +308,11 @@ PlotLinearModels <- function(models, colour.spec, col, ...)
     # names of the models list.
     # If col is missing and colour.spec is missing, DefaultCategoryColours()
     # if all of the model names are in the DefaultCategoryColours() names or 
-    # are '', 'all', .UnnamedString().
+    # are '', 'all' or .UnnamedString().
 
     if('lm'==class(models))
     {
-        models <- list(models)
+        models <- list(all==models)
     }
 
     stopifnot('list'==class(models))
@@ -321,24 +323,17 @@ PlotLinearModels <- function(models, colour.spec, col, ...)
     {
         if(missing(colour.spec))
         {
-            # Use the default category colours if appropriate
-            default.colour.spec <- DefaultCategoryColours()
+            # Use the default category colours if no spec provided
+            colour.spec <- DefaultCategoryColours()
+        }
 
-            # The list of models produced by LinearRegressionByClass() has an 
-            # 'all' model. If the community has any nodes with an empty 
-            # category then models will contain an element named 
-            # .UnnamedString(). Treat these as empty.
-            treat.as.empty <- c('', 'all', .UnnamedString())
-            if(all(model.name %in% c(names(default.colour.spec), 
-                                     treat.as.empty)))
-            {
-                colour.spec <- default.colour.spec
-                model.name[model.name %in% treat.as.empty] <- ''
-            }
-            else
-            {
-                colour.spec <- NULL
-            }
+        # A list of linear models fitted by LinearRegressionsByClass() 
+        # will have an 'all' model that has been fitted to all data points.
+        # TODO This feels like a bit of a hack - find a better solution.
+        if('all' %in% model.name && !'all' %in% names(colour.spec) && 
+           '' %in% names(colour.spec))
+        {
+            model.name['all'==model.name] <- ''
         }
 
         col <- .GraphParamFromSpec(model.name, colour.spec, 'black')

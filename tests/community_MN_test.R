@@ -42,11 +42,11 @@ TestSumNByClass <- function()
                   SumNByClass(c6, class=c('a','a',''))))
 
     stopifnot(all.equal(c(invertebrate=1.8678e+06, producer=3.2107e+09, 
-                          vert.ecto=2.2350e+00),
-                        round(SumNByClass(TL84), 4)))
+                          vert.ecto=2.2350e+00), SumNByClass(TL84)))
 
-    stopifnot(all.equal(c('<unnamed>'=0, invertebrate=32081.3, producer=0),
-                        round(SumNByClass(BroadstoneStream), 4)))
+    stopifnot(all(is.na(SumNByClass(BroadstoneStream))))
+    stopifnot(all.equal(c('<unnamed>'=0, invertebrate=32081.3, producer=0.0), 
+                        SumNByClass(BroadstoneStream, na.rm=TRUE)))
 
     F(SumNByClass(c6, class=NULL))
 }
@@ -64,19 +64,21 @@ TestSumBiomassByClass <- function()
     stopifnot(all(c(Biomass(c6)[3], sum(Biomass(c6)[1:2])) == 
                   SumBiomassByClass(c6, class=c('a','a',''))))
 
-    stopifnot(all.equal(c(invertebrate=0.0054,producer=0.0074,vert.ecto=0.0023),
-                        round(SumBiomassByClass(TL84), 4)))
-
-    stopifnot(all.equal(c('<unnamed>'=0, invertebrate=830.4337, producer=0),
-                        round(SumBiomassByClass(BroadstoneStream), 4)))
+    stopifnot(all(is.na(SumBiomassByClass(BroadstoneStream))))
+    stopifnot(all.equal(c('<unnamed>'=0, invertebrate=830.4337, producer=0), 
+                      round(SumBiomassByClass(BroadstoneStream, na.rm=TRUE),4)))
 
     F(SumBiomassByClass(c6, class=NULL))
 }
 
 TestNvMLinearRegressions <- function()
 {
-    stopifnot(is.null(NvMLinearRegressions(c1)))
-    stopifnot(is.null(NvMLinearRegressions(c2)))
+    res <- NvMLinearRegressions(c1)
+    stopifnot('all'==names(res))
+    stopifnot(is.null(res[[1]]))
+    res <- NvMLinearRegressions(c2)
+    stopifnot('all'==names(res))
+    stopifnot(is.null(res[[1]]))
 
     # Using default class of category - all NA as c6 does not have category
     res <- NvMLinearRegressions(c6)
@@ -89,16 +91,18 @@ TestNvMLinearRegressions <- function()
     stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
 
     # Each node is in it's own class. Can't fit lm through one data point 
-    # so should only have 'all'
-    res <- NvMLinearRegressions(c6, class=c(1,2,3))
-    stopifnot('all'==names(res))
+    # so should have 'all' and three NULLs
+    res <- NvMLinearRegressions(c6, class=c('a','b','c'))
+    stopifnot(c('all','a','b','c')==names(res))
     stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
+    stopifnot(all(sapply(res[2:4], is.null)))
 
     # Node 1 in a different class to nodes 2 and 3
-    res <- NvMLinearRegressions(c6, class=c(1,2,2))
-    stopifnot(c('all','2')==names(res))
+    res <- NvMLinearRegressions(c6, class=c('a','b','b'))
+    stopifnot(c('all', 'a', 'b')==names(res))
     stopifnot(all(c(2.58,-1.04) ==  round(coef(res[['all']]), 2)))
-    stopifnot(all(c(1.14,-0.20) ==  round(coef(res[['2']]), 2)))
+    stopifnot(all(c(1.14,-0.20) ==  round(coef(res[['b']]), 2)))
+    stopifnot(is.null(res[['a']]))
 
     # category is default class
     res <- NvMLinearRegressions(TL84)
@@ -114,6 +118,7 @@ TestNvMLinearRegressions <- function()
     stopifnot(all(c(1.08, -0.74) == round(coef(res[['all']]), 2)))
     stopifnot(all(c(1.08, -0.74) == round(coef(res[['invertebrate']]), 2)))
     stopifnot(is.null(res[['<unnamed>']]))
+    stopifnot(is.null(res[['producer']]))
 }
 
 TestNvMTriTrophic1 <- function()
@@ -412,9 +417,11 @@ TestNvMSlopeAndInterceptByClass <- function()
                         c(slope.all=-0.73916494129624910059, 
                           slope.invertebrate=-0.73916494129624910059, 
                           'slope.<unnamed>'=NA,
+                          slope.producer=NA,
                           intercept.all=1.07951558005480174884, 
                           intercept.invertebrate=1.07951558005480174884,
-                          'intercept.<unnamed>'=NA)))
+                          'intercept.<unnamed>'=NA,
+                         intercept.producer=NA)))
 
     stopifnot(all.equal(NvMSlopeAndInterceptByClass(c8), 
                         c(slope.all=-1.13010867280292459647,

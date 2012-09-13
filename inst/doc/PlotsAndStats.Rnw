@@ -417,6 +417,32 @@ does not have any associated classification and is matched by the unnamed
 values in \code{symbol.spec} and \code{colour.spec}.
 
 \newpage
+\noindent We can fit and plot linear regressions for each kingdom by using the 
+\code{NvMLinearRegressions} and \code{PlotLinearModels} functions. The food 
+web is not shown in this plot to make the regression lines clearer.
+\begin{center}
+<<fig=TRUE>>=
+symbol.spec = c(Bacteria=21, Plantae=22, Chromista=23, 
+                Protozoa=24, Animalia=25, 19)
+colour.spec = c(Bacteria='purple3', Plantae='green3', 
+                Chromista='blue3', Protozoa='orange3', 
+                Animalia='red3', 'black')
+PlotNvM(TL84, 
+        symbol.by='kingdom', symbol.spec=symbol.spec, 
+        bg.by='kingdom', bg.spec=colour.spec, 
+        colour.by='kingdom', colour.spec=colour.spec, 
+        highlight.nodes=NULL, show.web=FALSE)
+legend("topright", legend=names(colour.spec), pch=symbol.spec, 
+       col=colour.spec, pt.bg=colour.spec)
+models <- NvMLinearRegressions(TL84, class='kingdom')
+colours <- PlotLinearModels(models, colour.spec=colour.spec)
+@
+\end{center}
+The model fitted through all data points is matched by the empty value in 
+\code{colour.spec} so is drawn in black. \code{NvMLinearRegressions} is 
+described in more detail in Section \ref{sec:n_v_m}.
+
+\newpage
 \noindent You can use \code{pch=NA} to turn off symbols and just show the food 
 web.
 \begin{center}
@@ -631,7 +657,7 @@ community being plotted has a node property called `category' the function
 uses `resource.category' to decide plotting colours and symbols using 
 the specifications given in \code{DefaultCategoryColours} and 
 \code{DefaultCategorySymbols}, as shown by this plot of 
-consumer-versus-resource $\log_{10}$-transormed body mass:
+consumer-versus-resource $\log_{10}$-transormed body mass.
 \begin{center}
 <<fig=TRUE>>=
 PlotMRvMC(TL84)
@@ -652,7 +678,34 @@ point. See the section for `bg' in the help page for the \R \code{par}
 function for more information.
 
 \newpage
+\section{Values by class}
+Cheddar provides functions that compute values over classes of nodes. For 
+example, we can examine the total $M$, $N$ and biomass in each category.
+<<>>=
+SumMByClass(TL84)
+SumNByClass(TL84)
+SumBiomassByClass(TL84)
+@
+These functions can show the sums by any property of the community so we 
+could look at the same totals by kingdom. 
+<<>>=
+SumMByClass(TL84, 'kingdom')
+SumNByClass(TL84, 'kingdom')
+SumBiomassByClass(TL84, 'kingdom')
+@
+The 'Unclassified flagellates' node does not have a kingdom, and the 
+resulting value is labelled '<unnamed>'. These convenience functions are 
+`wrappers' around the more general-purpose \code{ApplyByClass} function. 
+The following two calls produce the same result.
+<<>>=
+SumBiomassByClass(TL84)
+ApplyByClass(TL84, 'Biomass', 'category', sum)
+@
+See the help page for \code{ApplyByClass} for more examples.
+
+\newpage
 \section{$\log_{10}(N)$-versus-$\log_{10}(M)$ statistics}
+\label{sec:n_v_m}
 Cheddar contains some helper functions that assist in the commonly-performed 
 $\log_{10}(N)$-versus-$\log_{10}(M)$ statistics. 
 \code{NvMLinearRegressions} returns a list of linear regressions through 
@@ -667,9 +720,6 @@ You can extract the slopes and intercepts for each of these regression models.
 <<>>=
 sapply(models, 'coef')
 @
-The \code{PlotLinearModels} functions adds lines for each regression to 
-an existing plot of $\log_{10}(N)$-versus-$\log_{10}(M)$. See the `Plots' 
-vignette for an example of \code{PlotLinearModels}.
 The `class' parameter defines the sets of nodes to which 
 \code{NvMLinearRegressions} fits regressions. This defaults to `category', if 
 this is present in the community. You can set the `class' parameter to fit 
@@ -679,17 +729,49 @@ shown below.
 models <- NvMLinearRegressions(TL84, class='phylum')
 names(models)
 @
-The \code{NvMSlope} helper function returns the slope of an ordinary linear 
+The '<unnamed>' label refers to a model fitted to nodes that do not have a 
+phylum - just the 'unclassifified flagellates' node in this case. 
+It is not possible to fit a linear regression to a single data point and 
+\code{NvMLinearRegressions} returns \code{NULL} for classes that contain just 
+a single node. The data contain one node in phylum Euglenozoa and one node 
+without a phylum, so these entries are \code{NULL}.
+<<>>=
+sapply(models, is.null)
+@
+\code{NvMLinearRegressions} also returns \code{NULL} for classes where all or 
+all bar one of the nodes have $M$ and/or $M$ of \code{NA}. The Broadstone 
+stream dataset contains detrital and algal nodes that all lack both $M$ and 
+$N$; these nodes are in the <unnamed> category.
+<<>>=
+data(BroadstoneStream)
+models <- NvMLinearRegressions(BroadstoneStream)
+sapply(models, is.null)
+@
+Three helper functions return the slope and/or intercept of an ordinary linear 
 regression through all data.
 <<>>=
 NvMSlope(TL84)
+NvMIntercept(TL84)
+NvMSlopeAndIntercept(TL84)
+@
+Three more helper functions extract these coefficients for each class.
+<<>>=
+NvMSlopeByClass(TL84)
+NvMInterceptByClass(TL84)
+NvMSlopeAndInterceptByClass(TL84)
+@
+You can fit regressions to whatever class you like.
+<<>>=
+NvMSlopeByClass(TL84, class='kingdom')
+NvMInterceptByClass(TL84, class='kingdom')
+NvMSlopeAndInterceptByClass(TL84, class='kingdom')
 @
 
 \newpage
 \section{Tri-trophic statistics}
 \cite{CohenEtAl2009PNAS} proposed a novel analysis that 
 simultaneously considers body mass, $M$, numerical abundance, $N$, and the 
-community's food web. The \code{NvMTriTrophicStatistics} provides this 
+community's food web. The \code{NvMTriTrophicStatistics} function provides this 
 analysis. It takes a single community as its only parameter. Cannibalistic 
 links and all nodes with an $N$ or $M$ of \code{NA} are removed before 
 statistics are computed. It returns a list containing three matrices: `links', 
