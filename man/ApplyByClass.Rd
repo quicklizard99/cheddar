@@ -54,6 +54,11 @@ ApplyByClass(TL84, 'M', 'category', max)
 
 # A list of min and max M
 ApplyByClass(TL84, 'M', 'category', range)
+
+# The BroadstoneStream data contains some nodes (detritus and the like) that do 
+# not have a category. These appear in <unnamed>.
+data(BroadstoneStream)
+SumMByClass(BroadstoneStream)
 }
 \keyword{utilities}
 
