@@ -207,7 +207,7 @@ The functions in the above examples each return a single value. Functions
 are permitted to return more than one value, such as \code{SumBiomassByClass}, 
 which returns the total biomass in each class; the default class is `category'. 
 Some pHWebs communities contain nodes (detritus and the like) that do not have 
-a category. These appear in '<unnamed>'.
+a category. These appear in `<unnamed>'.
 <<>>=
 CollectionCPS(pHWebs, c('pH',
                         S='NumberOfNodes',

@@ -693,8 +693,8 @@ SumMByClass(TL84, 'kingdom')
 SumNByClass(TL84, 'kingdom')
 SumBiomassByClass(TL84, 'kingdom')
 @
-The 'Unclassified flagellates' node does not have a kingdom, and the 
-resulting value is labelled '<unnamed>'. These convenience functions are 
+The `Unclassified flagellates' node does not have a kingdom, and the 
+resulting value is labelled `<unnamed>'. These convenience functions are 
 `wrappers' around the more general-purpose \code{ApplyByClass} function. 
 The following two calls produce the same result.
 <<>>=
@@ -729,8 +729,8 @@ shown below.
 models <- NvMLinearRegressions(TL84, class='phylum')
 names(models)
 @
-The '<unnamed>' label refers to a model fitted to nodes that do not have a 
-phylum - just the 'unclassifified flagellates' node in this case. 
+The `<unnamed>' label refers to a model fitted to nodes that do not have a 
+phylum - just the `unclassifified flagellates' node in this case. 
 It is not possible to fit a linear regression to a single data point and 
 \code{NvMLinearRegressions} returns \code{NULL} for classes that contain just 
 a single node. The data contain one node in phylum Euglenozoa and one node 
