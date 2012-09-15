@@ -292,7 +292,7 @@ every trophic link in every community:
 <<>>=
 head(CollectionTLPS(pHWebs))
 @
-Community names and resource and consumer M:
+Community names and resource and consumer $M$:
 <<>>=
 head(CollectionTLPS(pHWebs, 'M'))
 @
