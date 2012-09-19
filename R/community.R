@@ -531,7 +531,7 @@ HasTrophicLinks <- function(community)
 {
     if(!HasM(community))
     {
-        stop('This function .Requires body mass (M) data')
+        stop('This function requires body mass (M) data')
     }
 }
 
@@ -539,7 +539,7 @@ HasTrophicLinks <- function(community)
 {
     if(!HasN(community))
     {
-        stop('This function .Requires abundance (N) data')
+        stop('This function requires abundance (N) data')
     }
 }
 
@@ -547,7 +547,7 @@ HasTrophicLinks <- function(community)
 {
     if(!HasTrophicLinks(community))
     {
-        stop('This function .Requires trophic links')
+        stop('This function requires trophic links')
     }
 }
 
