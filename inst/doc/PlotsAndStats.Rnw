@@ -5,6 +5,8 @@
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 \usepackage{amsfonts}           % /checkmark
+\usepackage{url}
+\usepackage[none]{hyphenat}     % No hyphens
 
 %\VignetteIndexEntry{Cheddar plots and statistics}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
@@ -13,6 +15,8 @@
 \newcommand{\R}{\textsf{R} }
 
 \begin{document}
+
+\sloppy    % Prevent hyphenated words running into margins
 
 \title{Cheddar plots and statistics 
        (\Sexpr{packageDescription('cheddar', fields='Version')})}

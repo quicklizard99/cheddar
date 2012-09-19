@@ -5,6 +5,7 @@
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
 \usepackage{url}
+\usepackage[none]{hyphenat}     % No hyphens
 
 %\VignetteIndexEntry{Importing and exporting data in-to and out-of Cheddar}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
@@ -13,6 +14,8 @@
 \newcommand{\R}{\textsf{R} }
 
 \begin{document}
+
+\sloppy    % Prevent hyphenated words running into margins
 
 \title{Importing and exporting data in to and out of Cheddar
        (\Sexpr{packageDescription('cheddar', fields='Version')})}
@@ -256,7 +259,8 @@ detail.
 \newpage
 \section{Export}
 The \code{SaveCommunity} and \code{SaveCollection} functions export 
-communities and collections respectively to CSV files.
+communities and collections respectively to CSV files. We illustrate how 
+to export Cheddar data to some relevant \R packages and to other software. 
 
 \subsection{igraph}
 Rather than attempt to implement, test and support the myriad complex graph 
@@ -298,7 +302,7 @@ Benguela.ig <- ToIgraph(Benguela, weight='diet.fraction')
 The \code{PredationMatrix} function can be used to export a Cheddar community 
 to the NetIndices \citep{NetIndices} and foodweb \citep{foodwebLinEtAl} 
 packages, the later available only on R Forge \citep{TheusslAndZeileis2009} at 
-the time of writing.
+the time of writing. The foodweb package depends upon NetIndices.
 <<eval=FALSE>>=
 install.packages("NetIndices")
 install.packages("foodweb", repos="http://R-Forge.R-project.org")
@@ -321,9 +325,35 @@ cbind(ni.tl=NetIndices::TrophInd(Benguela.ni)[,'TL'],
       cheddar.tl=FlowBasedTrophicLevel(Benguela, weight.by='diet.fraction'))
 @
 
+\subsection{Network 3D}
+The Network 3D Windows software produces interactive 3D visualisations of food 
+webs and other networks \citep{YoonEtAl2004}. The function below exports a 
+Cheddar community to the `.web' and `.txt' files used by the Network 3D 
+software.
+<<eval=FALSE>>=
+library(cheddar)
+
+ExportToNetwork3D <- function(community, dir, fname_root=CP(community, 'title'))
+{
+    links <- cbind(PredatorID=NodeNameIndices(community, TLPS(community)[,'consumer']),
+                   PreyID=NodeNameIndices(community, TLPS(community)[,'resource']))
+    write.table(links, file.path(dir, paste(fname_root, '_links.web', sep='')), 
+                row.names=FALSE, sep=' ')
+
+    species <- cbind(ID=1:NumberOfNodes(community), 
+                     CommonName=NP(community, 'node'))
+                     
+    write.table(links, file.path(dir, paste(fname_root, '_species.txt', sep='')), 
+                row.names=FALSE, sep=' ')
+}
+
+data(TL84)
+ExportToNetwork3D(TL84, 'c:')
+@
+
 \subsection{foodweb (CRAN)}
-A second package named foodweb \citealp{foodwebPerdomoEtAl} is available on 
-CRAN. This package plots 3D graphs of webs.
+A second package named foodweb \citep{foodwebPerdomoEtAl} is available on 
+CRAN. This package also creates 3D graphs of webs.
 <<eval=FALSE>>=
 install.packages("foodweb")
 

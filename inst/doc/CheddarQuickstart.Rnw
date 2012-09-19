@@ -4,6 +4,8 @@
 \usepackage{amsmath}            % /eqref
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
+\usepackage{url}
+\usepackage[none]{hyphenat}     % No hyphens
 
 %\VignetteIndexEntry{A quick introduction to Cheddar}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
@@ -12,6 +14,8 @@
 \newcommand{\R}{\textsf{R} }
 
 \begin{document}
+
+\sloppy    % Prevent hyphenated words running into margins
 
 \title{Cheddar quick start 
        (\Sexpr{packageDescription('cheddar', fields='Version')})}

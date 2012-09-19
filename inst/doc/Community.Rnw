@@ -4,6 +4,8 @@
 \usepackage{amsmath}            % /eqref
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
+\usepackage{url}
+\usepackage[none]{hyphenat}     % No hyphens
 
 %\VignetteIndexEntry{Working with Cheddar communities}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
@@ -12,6 +14,8 @@
 \newcommand{\R}{\textsf{R} }
 
 \begin{document}
+
+\sloppy    % Prevent hyphenated words running into margins
 
 \title{Working with communities
        (\Sexpr{packageDescription('cheddar', fields='Version')})}
@@ -81,6 +85,7 @@ Cheddar contains several published empirical food-web datasets
 \end{table}
 
 \section{Community representation}
+\label{sec:representation}
 A Cheddar community has three aspects: 
 \begin{itemize}
   \item \textit{community properties} such as sampling date, lat \& long, 
@@ -423,11 +428,12 @@ NumberOfTrophicLinks(TL84)
 @
 Data that contain estimates of diet fraction can be used to construct a 
 weighted predation matrix. The \code{Benguela} dataset contains the 
-`diet.fration' node property \citep{Yodzis1998JAnimEcol}.
+`diet.fraction' node property \citep{Yodzis1998JAnimEcol}.
 <<>>=
 data(Benguela)
 pm <- PredationMatrix(Benguela, weight='diet.fraction')
 @
+More information about link strengths is in Section \ref{sec:link_strengths}.
 
 \subsubsection{Node connectivity}
 \label{sec:node_connectivity}
@@ -564,6 +570,69 @@ tail(TrophicLevels(TL84), 10)
 @
 See the help page for \code{TrophicLevels} for more information on these 
 different measures.
+
+
+\subsubsection{Link strengths}
+\label{sec:link_strengths}
+Cheddar's data format allows zero, one or many measures of link strength to be 
+defined simply by adding additional columns to the trophic.links.csv file 
+(Section \ref{sec:representation}). It is also possible to define and use 
+theoretical measures of link strength. Cheddar's \code{PredationMatrix} and 
+\code{FlowBasedTrophicLevel} functions allow empirical and/or theoretical link 
+strengths to be used.
+
+The \code{Benguela} dataset contains empirical estimates of diet fraction for 
+each trophic link \citep{Yodzis1998JAnimEcol}, available as the `diet.fraction' 
+property.
+<<>>=
+data(Benguela)
+head(TLPS(Benguela))
+@
+A binary predation matrix contains just '0' and '1'. 
+<<>>=
+pm <- PredationMatrix(Benguela)
+@
+We can weight the predation matrix by empirical diet fractions.
+<<>>=
+pm <- PredationMatrix(Benguela, weight='diet.fraction')
+@
+These matrices are 29 x 29 and so are not shown for brevity.
+
+The \code{FlowBasedTrophicLevel} function uses the same matrix inversion 
+technique as \code{PreyAveragedTrophicLevel} and uses the `weight.by' node 
+property to provide an estimate of energy flow through each trophic link. 
+We can easily compare these two different ways of computing trophic level.
+<<>>=
+cbind(PreyAveragedTrophicLevel(Benguela), 
+      FlowBasedTrophicLevel(Benguela, weight.by='diet.fraction'))
+@
+Theoretical per capita interaction strengths can be computed from body-mass 
+ratios raised to a power, typically taken to be $2/3$ or $3/4$ 
+\citep{EmmersonAndRaffaelli2004JAnimEcol, ReumanAndCohen2005AER, 
+LayerEtAl2010AER}. We can define a function to compute these theoretical 
+interaction strengths and use it in computation of trophic levels.
+<<>>=
+InteractionStrength <- function(community)
+{
+    tlps <- TLPS(community, node.properties='M')
+    return ((tlps$consumer.M / tlps$resource.M)^3/4)
+}
+
+# The InteractionStrength() function can be used together with TLPS() to 
+# compute the theoretical interaction strength between each resource-consumer pair
+head(TLPS(Benguela, link.properties='InteractionStrength'))
+@
+We can use this measure of interaction strength to compute flow-based trophic 
+level.
+<<>>=
+cbind(PreyAveragedTrophicLevel(Benguela), 
+      FlowBasedTrophicLevel(Benguela, weight.by='diet.fraction'), 
+      FlowBasedTrophicLevel(Benguela, weight.by='InteractionStrength'))
+@
+The weighting functionality offered by the \code{PredationMatrix} and 
+\code{FlowBasedTrophicLevel} functions make it possible to use multiple 
+empirical and/or theoretical link strengths and interaction strengths in 
+analyses.
 
 \newpage
 \section{Community manipulations}

@@ -4,6 +4,8 @@
 \usepackage{amsmath}            % /eqref
 \usepackage[authoryear,round]{natbib}
 \usepackage{booktabs}           % Some macros to improve tables
+\usepackage{url}
+\usepackage[none]{hyphenat}     % No hyphens
 
 %\VignetteIndexEntry{Collections of communities}
 %\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
@@ -12,6 +14,8 @@
 \newcommand{\R}{\textsf{R} }
 
 \begin{document}
+
+\sloppy    % Prevent hyphenated words running into margins
 
 \title{Working with collections of communities 
        (\Sexpr{packageDescription('cheddar', fields='Version')})}
@@ -390,29 +394,34 @@ plot(pHWebs, plot.fn=PlotTLPS, X='consumer.Log10M',
 
 \newpage
 \section{Modifying communities}
-As mentioned previously, collections cannot be modified directly because 
-many checks for data consistency are run when collections are constructed 
-(Section \ref{sec:basic_operations}). However, the function 
-\code{CollectionApply} is provided to assist with modifying collections.
-For example, with certain analyses it can be desirable to remove isolated nodes.
+The \code{CollectionApply} function allows communities within collections to 
+be modified. For example, with certain analyses it can be desirable to remove 
+isolated nodes.
 <<>>=
+# Bere Stream has some isolated nodes
 CollectionCPS(pHWebs, 'FractionIsolatedNodes')
 pHWebs.no.iso <- CollectionApply(pHWebs, RemoveIsolatedNodes)
-CollectionCPS(pHWebs.no.iso, 'FractionIsolatedNodes')
+CollectionCPS(pHWebs.no.iso, 'FractionIsolatedNodes')   # All 0
 @
 The \code{CollectionApply} function can be used with any function that 
 modifies communities, such as \code{RemoveCannibalisticLinks}.
 <<>>=
+# The number of cannibals in each community
 sapply(pHWebs, function(community) length(Cannibals(community)))
 pHWebs.no.can <- CollectionApply(pHWebs, RemoveCannibalisticLinks)
 sapply(pHWebs.no.can, function(community) length(Cannibals(community)))
 @
 The function to be applied to each community can also take additional 
-parameters. The following example reorders the nodes each community by body 
+parameters. The following example reorders each community's nodes by body 
 mass.
 <<>>=
 head(CollectionNPS(pHWebs))
 pHWebs.by.M <- CollectionApply(pHWebs, OrderCommunity, 'M')
+head(CollectionNPS(pHWebs.by.M))
+@
+We can put the nodes lacking $M$ first.
+<<>>=
+pHWebs.by.M <- CollectionApply(pHWebs, OrderCommunity, 'M', na.last=FALSE)
 head(CollectionNPS(pHWebs.by.M))
 @
 
@@ -428,12 +437,19 @@ CollectionCPS(pHWebs.decreasing.pH)
 To order alphabetically by community name.
 <<>>=
 pHWebs.name <- OrderCollection(pHWebs, 'title')
-CollectionCPS(pHWebs.name, c('pH', 'NumberOfNodes'))
+CollectionCPS(pHWebs.name)
 @
-To sort by latitude and then by pH.
+You can sort on computed properties, such as the number of nodes.
 <<>>=
-pHWebs.lat.and.pH <- OrderCollection(pHWebs, 'lat', 'pH')
-CollectionCPS(pHWebs.lat.and.pH, c('lat', 'pH'))
+pHWebs.n.nodes <- OrderCollection(pHWebs, 'NumberOfNodes')
+CollectionCPS(pHWebs.n.nodes, c('pH', 'lat', 'NumberOfNodes'))
+@
+Two communities have 21 nodes and two have 25. We can sort on more than one 
+property to break ties. This example sorts by number of nodes and the latitude 
+within number of nodes.
+<<>>=
+pHWebs.n.nodes.and.lat <- OrderCollection(pHWebs, 'NumberOfNodes', 'lat')
+CollectionCPS(pHWebs.n.nodes.and.lat, c('pH', 'lat', 'NumberOfNodes'))
 @
 
 \newpage
