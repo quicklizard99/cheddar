@@ -3,9 +3,12 @@
 \alias{Millstream}
 \title{Millstream}
 \description{The control and drought treatments from one of the four replicates 
-from a long-running study of the effects of drought on community structure.}
+from a long-running study of the effects of drought on community structure.
+
+Taxonomic classification provided by Mark Ledger.}
 \usage{Millstream}
 \format{\code{CommunityCollection}.}
+\source{Ledger et al, 2011; Ledger et al, 2012; Woodward et al 2012.}
 \references{
 Ledger, M.E. and Edwards, F.K. and Brown, L.E. and Milner, A.M. and Woodward, 
 G. (2011) Impact of simulated drought on ecosystem biomass production: an 

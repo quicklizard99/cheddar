@@ -5,6 +5,7 @@
 \description{The food-web of the Benguela ecosystem.}
 \usage{Benguela}
 \format{\code{Community}.}
+\source{Yodzis, 1988.}
 \references{
 Yodzis, P. (1988) Local trophodynamics and the interaction of marine mammals 
 and fisheries in the Benguela ecosystem. Journal of Animal Ecology \bold{67}, 
