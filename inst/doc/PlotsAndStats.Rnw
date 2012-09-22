@@ -382,20 +382,21 @@ colours.
 PlotNvM(TL84, colour.by='resolved.to', pch=19, highlight.nodes=NULL)
 @
 \end{center}
-The node shown in red is described as `Unclassified flagellates' in the 
-\code{TL84} dataset.
 
 \newpage
 \noindent We can improve on this by showing each level of taxonomic resolution 
 in a specific colour by providing the `colour.spec' parameter.
 \begin{center}
 <<fig=TRUE>>=
-colour.spec <- c(Species='purple3', Genus='green3', Group='red3')
+colour.spec <- c(Species='purple3', Genus='green3', 'red3')
 PlotNvM(TL84, colour.by='resolved.to', colour.spec=colour.spec, pch=19, 
         highlight.nodes=NULL)
 legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 @
 \end{center}
+The `Unclassified flagellates' node does not have a taxonomic resolution. This 
+node is matched by the unnamed value in \code{colour.spec} and so is shown in 
+red.
 
 \newpage
 \noindent The example below uses the `kingdom' level of classification 
@@ -416,9 +417,9 @@ legend("topright", legend=names(colour.spec), pch=symbol.spec,
        col=colour.spec, pt.bg=colour.spec)
 @
 \end{center}
-The black circle is for the `Unclassified flagellates' node. This node 
-does not have any associated classification and is matched by the unnamed 
-values in \code{symbol.spec} and \code{colour.spec}.
+The `Unclassified flagellates' node does not have a classification so is 
+matched by the unnamed values in \code{symbol.spec} and \code{colour.spec} and 
+is shown by a black circle.
 
 \newpage
 \noindent We can fit and plot linear regressions for each kingdom by using the 
