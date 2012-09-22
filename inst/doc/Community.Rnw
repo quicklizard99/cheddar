@@ -426,9 +426,9 @@ as the number of trophic links in the community.
 sum(pm)
 NumberOfTrophicLinks(TL84)
 @
-Data that contain estimates of diet fraction can be used to construct a 
-weighted predation matrix. The \code{Benguela} dataset contains the 
-`diet.fraction' node property \citep{Yodzis1998JAnimEcol}.
+Data that contain estimates of link strength can be used to construct a 
+weighted predation matrix, such as the \code{Benguela} dataset, which contains 
+the `diet.fraction' node property \citep{Yodzis1998JAnimEcol}.
 <<>>=
 data(Benguela)
 pm <- PredationMatrix(Benguela, weight='diet.fraction')
