@@ -540,20 +540,29 @@ primary consumers in many communities, have no clearly-defined $M$
 or $N$. Many datasets will therefore contain food-web nodes that lack 
 one or more properties, for example Ythan Estuary dataset has a large 
 number of primary consumers that depend upon detritus, which has no $M$ or $N$. 
-\code{PlotNPS} (and hence all the high-level functions that use it) places 
-nodes without a property at the lowest extent of the relevant axis. The plot 
-of $\log_{10}(N)$-versus-$\log_{10}(M)$ below shows detritus at the 
-bottom-left of the plot.
+\code{PlotNPS}, and hence the higher-level functions that use it, will place 
+nodes without a property at the lowest extent of the relevant axis if the 
+`show.na' parameter is \code{TRUE}. The \code{PlotNvM}, \code{PlotMvN}, 
+\code{PlotBvM} and \code{PlotMvB} functions all set `show.na' to \code{TRUE} by 
+default. All other functions that delegate to \code{PlotNPS} set `show.na' to 
+\code{FALSE} by default. The first of the $\log_{10}(N)$-versus-$\log_{10}(M)$ 
+plots below show detritus at the bottom-left of the plot.
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 data(YthanEstuary)
+par(mfrow=c(1,2))
 PlotNvM(YthanEstuary)
+PlotNvM(YthanEstuary, show.na=FALSE)
 @
 \end{center}
 
 \newpage
 \noindent The location of the detritus node is determined by the extent of the 
 data, or by the axes limits, if given.
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.5\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 PlotNvM(YthanEstuary, xlim=c(-10, 4), ylim=c(-10, 13))
@@ -596,13 +605,29 @@ PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)),
 \end{center}
 
 \newpage
+\noindent The \code{PlotMvRankM} function delegates work to \code{PlotNPS}. The 
+behaviour of `show.na' for \code{PlotMvRankM} is shown below. The left-hand 
+plot does not show the detritus node whereas the right-hand plot shows it as a 
+grey circle.
+\SweaveOpts{width=8,height=4}
+\setkeys{Gin}{width=\textwidth}
+\begin{center}
+<<fig=TRUE>>=
+data(YthanEstuary)
+par(mfrow=c(1,2))
+PlotMvRankM(YthanEstuary)
+PlotMvRankM(YthanEstuary, show.na=TRUE)
+@
+\end{center}
+
+\newpage
 \section{Plotting trophic-link properties}
 \subsection{\code{PlotTLPS}}
-\code{PlotTLPS} (for Plot Trophic-Link PropertieS) plots one trophic-link 
-property against another. Every Cheddar function that plots a point per 
-trophic link delegates the job of plotting to \code{PlotTLPS} and all of its 
-power and flexibility are available to all of the functions discussed in this 
-section.
+\code{PlotTLPS} (for \textbf{Plot} \textbf{T}rophic-\textbf{L}ink 
+\textbf{P}ropertie\textbf{S}) plots one trophic-link property against another. 
+Every Cheddar function that plots a point per trophic link delegates the job 
+of plotting to \code{PlotTLPS} and all of its power and flexibility are 
+available to all of the functions discussed in this section.
 
 \code{PlotTLPS} accepts the names of properties to plot on the x and 
 y axes. These can be both `first-class' and computed properties of trophic 
@@ -612,6 +637,8 @@ either `resource.' or `consumer.' then the remainder of the name is assumed to
 be a node property. For example, to plot $\log_{10}(M)$ of consumers 
 against $\log_{10}(M)$ of consumers we can use the helper function 
 \code{Log10M}.
+\SweaveOpts{width=6,height=6}
+\setkeys{Gin}{width=0.5\textwidth}
 \begin{center}
 <<fig=TRUE>>=
 PlotTLPS(TL84, 'resource.Log10M', 'consumer.Log10M')
@@ -985,7 +1012,7 @@ which the resource has a larger body mass than the consumer.
 data(BroadstoneStream)
 par(mfrow=c(1,2))
 PlotMvN(BroadstoneStream, show.nodes.as='labels', label.cex=0.8, 
-        xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
+        xlim=c(-2, 4.2), ylim=c(-6,2), main='', show.na=FALSE, 
         highlight.links=NULL)
 abline(a=0, b=-1)
 
@@ -993,7 +1020,7 @@ tlps <- TLPS(BroadstoneStream, node.properties='M')
 lty <- rep(0, NumberOfTrophicLinks(BroadstoneStream))
 lty[tlps$resource.M > tlps$consumer.M] <- 1
 PlotMvN(BroadstoneStream, show.nodes.as='labels', label.cex=0.8, 
-        xlim=c(-2, 4.2), ylim=c(-6,2), main='', 
+        xlim=c(-2, 4.2), ylim=c(-6,2), main='', show.na=FALSE, 
         highlight.links=NULL, link.lty=lty)
 abline(a=0, b=-1)
 title(main='Woodward et al. (2005) AER, Fig. 4 (p 108)', outer=TRUE)

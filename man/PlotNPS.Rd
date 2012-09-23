@@ -40,6 +40,7 @@ PlotNPS(community,
         highlight.links = NULL, 
         highlight.nodes = Cannibals, 
         lowlight.nodes, 
+        show.na=FALSE,
         show.web = TRUE, 
         show.nodes.as = "points", 
         node.labels = NULL, 
@@ -51,21 +52,25 @@ PlotNPS(community,
 PlotMvN(community, 
         xlab = Log10NLabel(community), 
         ylab = Log10MLabel(community), 
+        show.na=TRUE,
         \dots)
 
 PlotNvM(community, 
         xlab = Log10MLabel(community), 
         ylab = Log10NLabel(community), 
+        show.na=TRUE,
         \dots)
 
 PlotBvM(community, 
         xlab = Log10MLabel(community), 
         ylab = Log10BLabel(community), 
+        show.na=TRUE,
         \dots)
 
 PlotMvB(community, 
         xlab = Log10BLabel(community), 
         ylab = Log10MLabel(community), 
+        show.na=TRUE,
         \dots)
 }
 
@@ -117,7 +122,7 @@ PlotMvB(community,
   \item{link.line.type.by}{link link types; must meet the criteria of 
     \code{link.colour.by}.}
   \item{link.line.type.spec}{link line type specification; must meet the 
-    criteria of {link.colour.spec}.}
+    criteria of \code{link.colour.spec}.}
   \item{link.lty}{link line types.}
   \item{link.lwd}{line line widths.}
   \item{highlight.links}{either \code{NULL}, a vector of length 
@@ -129,6 +134,9 @@ PlotMvB(community,
     node names or indices.}
   \item{lowlight.nodes}{nodes to be lowlighted; must meet the criteria of 
     \code{highlight.nodes}.}
+  \item{show.na}{logical - if \code{TRUE} then nodes for which \code{X} and/or 
+    \code{Y} is \code{NA} will be placed at the lowest extent of the relevant 
+    axis. If \code{FALSE} then these nodes will not be plotted.}
   \item{show.web}{logical - if \code{TRUE} and \code{community} has trophic 
     links then the food web is plotted using the \code{link*} and 
     \code{highlight.links} parameters}
@@ -205,7 +213,7 @@ PlotNvM(TL84, col=1, pch=19, highlight.nodes=NULL)
 PlotNvM(TL84, colour.by='resolved.to', pch=19, highlight.nodes=NULL)
 
 # Plot each level of taxonomic resolution in a specific colour
-colour.spec <- c(Species='purple3', Genus='green3', Group='red3')
+colour.spec <- c(Species='purple3', Genus='green3', 'red3')
 PlotNvM(TL84, colour.by='resolved.to', colour.spec=colour.spec, pch=19, 
         highlight.nodes=NULL)
 legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
@@ -213,6 +221,14 @@ legend("topright", legend=names(colour.spec), pch=19, col=colour.spec)
 # Use PlotNPS to plot trophic height against log10 body mass
 PlotNPS(TL84, 'Log10M', 'TrophicHeight', xlab=Log10MLabel(TL84), 
         ylab='Trophic height')
+
+
+# The 'POM (detritus)' node in the Ythan Estuary dataset lacks both body mass 
+# and numerical abundance.
+par(mfrow=c(1,2))
+data(YthanEstuary)
+PlotNvM(YthanEstuary)
+PlotNvM(YthanEstuary, show.na=FALSE)
 }
 \keyword{hplot}
 

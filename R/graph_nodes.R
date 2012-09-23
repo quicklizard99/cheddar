@@ -251,6 +251,7 @@ PlotNPS <- function(community,
                     highlight.links=NULL,
                     highlight.nodes=Cannibals,
                     lowlight.nodes, 
+                    show.na=FALSE,
                     show.web=TRUE,
                     show.nodes.as='points', 
                     node.labels=NULL, 
@@ -283,14 +284,20 @@ PlotNPS <- function(community,
         lowlight.nodes <- which(is.na(X) | is.na(Y))
     }
 
-    points <- PlaceMissingPoints(X, xlim, Y, ylim)
-    plot(points[,1], points[,2], type='n', main=main, xlab=xlab, ylab=ylab, 
+    if(show.na)
+    {
+        points <- PlaceMissingPoints(X, xlim, Y, ylim)
+        X <- points[,1]
+        Y <- points[,2]
+    }
+
+    plot(X, Y, type='n', main=main, xlab=xlab, ylab=ylab, 
          xlim=xlim, ylim=ylim, frame.plot=frame.plot, ...)
     .AddAxisTicks(...)
     if(show.web && !is.null(TLPS(community)))
     {
-        .PlotTrophicLinksAsNetwork(community=community, x=points[,1], 
-                                   y=points[,2], link.colour.by=link.colour.by, 
+        .PlotTrophicLinksAsNetwork(community=community, x=X, y=Y, 
+                                   link.colour.by=link.colour.by, 
                                    link.colour.spec=link.colour.spec, 
                                    link.col=link.col, 
                                    link.line.type.by=link.line.type.by, 
@@ -299,7 +306,7 @@ PlotNPS <- function(community,
                                    highlight.links=highlight.links, ...)
     }
     
-    .PlotNodes(community=community, x=points[,1], y=points[,2], 
+    .PlotNodes(community=community, x=X, y=Y, 
                colour.by=colour.by, colour.spec=colour.spec, col=col, 
                symbol.by=symbol.by, symbol.spec=symbol.spec, pch=pch, 
                bg.by=bg.by, bg.spec=bg.spec, bg=bg, 
@@ -317,6 +324,7 @@ PlotNPS <- function(community,
 PlotNvM <- function(community, 
                     xlab=Log10MLabel(community), 
                     ylab=Log10NLabel(community), 
+                    show.na=TRUE,
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -324,12 +332,13 @@ PlotNvM <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10M', 'Log10N', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, ...)
+            are.values=FALSE, show.na=show.na, ...)
 }
 
 PlotMvN <- function(community, 
                     xlab=Log10NLabel(community), 
                     ylab=Log10MLabel(community), 
+                    show.na=TRUE,
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -337,12 +346,13 @@ PlotMvN <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10N', 'Log10M', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, ...)
+            are.values=FALSE, show.na=show.na, ...)
 }
 
 PlotBvM <- function(community, 
                     xlab=Log10MLabel(community), 
                     ylab=Log10BLabel(community), 
+                    show.na=TRUE, 
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -350,12 +360,13 @@ PlotBvM <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10M', 'Log10Biomass', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, ...)
+            are.values=FALSE, show.na=show.na, ...)
 }
 
 PlotMvB <- function(community, 
                     xlab=Log10BLabel(community), 
                     ylab=Log10MLabel(community), 
+                    show.na=TRUE, 
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -363,7 +374,7 @@ PlotMvB <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10Biomass', 'Log10M', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, ...)
+            are.values=FALSE, show.na=show.na, ...)
 }
 
 PlotRankNPS <- function(community, property, rank.by=property, 
