@@ -17,8 +17,9 @@ phytoplankton: Guiry and Guiry (2012).
 \references{
 Appeltans W., Bouchet P., Boxshall G.A., De Broyer C., de Voogd N.J., 
 Gordon D.P., Hoeksema B.W., Horton T., Kennedy M., Mees J., Poore G.C.B., 
-Read G., Stöhr S., Walter T.C., Costello M.J. Editors. (2012) World Register 
-of Marine Species. Accessed at \url{http://www.marinespecies.org} on 2012-09-20.
+Read G., St\"{o}hr S., Walter T.C., Costello M.J. Editors. (2012) World 
+Register of Marine Species. Accessed at \url{http://www.marinespecies.org} on 
+2012-09-20.
 
 Dickinson, E.C., ed. (2003) The Howard and Moore complete checklist of the 
 birds of the world, Christopher Helm, London, third edition.
