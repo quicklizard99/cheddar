@@ -6,7 +6,7 @@
 \description{The communities of Tuesday Lake, Michigan, USA sampled in 1984 and 
 1986.
 
-Taxonomic classification ,
+Taxonomic classification 
 fish: Froese and Pauly (2012), 
 invertebrates: Smith (2001), 
 phytoplankton: Guiry and Guiry (2012).
