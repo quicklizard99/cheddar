@@ -6,9 +6,9 @@
 \description{The communities of Tuesday Lake, Michigan, USA sampled in 1984 and 
 1986.
 
-Taxonomic classification for arthropods: ?,
+Taxonomic classification ,
 fish: Froese and Pauly (2012), 
-rotifers: Smith (2001), 
+invertebrates: Smith (2001), 
 phytoplankton: Guiry and Guiry (2012).
 }
 \usage{TL84
