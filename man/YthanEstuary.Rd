@@ -4,7 +4,7 @@
 \title{Ythan Estuary}
 \description{The community of Ythan Estuary. 
 
-Taxonomic classification for arthropods: ?,
+Taxonomic classification for 
 birds: Dickinson et al (2003), 
 fish: Froese and Pauly (2012), 
 invertebrates: Appeltans et al (2012), 
