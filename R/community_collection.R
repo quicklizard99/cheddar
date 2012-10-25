@@ -345,7 +345,7 @@ AggregateCommunities <- function(collection,
 
         select.cols <- !colnames(node.properties) %in% c('community', 'node')
         new.nodes <- cbind(new.nodes, 
-                       .AggregateDataFrame(data=node.properties[,select.cols],
+                       .AggregateDataFrame(data=node.properties[,select.cols,drop=FALSE],
                                            aggregate.by=node.properties$node, 
                                            weight.by=weight.by))
     }
@@ -356,7 +356,7 @@ AggregateCommunities <- function(collection,
     {
         new.tl <- new.tl[new.tl$community %in% aggregate,]
         select.cols <- !colnames(new.tl) %in% 'community'
-        new.tl <- .AggregateDataFrame(data=new.tl[,select.cols], 
+        new.tl <- .AggregateDataFrame(data=new.tl[,select.cols,drop=FALSE], 
                   aggregate.by=paste(new.tl[,'resource'],new.tl[,'consumer']),
                   weight.by=NULL)
         stopifnot(!any(duplicated(new.tl)))
@@ -369,14 +369,17 @@ AggregateCommunities <- function(collection,
     if(ncol(new.properties)>1)
     {
         select.cols <- !colnames(new.properties) %in% 'title'
-        new.properties <- .AggregateDataFrame(data=new.properties[,select.cols],
+        new.properties <- .AggregateDataFrame(data=new.properties[,select.cols,drop=FALSE],
                               aggregate.by=rep(1, nrow(new.properties)), 
                               weight.by=NULL)
+        stopifnot(1==nrow(new.properties))
+        new.properties <- do.call(list, new.properties)
+        new.properties$title <- title
     }
-
-    stopifnot(1==nrow(new.properties))
-    new.properties <- do.call(list, new.properties)
-    new.properties$title <- title
+    else
+    {
+        new.properties <- list(title=title)
+    }
 
     return (Community(nodes=new.nodes, 
                       trophic.links=new.tl, 

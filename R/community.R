@@ -332,6 +332,16 @@ Community <- function(nodes, properties, trophic.links=NULL)
                     setdiff(colnames(tl), c('resource', 'consumer'))), 
                     drop=FALSE]
 
+        # Get rid of factors
+        for(n in setdiff(colnames(tl), c('resource', 'consumer')))
+        {
+            if(is.factor(tl[,n]))
+            {
+                tl[,n] <- as.character(tl[,n])
+            }
+        }
+
+
         # Use resource and consumer without whitespace
         trophic.links <- tl
     }

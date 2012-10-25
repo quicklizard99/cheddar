@@ -165,9 +165,48 @@ TestAggregateCommunitiesFailures <- function()
 
 TestAggregateCommunitiesProperties <- function()
 {
-    # TODO Test that union of trophic links taken
+    # Aggregation of three very simple communities with no node or link
+    # properties and only the 'title' community property
+    collection <- CommunityCollection(list(c1,c2,c3))
+    a <- AggregateCommunities(collection)
+    stopifnot(data.frame(node=c('S','R','C'), row.names=c('S','R','C'))==NPS(a))
+    stopifnot(data.frame(resource=c('S','R'), consumer=c('S','C')) == TLPS(a))
+    stopifnot('Aggregation of c1,c2,c3' == CPS(a)$title)
 
-    # Test aggregation of properties for TL84 and TL86
+    # Aggregation of two simple communities with a single node, a single link 
+    # and a single community property
+    x <- Community(nodes=data.frame(node='n', np='np'),
+                   trophic.links=data.frame(resource='n', consumer='n', tlp='tlp'),
+                   properties=list(title='x', cp='cp'))
+    y <- Community(nodes=data.frame(node='n', np='np'),
+                   trophic.links=data.frame(resource='n', consumer='n', tlp='tlp'),
+                   properties=list(title='y', cp='cp'))
+    collection <- CommunityCollection(list(x,y))
+    a <- AggregateCommunities(collection)
+    stopifnot(data.frame(node='n', np='np', row.names='n')==NPS(a))
+    stopifnot(data.frame(resource='n', consumer='n', tlp='tlp') == TLPS(a))
+    stopifnot('Aggregation of x,y' == CPS(a)$title)
+    stopifnot('cp' == CPS(a)$cp)
+    
+    # Aggregation of two simple communities with two node, two link 
+    # and two community properties
+    x <- Community(nodes=data.frame(node='n', np1='npa', np2='npb'),
+                   trophic.links=data.frame(resource='n', consumer='n',
+                                            tlp1='tlpa', tlp2='tlpb'),
+                   properties=list(title='x', cp1='cpa', cp2='cpb'))
+    y <- Community(nodes=data.frame(node='n', np1='npc'),
+                   trophic.links=data.frame(resource='n', consumer='n',
+                                            tlp2='tlpc'),
+                   properties=list(title='y', cp1='cpc'))
+    collection <- CommunityCollection(list(x,y))
+    a <- AggregateCommunities(collection)
+    stopifnot(data.frame(node='n', np1='npa,npc', np2='npb', row.names='n')==NPS(a))
+    stopifnot(data.frame(resource='n', consumer='n', tlp1='tlpa', tlp2='tlpb,tlpc') == TLPS(a))
+    stopifnot('Aggregation of x,y' == CPS(a)$title)
+    stopifnot('cpa,cpc' == CPS(a)$cp1)
+    stopifnot('cpb' == CPS(a)$cp2)
+
+    # Aggregation of properties for TL84 and TL86
     a <- CommunityCollection(list(TL84, TL86))
 
     # tapply coerces INDEX parameter to a factor, sorting alphabetically. This 
@@ -185,6 +224,8 @@ TestAggregateCommunitiesProperties <- function()
     # Check category
     stopifnot(all(NP(b,'category') == tapply(CollectionNPS(a)[,'category'], 
                                              a.nodes, unique)))
+
+    # TODO Test that union of trophic links taken
 }
 
 TestAggregateCommunityMeans <- function()
