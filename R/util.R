@@ -99,14 +99,9 @@ PredationMatrixToLinks <- function(pm)
 
     # The same names must appear in both rows and cols but need not be sorted 
     # the same, i.e. all(sort(colnames) == sort(rownames)) should be TRUE.
-    if(!ncol(pm)>0)
+    if(2!=length(dim(pm)))
     {
-        stop('pm has no columns')
-    }
-
-    if(ncol(pm)!=nrow(pm))
-    {
-        stop('pm is not square')
+        stop('pm is not a matrix')
     }
 
     if(any(is.na(pm) | (pm!=0 & pm!=1)))
@@ -118,11 +113,6 @@ PredationMatrixToLinks <- function(pm)
     if(is.null(colnames(pm)) || is.null(rownames(pm)))
     {
         stop('pm is missing either rownames or colnames')
-    }
-
-    if(any(sort(colnames(pm))!=sort(rownames(pm))))
-    {
-        stop('pm colnames and rownames not matching')
     }
 
     resource <- which(pm>0) %% nrow(pm)

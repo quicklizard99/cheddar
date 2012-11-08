@@ -1,5 +1,6 @@
 TestPredationMatrixToLinks <- function()
 {
+    # Square matrices
     n <- paste('S',1:10)   # Names for testing
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
@@ -7,30 +8,50 @@ TestPredationMatrixToLinks <- function()
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- 1
-    stopifnot(all(c('S 1','S 1') == PredationMatrixToLinks(m)))
+    stopifnot(data.frame(resource='S 1',
+                         consumer='S 1') == PredationMatrixToLinks(m))
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
-    m[1,1] <- 1
-    m[10,10] <- 1
-    stopifnot(all(c('S 1','S 10','S 1','S 10') == 
-                  PredationMatrixToLinks(m)))
+    m[1,1] <- m[10,10] <- 1
+    stopifnot(data.frame(resource=c('S 1','S 10'),
+                         consumer=c('S 1','S 10')) == PredationMatrixToLinks(m))
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
-    m[1,1] <- 1
-    m[10,10] <- 1
-    m[1,10] <- 1
-    stopifnot(all(c('S 1','S 1','S 10', 'S 1','S 10','S 10') == 
-                  PredationMatrixToLinks(m)))
+    m[1,1] <- m[10,10] <- m[1,10] <- 1
+    stopifnot(data.frame(resource=c('S 1','S 1','S 10'), 
+                         consumer=c('S 1','S 10','S 10')) == 
+              PredationMatrixToLinks(m))
 
     t1 <- PredationMatrixToLinks(PredationMatrix(TL84))
     t2 <- TLPS(TL84)[,c('resource', 'consumer')]
     stopifnot(identical(t1, t2))
+
+    # Non-square matrices
+    m <- matrix(0, ncol=3, nrow=2)
+    colnames(m) <- letters[1:3]
+    rownames(m) <- letters[4:5]
+    m[1,2] <- m[2,3] <- m[,1] <- 1
+    stopifnot(data.frame(resource=c('d','e','d','e'), 
+                         consumer=c('a','a','b','c')) == 
+              PredationMatrixToLinks(m))
+
+    # data.frame as input
+    m <- data.frame(a=c(1,1), b=c(1,0), c=c(0,1), row.names=c('d', 'e'))
+    stopifnot(data.frame(resource=c('d','e','d','e'), 
+                         consumer=c('a','a','b','c')) == 
+              PredationMatrixToLinks(m))
+
+    # Not a matrix
+    F(PredationMatrixToLinks(NA))
+    F(PredationMatrixToLinks(1:10))
+    F(PredationMatrixToLinks(NA))
 
     # Illegal values
     m <- matrix(-1, ncol=10, nrow=10, dimnames=list(n,n))
     F(PredationMatrixToLinks(m))
     m <- matrix(NA, ncol=10, nrow=10, dimnames=list(n,n))
     F(PredationMatrixToLinks(m))
+
     # No names
     F(PredationMatrixToLinks(matrix(0, ncol=10, nrow=10)))
 }
