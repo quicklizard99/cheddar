@@ -38,36 +38,46 @@ typedef std::vector<int> IntVector;
 
 class SumDietGap
 {
+  private:
+   IntVector network_;
+   IntVector::size_type nodes_;
+   IntVector consumers_;
+
   public:
     typedef IntVector State;
     typedef int Cost;
 
     SumDietGap(const IntVector &network, IntVector::size_type n) : 
-                                                network_(network), nodes_(n)
+                                                  network_(network), nodes_(n)
     {
-      // network_ is a matrix of nodes x nodes
-      IntVector::size_type square = nodes_ * nodes_;
-      if(square != network.size())
+      // network_ should be a square matrix, i.e. of size nodes x nodes
+      if((nodes_*nodes_) != network.size())
       {
         throw CheddarException("Unexpected network size");
       }
-
-      // Count diet gaps only for consumers with two or more resources. 
-      // Those with fewer than two resources can not contribute to diet gaps. 
-      for(IntVector::size_type consumer=0; consumer<nodes_; ++consumer)
+      else if(nodes_>IntVector::size_type(INT_MAX))
       {
-        if(std::count(network_.begin() + consumer*nodes_, 
-                      network_.begin() + (1+consumer)*nodes_, 1)>1)
-        {
-          consumers_.push_back(consumer);
-        }
+        throw CheddarException("Network too big to guarantee avoiding overflow");
       }
+      else
+      {
+        // Count diet gaps only for consumers with two or more resources. 
+        // Those with fewer than two resources can not contribute to diet gaps. 
+        for(IntVector::size_type consumer=0; consumer<nodes_; ++consumer)
+        {
+          if(std::count(network_.begin() + consumer*nodes_, 
+                        network_.begin() + (1+consumer)*nodes_, 1)>1)
+          {
+            consumers_.push_back(consumer);
+          }
+        }
 
-      DEBUG_COST(Rprintf("Network with [%d] nodes and [%d] consumers\n[", 
-                         nodes_, consumers_.size()));
-      DEBUG_COST(for(IntVector::size_type i=0; i<consumers_.size(); ++i) 
-                   Rprintf("%d ",consumers_[i]));
-      DEBUG_COST(Rprintf("]\n"));
+        DEBUG_COST(Rprintf("Network with [%d] nodes and [%d] consumers\n[", 
+                           nodes_, consumers_.size()));
+        DEBUG_COST(for(IntVector::size_type i=0; i<consumers_.size(); ++i) 
+                     Rprintf("%d ",consumers_[i]));
+        DEBUG_COST(Rprintf("]\n"));
+      }
     }
 
     State initial() const
@@ -77,7 +87,7 @@ class SumDietGap
       return (initial);
     }
 
-    int cost(const State &row_order)
+    Cost cost(const State &row_order) const
     {
       /* The sum of gaps in diets over consumers in network, given row_order.
          consumers should be an an array of nodes that have two or more 
@@ -106,16 +116,19 @@ class SumDietGap
          The obvious, bone-headed solution of finding start and end of diet and 
          counting the number of 0s in between is the quickest of all that I 
          tried. 
+
+         Overflow of sum_diet_gaps should never happen because a nodes_ by 
+         nodes_ matrix can have at most (nodes-1)^2 gaps.
       */
-      int sum_diet_gaps = 0;
-      const IntVector::size_type n =nodes_;
+      Cost sum_diet_gaps = 0;
+      const IntVector::size_type n = nodes_;
 
       for(IntVector::size_type consumer_i=0; consumer_i < consumers_.size(); 
           ++consumer_i)
       {
-        const int consumer = consumers_[consumer_i];
+        const IntVector::value_type consumer = consumers_[consumer_i];
         DEBUG_COST(Rprintf("Consumer [%d] is [%d]\n", consumer_i, consumer));
-        const int consumer_col_offset = consumer*n;
+        const IntVector::value_type consumer_col_offset = consumer*n;
 
         /* Find the start of the diet */
         IntVector::size_type start_of_diet = network_.max_size();
@@ -159,18 +172,32 @@ class SumDietGap
       }
       return (sum_diet_gaps);
     }
+};
 
-  private:
-   IntVector network_;
-   IntVector::size_type nodes_;
-   IntVector consumers_;
+
+class R_RNG
+{
+  // A lock on the R random number generator
+private:
+  R_RNG(const R_RNG &);              // Not implemented
+  R_RNG& operator=(const R_RNG&);    // Not implemented
+
+public:
+  R_RNG()
+  {
+    GetRNGstate();
+  }
+
+  ~R_RNG()
+  {
+    PutRNGstate();
+  }
 };
 
 typedef std::vector<double> DoubleVec;
 class Random
 {
   // A pool of uniformly drawn random numbers
-
   public:
     Random(DoubleVec::size_type pool_size=1e5) : pool_size_(pool_size), 
                                                  current_(0)
@@ -200,9 +227,11 @@ class Random
       DEBUG_RAND(Rprintf("Generating [%d] random numbers\n", pool_size_));
 
       DoubleVec new_pool(pool_size_);
-      GetRNGstate();
-      std::generate(new_pool.begin(), new_pool.end(), unif_rand);
-      PutRNGstate();
+      if(TRUE)
+      {
+        R_RNG rng;
+        std::generate(new_pool.begin(), new_pool.end(), unif_rand);
+      }
       pool_.swap(new_pool);
       current_ = pool_.begin();
     }
@@ -211,8 +240,6 @@ class Random
 template <typename Problem> class SimulatedAnnealing
 {
   // Simple implementation of simulated annealing learning. 
-  // This class is rather tightly bound to the sum diet gap problem but 
-  // could be made more general. 
 
   public: 
     typedef std::pair<typename Problem::State, typename Problem::Cost> Result;
@@ -368,7 +395,8 @@ void sum_diet_gaps(const int *network, const int *nodes,
 
   */
 
-  if(0==network || 0==nodes || *nodes<1 || 0==row_order || 0==sum_diet_gaps)
+  if(0==network || 0==nodes || *nodes<1 || 0==row_order || 0==sum_diet_gaps || 
+     0==status)
   {
     if(0!=status)
     {
@@ -382,10 +410,29 @@ void sum_diet_gaps(const int *network, const int *nodes,
 
   try
   {
-    SumDietGap::State roworder(row_order, row_order + *nodes);
-    SumDietGap worker(IntVector(network, network + *nodes * *nodes), *nodes);
-    *sum_diet_gaps = worker.cost(roworder);
-    *status = 0;        // Normal exit
+    if(sizeof(SumDietGap::Cost) < sizeof(*sum_diet_gaps))
+    {
+      // Sanity check
+      throw CheddarException("Unexpected cost size");
+    }
+    else
+    {
+      SumDietGap::State roworder(row_order, row_order + *nodes);
+      SumDietGap worker(IntVector(network, network + *nodes * *nodes), *nodes);
+      const SumDietGap::Cost cost = worker.cost(roworder);
+      if(cost>INT_MAX)
+      {
+        // Sanity check
+        // Overflow should not be possible because a nodes by nodes matrix can 
+        // have at most (nodes-1)^2 gaps.
+        throw CheddarException("Too many gaps to count without overflow");
+      }
+      else
+      {
+        *sum_diet_gaps = int(cost);
+        *status = 0;        // Normal exit
+      }
+    }
   }
   catch(const std::exception &e)
   {
@@ -443,7 +490,7 @@ void minimise_sum_diet_gaps(const int *network,
   if(0==network || 0==nodes || *nodes<1 || 
      0==T_start || 0==T_stop || *T_start<=*T_stop || 0==c || 
      *c<=0 || *c>=1 || 0==swaps_per_T || 0==*swaps_per_T || 0==trace_anneal || 
-     0==best_cost || 0==best)
+     0==best_cost || 0==best || 0==status)
   {
     if(0!=status)
     {
@@ -457,19 +504,35 @@ void minimise_sum_diet_gaps(const int *network,
 
   try
   {
-    typedef SimulatedAnnealing<SumDietGap> SDG;
-    SDG worker(*T_start, *T_stop, *c, *swaps_per_T, 1==*trace_anneal);
-    SumDietGap problem(IntVector(network, network + *nodes * *nodes), *nodes);
-    SDG::Result res = worker.optimise(&problem);
-
-    if(int(res.first.size())!=*nodes)
+    if(sizeof(SumDietGap::Cost) < sizeof(*best_cost) || 
+              sizeof(SumDietGap::State::value_type)!=sizeof(*best))
     {
-        throw CheddarException("Annealing result has unexpected size");
+      // Sanity check
+      throw CheddarException("Unexpected type size");
     }
+    else
+    {
+      typedef SimulatedAnnealing<SumDietGap> SDG;
+      SDG worker(*T_start, *T_stop, *c, *swaps_per_T, 1==*trace_anneal);
 
-    memcpy(best, &res.first[0], sizeof(int) * *nodes);
-    *best_cost = res.second;
-    *status = 0;        // Normal exit
+      SumDietGap problem(IntVector(network, network + *nodes * *nodes), *nodes);
+      const SDG::Result res = worker.optimise(&problem);
+
+      if(int(res.first.size())!=*nodes)
+      {
+        // Sanity check
+        throw CheddarException("Annealing result has unexpected size");
+      }
+      else
+      {
+        memcpy(best, &res.first[0], sizeof(int) * *nodes);
+
+        // Overflow of res.second is not possible because a matrix of size 
+        // nodes by nodes matrix can have at most (nodes-1)^2 gaps.
+        *best_cost = int(res.second);
+        *status = 0;        // Normal exit
+      }
+    }
   }
   catch(const std::exception &e)
   {

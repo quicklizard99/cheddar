@@ -162,7 +162,7 @@ resources_length: the number of ints in resources
   /* Quick and dirty parameter checks */
   if(0==resources || resources_length==0 || *resources_length<1 || 
      0==consumers || 0==consumers_length || *consumers_length<1 || 
-     0==weights || 0==node_count || *node_count<1 || 0==lengths)
+     0==weights || 0==node_count || *node_count<1 || 0==lengths || 0==status)
   {
     if(0!=status)
     {
