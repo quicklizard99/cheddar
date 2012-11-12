@@ -5,13 +5,13 @@
     # Plots a pyramid of values
     if(is.null(xlim))
     {
-        xlim <- range(values)
+        xlim <- range(values, na.rm=TRUE)
     }
 
     # Values can be -ve so offset them
     v <- values - xlim[1] + 1
     v[is.infinite(v)] <- 0
-    stopifnot(min(v)>=0)
+    stopifnot(min(v, na.rm=TRUE)>=0)
 
     # The largest value that we can show
     max.lxl <- xlim[2] - xlim[1] + 1
@@ -29,7 +29,7 @@
          col=col)
 
     to.print <- sprintf('%.2f', values)
-    to.print[is.infinite(values)] <- ''
+    to.print[is.infinite(values) | is.na(v)] <- ''
     text(0, y=1:length(v)+0.5, to.print, ...)
     if(show.level.labels)
     {
