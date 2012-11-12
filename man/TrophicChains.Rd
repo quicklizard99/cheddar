@@ -3,8 +3,7 @@
 \title{Trophic chains}
 \description{Enumerates every trophic chain in a food web.}
 \usage{
-TrophicChains(community, node.properties = NULL, chain.properties = NULL, 
-              max.chains)
+TrophicChains(community, node.properties = NULL, chain.properties = NULL)
 }
 
 \arguments{
@@ -12,20 +11,25 @@ TrophicChains(community, node.properties = NULL, chain.properties = NULL,
   \item{node.properties}{the names of the node properties to return. Should 
     meet the criteria of the \code{properties} parameter of \code{NPS}.}
   \item{chain.properties}{the names of chain properties to return.}
-  \item{max.chains}{an integer. Default 1e5.}
 }
 
 \details{Enumerates every trophic chain in the food-web and returns a 
 \code{Chains} object containing any requested node and trophic-link columns.
-An error is raised if there are more than \code{max.chains} chains in the 
-food web.}
+
+If your analysis requires only simple statistics about trophic chains, the 
+\code{TrophicChainsStats} function is more suitable as it is much faster and 
+requires less memory than \code{TrophicChains}. This is particularly true 
+for communities that contain a large number of trophic chains, such as the 
+\code{SkipwithPond} dataset, which has more than $10^5$ unique chains.
+}
 
 \value{An object of class \code{Chains}.}
 
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{TLPS}}, \code{\link{ThreeNodeChains}}, 
-         \code{\link{Chains}}}
+         \code{\link{Chains}}, \code{\link{TrophicChainsStats}}, 
+         \code{\link{SkipwithPond}}}
 
 \examples{
 data(TL84)
@@ -38,13 +42,11 @@ head(TrophicChains(TL84, node.properties='M'))
 # M and N of nodes
 head(TrophicChains(TL84, node.properties=c('M','N')))
 
-# Skipwith Pond has more than 1e5 unique chains
+# Skipwith Pond has more than 10e5 unique chains
 data(SkipwithPond)
-# This fails:
+# Not all systems will be able to allocate the memory required to hold the 
+# chains
 \dontrun{dim(TrophicChains(SkipwithPond))}
-# This succeeds, although not all systems will be able to allocate the 
-# memory required to hold the chains
-\dontrun{dim(TrophicChains(SkipwithPond, max.chains=3e6))}
 }
 \keyword{utilities}
 

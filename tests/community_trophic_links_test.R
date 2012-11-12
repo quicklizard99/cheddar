@@ -550,6 +550,77 @@ TestCannibals <- function()
     stopifnot(0==length(Cannibals(c5)))
     stopifnot(all(c(TRUE,FALSE,TRUE,TRUE,FALSE)==IsCannibal(c7)))
     stopifnot(all(c('A','C','D')==Cannibals(c7)))
+    stopifnot(all(c("Cyclops varians rubellus", 
+                    "Orthocyclops modestus",
+                    "Tropocyclops prasinus",
+                    "Chaoborus punctipennis", 
+                    "Umbra limi") == Cannibals(TL84)))
+}
+
+TestTrophicChainsStats <- function()
+{
+    stopifnot(is.null(TrophicChainsStats(c1)))
+    stopifnot(is.null(TrophicChainsStats(c2)))
+    stopifnot(1==TrophicChainsStats(c3)$chain.lengths)
+    stopifnot(c(1,0,0,1) == TrophicChainsStats(c3)$node.pos.counts)
+    stopifnot(2==TrophicChainsStats(c4)$chain.lengths)
+    stopifnot(c(1,0,0,0,1,0,0,0,1) == 
+              TrophicChainsStats(c4)$node.pos.counts)
+    stopifnot(c(1,2)==TrophicChainsStats(c5)$chain.lengths)
+    stopifnot(c(2,0,0,0,1,1,0,0,1) == 
+              TrophicChainsStats(c5)$node.pos.counts)
+    stopifnot(2==TrophicChainsStats(c6)$chain.lengths)
+    stopifnot(c(1,0,0,0,1,0,0,0,1) == 
+              TrophicChainsStats(c6)$node.pos.counts)
+    stopifnot(2==TrophicChainsStats(c7)$chain.lengths)
+    stopifnot(c(1,0,0,0,0,0,1,0,0,0,0,0,1,0,0) == 
+              TrophicChainsStats(c7)$node.pos.counts)
+
+    # Simpler tests for larger communities
+    #                    Mean chain length       n.chains, longest sum pos count
+    expected <- matrix(c(4.83500334001336007361,    5988,   8,         34940, 
+                         4.84470882905447730593,    1597,   7,          9334, 
+                         5.08319118225954635903,    7621,  10,         46360, 
+                         10.4850243487305565537, 2538120,  17,      29150370, 
+                         5.63949610967024828057,    5398,  10,         35840), 
+                       ncol=4, byrow=TRUE)
+    communities <- list(TL84, TL86, YthanEstuary, SkipwithPond, 
+                          BroadstoneStream)
+    for(i in 1:length(communities))
+    {
+        s <- TrophicChainsStats(communities[[i]])
+        actual <- c(mean(s$chain.lengths), length(s$chain.length), 
+                    ncol(s$node.pos.counts),
+                    sum(s$node.pos.counts))
+        stopifnot(all.equal(actual, expected[i,]))
+    }
+}
+
+TestTrophicChainsStatsOverflow <- function()
+{
+    community <- TL84
+    alist <- cheddar:::.CAdjacencyList(community, ConsumersByNode(community))
+
+    # 1 if basal, 0 otherwise
+    is.basal <- as.integer(IsBasalNode(community))
+
+    # Outputs to be filled by the C function
+    n.chains <- as.integer(0)
+    longest <- as.integer(0)
+    status <- as.integer(-1)
+
+    res <- .C('trophic_chains_size', 
+              as.integer(alist), 
+              as.integer(length(alist)), 
+              as.integer(is.basal), 
+              as.integer(nrow(alist)), 
+              as.integer(1),
+              n.chains=n.chains,
+              longest=longest,
+              status=status, 
+              PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+
+    stopifnot(-1==res$status)
 }
 
 TestTrophicChains <- function()
@@ -628,8 +699,8 @@ TestTrophicChains <- function()
 
     # Webs with many nodes - don't check each link, just dims and one 
     # expected chains
-    communities <- list(TL84, TL86, YthanEstuary)
-    expected.dims <- list(c(5988,8), c(1597,7), c(7621, 10))
+    communities <- list(TL84, TL86, YthanEstuary, BroadstoneStream)
+    expected.dims <- list(c(5988,8), c(1597,7), c(7621, 10), c(5398,  10))
 
     # These expected chains are the first found by TrophicChains() at the 
     # time of writing.
@@ -637,33 +708,23 @@ TestTrophicChains <- function()
                 c('Nostoc sp.','Diaphanosoma leuchtenbergianum','Umbra limi'), 
                 c('Ankyra judayi','Daphnia rosea','Chaoborus punctipennis',
                   'Micropterus salmoides'),
-                c('Diatoms','Crangon crangon','Somateria mollissima'))
+                c('Diatoms','Crangon crangon','Somateria mollissima'),
+                c('Potamophylax cingulatus', 'Cordulegaster boltonii'))
     for(index in 1:length(communities))
     {
         chains <- TrophicChains(communities[[index]])
         stopifnot(all(expected.dims[[index]]==dim(chains)))
-
-        ec <- expected.chain[[index]]
-        found <- FALSE
-        for(r in 1:nrow(chains))
-        {
-            if(all(chains[r,1:length(ec)] == ec))
-            {
-                found <- TRUE
-                break
-            }
-        }
-        stopifnot(found)
-
+        expected <- expected.chain[[index]]
+        stopifnot(all(chains[1,1:length(expected)] == expected))
         CheckChains(communities[[index]], chains)
     }
 
-    # Skipwith Pond has over 2.5 million chains
-    # Running this check murders gecko (XP)
+    # Skipwith Pond has over 2.5 million chains. Computing chains my 32-bit 
+    # Windows machine.
     if(FALSE)
     {
         # Don't run all checks
-        chains <- TrophicChains(SkipwithPond, max.chains=3000000)
+        chains <- TrophicChains(SkipwithPond)
         stopifnot(all(dim(chains) == c(2538120,17)))
         stopifnot(all(chains[1,1:3] == 
                   c('Detritus','Small oligochaetes (principally Enchytraeidae)',

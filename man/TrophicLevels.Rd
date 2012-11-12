@@ -13,14 +13,14 @@
 \usage{
 PreyAveragedTrophicLevel(community, include.isolated=TRUE)
 FlowBasedTrophicLevel(community, weight.by, include.isolated=TRUE)
-ShortestTrophicLevel(community, include.isolated=TRUE, max.chains)
-ShortWeightedTrophicLevel(community, include.isolated=TRUE, max.chains)
-LongestTrophicLevel(community, include.isolated=TRUE, max.chains)
-LongWeightedTrophicLevel(community, include.isolated=TRUE, max.chains)
-ChainAveragedTrophicLevel(community, include.isolated=TRUE, max.chains)
-TrophicHeight(community, include.isolated=TRUE, max.chains)
+ShortestTrophicLevel(community, include.isolated=TRUE)
+ShortWeightedTrophicLevel(community, include.isolated=TRUE)
+LongestTrophicLevel(community, include.isolated=TRUE)
+LongWeightedTrophicLevel(community, include.isolated=TRUE)
+ChainAveragedTrophicLevel(community, include.isolated=TRUE)
+TrophicHeight(community, include.isolated=TRUE)
 
-TrophicLevels(community, weight.by=NULL, include.isolated=TRUE, max.chains)
+TrophicLevels(community, weight.by=NULL, include.isolated=TRUE)
 }
 
 \arguments{
@@ -31,7 +31,6 @@ TrophicLevels(community, weight.by=NULL, include.isolated=TRUE, max.chains)
   \item{weight.by}{the name of a node property, either first-class or computed, 
     by which to weight flow-based trophic level. Must satisfy the criteria 
     of the \code{properties} parameters of \code{NPS}.}
-  \item{max.chains}{The expected maximum number of food chains in the web.}
 }
 
 \details{Trophic level is a measure of a node's `distance' from the primary 
@@ -63,13 +62,13 @@ basal species. \code{LongWeightedTrophicLevel} is the average of
 \code{LongestTrophicLevel} and \code{PreyAveragedTrophicLevel}. 
 \code{ChainAveragedTrophicLevel} is 1 plus the average chain length of all 
 paths from each node to a basal species. These five functions each 
-enumerates every unique food chain (using \code{TrophicChains}), which can be 
-lengthy for complex food webs. If more than one of these five measures of 
+enumerate every unique food chain (using \code{TrophicChainsStats}), which can 
+be lengthy for complex food webs. If more than one of these five measures of 
 trophic level is required, it will be faster to use the \code{TrophicLevels} 
 convenience function, which enumerates unique food chains only once and returns 
 a matrix containing every measure of trophic level in columns `ShortestTL', 
 `ShortWeightedTL', `LongestTL', `LongWeightedTL', `ChainAveragedTL', 
-`PreyAveragedTL' and, if weight.by is given, `FlowBasedTL'.
+`PreyAveragedTL' and, if \code{weight.by} is given, `FlowBasedTL'.
 
 Jonsson et al (2005) defined `trophic height' to be the same as 
 Williams and Martinez' (2004) chain-averaged trophic level. 
@@ -94,7 +93,8 @@ and Omnivory in Complex Food Webs: Theory and Data. American Naturalist
 \author{Lawrence Hudson and Rich Williams}
 
 \seealso{\code{\link{IsIsolatedNode}}, \code{\link{NPS}}, 
-         \code{\link{TrophicChains}}, \code{\link{PredationMatrix}}}
+         \code{\link{TrophicChains}}, \code{\link{TrophicChainsStats}}, 
+q         \code{\link{PredationMatrix}}}
 
 \examples{
 data(TL84)

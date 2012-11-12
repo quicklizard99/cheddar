@@ -54,8 +54,119 @@ is.Chains <- function(x)
     return (chains[,attr(chains, 'link.cols')])
 }
 
+
+.TrophicChainsSize <- function(community)
+{
+    # Returns two integers: n.chains, longest
+
+    if(!is.Community(community)) stop('Not a Community')
+
+    # Get the food web as an adjancency list
+    alist <- .CAdjacencyList(community, ConsumersByNode(community))
+
+    # 1 if basal, 0 otherwise
+    is.basal <- as.integer(IsBasalNode(community))
+
+    # Outputs to be filled by the C function
+    n.chains <- as.integer(0)
+    longest <- as.integer(0)
+    status <- as.integer(-1)
+
+    res <- .C('trophic_chains_size', 
+              as.integer(alist), 
+              as.integer(length(alist)), 
+              as.integer(is.basal), 
+              as.integer(nrow(alist)), 
+              as.integer(0),
+              n.chains=n.chains,
+              longest=longest,
+              status=status, 
+              PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+
+    if(-1==res$status)
+    {
+        stop('Unexpected error')
+    }
+    else if(0==res$status)
+    {
+        stopifnot((0==n.chains && 0==longest) || (0<n.chains && 0<longest))
+        stopifnot(longest <= NumberOfNodes(community))
+        return (c(n.chains=n.chains, longest=longest))
+    }
+    else if(1==res$status)
+    {
+        stop('Problem with an input parameter')
+    }
+    else
+    {
+        stop(paste('Unknown status [', res$status, ']', sep=''))
+    }
+}
+
+TrophicChainsStats <- function(community)
+{
+    if(!is.Community(community)) stop('Not a Community')
+
+    # Get the food web as an adjancency list
+    alist <- .CAdjacencyList(community, ConsumersByNode(community))
+
+    # 1 if basal, 0 otherwise
+    is.basal <- as.integer(IsBasalNode(community))
+
+    # Outputs to be filled by the C function
+    # Compute the number of chains and the longest chain
+    chains_size <- .TrophicChainsSize(community)
+    n.chains <- chains_size['n.chains']
+    longest <- chains_size['longest']
+    if(n.chains>0)
+    {
+        n <- NumberOfNodes(community)
+        node.pos.counts <- as.integer(rep(NA, n*longest))
+        chain.lengths <- as.integer(rep(NA, n.chains))
+        status <- as.integer(-1)
+
+        res <- .C('trophic_chains_stats', 
+                  as.integer(alist), 
+                  as.integer(length(alist)), 
+                  as.integer(is.basal), 
+                  as.integer(n),
+                  as.integer(n.chains),
+                  as.integer(longest), 
+                  node.pos.counts=node.pos.counts,
+                  chain.lengths=chain.lengths,
+                  status=status, 
+                  PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+
+        if(-1==res$status)
+        {
+            stop('Unexpected error')
+        }
+        else if(0==res$status)
+        {
+            dim(node.pos.counts) <- c(longest, n)
+            node.pos.counts <- t(node.pos.counts)
+            rownames(node.pos.counts) <- unname(NP(community, 'node'))
+            return (list(chain.lengths=chain.lengths, 
+                         node.pos.counts=node.pos.counts))
+                         
+        }
+        else if(1==res$status)
+        {
+            stop('Problem with an input parameter')
+        }
+        else
+        {
+            stop(paste('Unknown status [', res$status, ']', sep=''))
+        }
+    }
+    else
+    {
+        return (NULL)
+    }
+}
+
 TrophicChains <- function(community, node.properties=NULL, 
-                          chain.properties=NULL, max.chains)
+                          chain.properties=NULL)
 {
     # Returns an object of class Chains. 
     # One row per unique trophic chain in the food web. 
@@ -65,13 +176,6 @@ TrophicChains <- function(community, node.properties=NULL,
     # Isolated nodes are excluded so all chains are of length 2 or greater.
 
     if(!is.Community(community)) stop('Not a Community')
-
-    if(missing(max.chains) || is.null(max.chains))
-    {
-        max.chains <- 1e5
-    }
-
-    stopifnot(max.chains>0)
 
     community <- RemoveCannibalisticLinks(community)
     if(0==NumberOfTrophicLinks(community))
@@ -133,10 +237,13 @@ TrophicChains <- function(community, node.properties=NULL,
     is.basal <- as.integer(IsBasalNode(community))
 
     # Outputs
+    # Compute the number of chains and the longest chain
+    chains_size <- .TrophicChainsSize(community)
+    ncols <- chains_size['n.chains']
+    nrows <- chains_size['longest']
+
     # chains will be filled by the C function
-    chains <- as.integer(rep(NA, max.chains * nrow(alist)))
-    n.chains.found <- as.integer(0)
-    max.chain.length <- as.integer(0)
+    chains <- as.integer(rep(NA, ncols*nrows))
     status <- as.integer(-1)
 
     res <- .C('trophic_chains', 
@@ -144,10 +251,9 @@ TrophicChains <- function(community, node.properties=NULL,
               as.integer(length(alist)), 
               as.integer(is.basal), 
               as.integer(nrow(alist)), 
-              as.integer(max.chains), 
+              as.integer(ncols), 
+              as.integer(nrows), 
               chains=chains, 
-              n.chains.found=n.chains.found, 
-              max.chain.length=max.chain.length, 
               status=status, 
               PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
 
@@ -158,9 +264,11 @@ TrophicChains <- function(community, node.properties=NULL,
     else if(0==res$status)
     {
         # Take the subset of the matrix that we are interested in
+        stopifnot(res$max.chain.length!=chains_size['longest'])
+        stopifnot(res$n.chains.found!=chains_size['n.chains'])
+
         chains <- res$chains
-        dim(chains) <- c(nrow(alist), max.chains)
-        chains <- chains[1:res$max.chain.length, 1:res$n.chains.found]
+        dim(chains) <- c(nrows, ncols)
 
         # 1-indexed
         chains <- 1+chains
@@ -174,8 +282,7 @@ TrophicChains <- function(community, node.properties=NULL,
     }
     else if(2==res$status)
     {
-        stop(paste('Limit of', max.chains, 'chains exceeded,', 
-                   'Increase max.chains parameter'))
+        stop(paste('Limit of', ncols, 'chains exceeded'))
     }
     else
     {

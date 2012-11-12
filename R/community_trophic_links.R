@@ -511,9 +511,7 @@ FlowBasedTrophicLevel <- function(community, weight.by, include.isolated=TRUE)
     return (.MatrixInversionTL(community, weight.by=weight.by, 
                                include.isolated=include.isolated))
 }
-
-TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE, 
-                          max.chains)
+TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE)
 {
     # Returns a matrix of either six or seven different measures of trophic 
     # level: the matrix-inversion method of PreyAveragedTrophicLevel, 
@@ -528,12 +526,12 @@ TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE,
                                       include.isolated=include.isolated)
     }
 
-    # The following measures of trophic level are computed using the position 
-    # of nodes in each unique food chain.
-    chains <- TrophicChains(community, max.chains=max.chains)
+    # The following measures of trophic level are computed using the 
+    # position of nodes in each unique food chain.
+    chain.stats <- TrophicChainsStats(community)
 
     S <- NumberOfNodes(community)
-    if(is.null(chains))
+    if(is.null(chain.stats))
     {
         # If no trophic links or if NumberOfTrophicLinks()>0 but chains is 
         # NULL (will happen if all links are cannibalistic), all trophic levels 
@@ -542,24 +540,13 @@ TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE,
     }
     else
     {
-        # counts will be a matrix of NumberOfNodes rows and ncol(chains) 
-        # columns. Elements are the number of times each node appears at that 
-        # position in a chain. NA if the node never appears at that position. 
-        counts <- matrix(NA, nrow=S, ncol=ncol(chains))
-        rownames(counts) <- unname(NP(community, "node"))
-        for(col in 1:ncol(chains))
-        {
-            count <- table(chains[,col], exclude=c(NA, ""))
-            counts[names(count), col] <- count
-        }
-
         # Williams and Martinez (2004) Am Nat, p 460
         # "Shortest TL is equal to 1 + the shortest chain length from a 
         #  consumer to a basal species."
-        stl <- apply(counts, 1, function(row)
+        stl <- apply(chain.stats$node.pos.counts, 1, function(row)
         {
-            if(all(is.na(row))) NA
-            else                min(which(!is.na(row)), na.rm=TRUE)
+            if(all(0==row)) NA
+            else            min(which(0!=row))
         })
 
         # Williams and Martinez (2004) Am Nat, p 460
@@ -570,10 +557,10 @@ TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE,
         # Williams and Martinez (2004) Am Nat, p 460
         # "Longest TL is equal to 1 + the longest chain length from a consumer 
         #  to a basal species."
-        ltl <- apply(counts, 1, function(row)
+        ltl <- apply(chain.stats$node.pos.counts, 1, function(row)
         {
-            if(all(is.na(row))) NA
-            else                max(which(!is.na(row)), na.rm=TRUE)
+            if(all(0==row)) NA
+            else            max(which(0!=row))
         })
 
         # Williams and Martinez (2004) Am Nat, p 460
@@ -603,11 +590,10 @@ TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE,
         #  In contrast, the computation of chain-averaged TL maintains 
         #  tractability in complex food webs by only passing through a loop 
         #  once (Martinez 1991)."
-
-        catl <- apply(counts, 1, function(row)
+        catl <- apply(chain.stats$node.pos.counts, 1, function(row)
         {
-            if(all(is.na(row))) NA
-            else             weighted.mean(which(!is.na(row)), row[!is.na(row)])
+            if(all(0==row)) NA
+            else            weighted.mean(1:length(row), row)
         })
 
         if(include.isolated)
@@ -629,54 +615,47 @@ TrophicLevels <- function(community, weight.by=NULL, include.isolated=TRUE,
 }
 
 # Convenience functions to access just one of the chain-averaged measures
-ShortestTrophicLevel <- function(community, include.isolated=TRUE, max.chains)
+ShortestTrophicLevel <- function(community, include.isolated=TRUE)
 {
     tl <- TrophicLevels(community, weight.by=NULL, 
-                        include.isolated=include.isolated, 
-                        max.chains=max.chains)
+                        include.isolated=include.isolated)
     res <- tl[,'ShortestTL']
     names(res) <- rownames(tl)
     return (res)
 }
 
-ShortWeightedTrophicLevel <- function(community, include.isolated=TRUE, 
-                                      max.chains)
+ShortWeightedTrophicLevel <- function(community, include.isolated=TRUE)
 {
     tl <- TrophicLevels(community, weight.by=NULL, 
-                        include.isolated=include.isolated, 
-                        max.chains=max.chains)
+                        include.isolated=include.isolated)
     res <- tl[,'ShortWeightedTL']
     names(res) <- rownames(tl)
     return (res)
 }
 
-LongestTrophicLevel <- function(community, include.isolated=TRUE, max.chains)
+LongestTrophicLevel <- function(community, include.isolated=TRUE)
 {
     tl <- TrophicLevels(community, weight.by=NULL, 
-                        include.isolated=include.isolated, 
-                        max.chains=max.chains)
+                        include.isolated=include.isolated)
     res <- tl[,'LongestTL']
     names(res) <- rownames(tl)
     return (res)
 }
 
-LongWeightedTrophicLevel <- function(community, include.isolated=TRUE, 
-                                     max.chains)
+LongWeightedTrophicLevel <- function(community, include.isolated=TRUE)
 {
     tl <- TrophicLevels(community, weight.by=NULL, 
-                        include.isolated=include.isolated, 
-                        max.chains=max.chains)
+                        include.isolated=include.isolated)
     res <- tl[,'LongWeightedTL']
     names(res) <- rownames(tl)
     return (res)
 }
 
 ChainAveragedTrophicLevel <- 
-TrophicHeight <- function(community, include.isolated=TRUE, max.chains)
+TrophicHeight <- function(community, include.isolated=TRUE)
 {
     tl <- TrophicLevels(community, weight.by=NULL, 
-                        include.isolated=include.isolated, 
-                        max.chains=max.chains)
+                        include.isolated=include.isolated)
     res <- tl[,'ChainAveragedTL']
     names(res) <- rownames(tl)
     return (res)
@@ -1015,7 +994,7 @@ SumConsumerGaps <- function(community)
     #    {
     #        print(community)
     #        print(system.time(i <- MinimiseSumDietGaps(community)))
-    #        print(paste('Diet gap:',i$diet.gap))
+    #        print(paste('Diet gap:',i$sum.gaps))
     #    }
 
     #    Benguela containing 29 nodes.
