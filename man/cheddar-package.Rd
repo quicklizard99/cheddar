@@ -16,7 +16,7 @@ environmental, temporal or spatial gradients.
     Package: \tab cheddar\cr
     Type: \tab Package\cr
     Version: \tab 0.1-618\cr
-    Date: \tab 2012-11-12\cr
+    Date: \tab 2012-11-20\cr
     License: \tab BSD\cr
     }
 }
