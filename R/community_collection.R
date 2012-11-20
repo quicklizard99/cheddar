@@ -407,7 +407,7 @@ plot.CommunityCollection <- function(x,
     junk <- sapply(x, function(community) tryCatch(plot.fn(community, ...)))
 }
 
-LoadCollection <- function(dir)
+LoadCollection <- function(dir, ...)
 {
     # Load each community directory
     path <- file.path(dir, 'communities')
@@ -415,24 +415,32 @@ LoadCollection <- function(dir)
     {
         stop(paste('The community collection directory [', path, 
                    '] does not exist', sep=''))
-    }        
-    files <- list.files(path)
-    collection <- lapply(file.path(path, files), LoadCommunity)
+    }
+    else
+    {
+        files <- list.files(path)
+        collection <- lapply(file.path(path, files), LoadCommunity, ...)
 
-    return (CommunityCollection(collection))
+        return (CommunityCollection(collection))
+    }
 }
 
-SaveCollection <- function(collection, dir)
+SaveCollection <- function(collection, dir, ...)
 {
     if(!is.CommunityCollection(collection)) stop('Not a CommunityCollection')
-    if(!file.exists(file.path(dir, 'communities')))
+    if(file.exists(dir))
+    {
+        stop(paste('The directory [', dir, '] already exists', sep=''))
+    }
+    else
     {
         dir.create(file.path(dir, 'communities'), recursive=TRUE)
-    }
 
-    # Assignment to junk prevent result of mapply() being returned
-    junk <- mapply(SaveCommunity, community=collection, 
-                   dir=file.path(dir, 'communities', names(collection)))
+        # Assignment to junk prevents result of mapply() being returned
+        junk <- mapply(SaveCommunity, community=collection, 
+                       dir=file.path(dir, 'communities', names(collection)), 
+                       MoreArgs=list(...))
+    }
 }
 
 OrderCollection <- function(collection, ..., decreasing=FALSE)

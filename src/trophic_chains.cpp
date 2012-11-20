@@ -75,6 +75,8 @@ public:
     DEBUG(print_adjacency());
 
     Queue queue;
+    IntVector path;
+    path.reserve(nodes_);    // Will have at most this length
 
     for(int n = 0; n < nodes_; ++n)
     {
@@ -82,9 +84,7 @@ public:
                                        // start a chain
       if(is_basal_[n] == 0) continue;  // Node n has in-edges, so it cannot 
                                        // start a chain
-
-      IntVector path;
-      path.reserve(nodes_);    // Will have at most this length
+      path.erase(path.begin(),path.end());
       path.push_back(n);
 
       queue = Queue();

@@ -519,3 +519,21 @@ TestAggregateCommunitiesBy <- function()
     NULL
 }
 
+TestPersistCollection <- function()
+{
+    path <- tempfile()
+    on.exit(unlink(path, recursive=TRUE))
+    for(collection in list(pHWebs, Millstream))
+    {
+        SaveCollection(collection, path)
+        loaded <- LoadCollection(path)[names(collection)]
+        stopifnot(identical(collection, loaded))
+        unlink(path, recursive=TRUE)
+
+        SaveCollection(collection, path, fn='write.table', sep='\t')
+        loaded <- LoadCollection(path, fn='read.table', sep='\t')
+        loaded <- loaded[names(collection)]
+        stopifnot(identical(collection, loaded))
+        unlink(path, recursive=TRUE)
+    }
+}

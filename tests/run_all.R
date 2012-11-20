@@ -14,7 +14,8 @@ F <- function(ex)
 }
 
 # Data for test plans
-data(Benguela, BroadstoneStream, SkipwithPond, TL84, TL86, YthanEstuary, pHWebs)
+data(Benguela, BroadstoneStream, SkipwithPond, TL84, TL86, YthanEstuary, pHWebs,
+     Millstream)
 
 # One species. No properties. No trophic links.
 c1 <- Community(nodes=data.frame(node='S'), properties=list(title='c1'))

@@ -644,7 +644,7 @@ summary.Community <- function(object, ...)
     return (res)
 }
 
-LoadCommunity <- function(dir)
+LoadCommunity <- function(dir, fn='read.csv', ...)
 {
     # Loads the community in the given directory and returns an object of 
     # class community
@@ -652,49 +652,55 @@ LoadCommunity <- function(dir)
     {
         stop(paste('The community directory [', dir, '] does not exist', 
                    sep=''))
-    }        
-
-    nodes <- read.csv(file.path(dir, 'nodes.csv'), 
-                                stringsAsFactors=FALSE)
-
-    properties <- read.csv(file.path(dir, 'properties.csv'), 
-                           stringsAsFactors=FALSE)
-    stopifnot(1==nrow(properties))
-    properties <- do.call(list, properties[1,,drop=FALSE])
-
-    trophic.links <- NULL
-    if(file.exists(file.path(dir, 'trophic.links.csv')))
-    {
-        trophic.links <- read.csv(file.path(dir, 'trophic.links.csv'), 
-                                  stringsAsFactors=FALSE)
     }
+    else
+    {
+        args <- c(list(header=TRUE, stringsAsFactors=FALSE), list(...))
+        nodes <- do.call(fn, c(list(file=file.path(dir, 'nodes.csv')), args))
 
-    return (Community(nodes=nodes, trophic.links=trophic.links, 
-                      properties=properties))
+        properties <- do.call(fn, c(list(file=file.path(dir, 'properties.csv')),
+                                    args))
+        stopifnot(1==nrow(properties))
+        properties <- do.call(list, properties[1,,drop=FALSE])
+
+        trophic.links <- NULL
+        tl.path <- file.path(dir, 'trophic.links.csv')
+        if(file.exists(tl.path))
+        {
+            trophic.links <- do.call(fn, c(list(file=tl.path), args))
+        }
+
+        return (Community(nodes=nodes, trophic.links=trophic.links, 
+                          properties=properties))
+    }
 }
 
-SaveCommunity <- function(community, dir)
+SaveCommunity <- function(community, dir, fn='write.csv', na='', ...)
 {
     if(!is.Community(community)) stop('Not a Community')
-    if(!file.exists(dir))
+    if(file.exists(dir))
+    {
+        stop(paste('The directory [', dir, '] already exists', sep=''))
+    }
+    else
     {
         dir.create(dir, recursive=TRUE)
+        args <- c(list(row.names=FALSE, na=na), list(...))
+        do.call(fn, c(list(x=NPS(community), file=file.path(dir, 'nodes.csv')), 
+                           args))
+
+        # Get the predation matrix into a data.frame in the form resource, 
+        # consumer
+        tlp <- TLPS(community)
+        if(!is.null(tlp))
+        {
+            do.call(fn, c(list(x=as.data.frame(tlp), 
+                               file=file.path(dir, 'trophic.links.csv')), args))
+        }
+
+        do.call(fn, c(list(x=do.call('cbind.data.frame', CPS(community)), 
+                           file=file.path(dir, 'properties.csv')), args))
     }
-
-    write.csv(NPS(community), file=file.path(dir, 'nodes.csv'), 
-              row.names=FALSE, na='')
-
-    # Get the predation matrix into a data.frame in the form resource,consumer
-    tlp <- TLPS(community)
-    if(!is.null(tlp))
-    {
-        write.csv(as.data.frame(tlp), file.path(dir, 'trophic.links.csv'), 
-                  row.names=FALSE, na='')
-    }
-
-    write.csv(do.call('cbind.data.frame', CPS(community)), 
-              file=file.path(dir, 'properties.csv'), 
-              row.names=FALSE)
 }
 
 .ResolveToNodeIndices <- function(community, nodes)

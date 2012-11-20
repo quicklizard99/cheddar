@@ -6,19 +6,24 @@
 \code{LoadCommunity} and \code{SaveCommunity} are functions for loading and 
 saving \code{Community} objects to CSV files.}
 \usage{
-LoadCommunity(dir)
-SaveCommunity(community, dir)}
+LoadCommunity(dir, fn='read.csv', \dots)
+SaveCommunity(community, dir, fn='write.csv', na='', \dots)}
 
 \arguments{
   \item{community}{an object of class \code{Community}.}
   \item{dir}{a directory.}
+  \item{fn}{the name of an R function that loads/saves CSV files.}
+  \item{na}{the string to use for missing values in the data; see 
+  \code{write.csv}.}
+  \item{\dots}{other values to \code{fn}.}
 }
 
 \details{Data are stored in CSV (Comma-Separated Value) files in \code{dir}. 
 Properties of any aspect of the community (nodes, links or the whole community) 
 can be added simply by adding columns to the relevant CSV file. 
 The data-quality checks defined by \code{Community} are applied by 
-\code{LoadCommunity}.
+\code{LoadCommunity}. The \code{fn} and \code{dots} arguments can be used to 
+read/write files in a range of formats.
 
 \code{properties.csv} defines items applicable to the community as a 
 whole, such as sampling date, lat & long or altitude and environmental 
@@ -47,13 +52,17 @@ resource-consumer dynamics. The American Naturalist \bold{139}, 1151--1175.}
 
 \author{Lawrence Hudson}
 
-\seealso{\code{\link{Community}}}
+\seealso{\code{\link{Community}},
+         \code{\link{read.csv}},
+         \code{\link{write.csv}}}
 
 \examples{
-data(TL84)
-SaveCommunity(TL84, '~/TL84')
-TL84.loaded <- LoadCommunity('~/TL84')
-identical(TL84, TL84.loaded)    # TRUE
+\dontrun{
+  data(TL84)
+  SaveCommunity(TL84, '~/TL84')
+  TL84.loaded <- LoadCommunity('~/TL84')
+  identical(TL84, TL84.loaded)    # TRUE
+}
 }
 \keyword{utilities}
 

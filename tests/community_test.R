@@ -493,6 +493,12 @@ TestPersistCommunity <- function()
     {
         SaveCommunity(community, path)
         stopifnot(identical(community, LoadCommunity(path)))
+        unlink(path, recursive=TRUE)
+
+        SaveCommunity(community, path, fn='write.table', sep='\t')
+        stopifnot(identical(community, 
+                            LoadCommunity(path, fn='read.table', sep='\t')))
+        unlink(path, recursive=TRUE)
     }
 }
 

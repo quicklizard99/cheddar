@@ -7,12 +7,13 @@
 for loading and saving code{CommunityCollection} objects to text files.
 }
 \usage{
-LoadCollection(dir)
-SaveCollection(collection, dir)}
+LoadCollection(dir, \dots)
+SaveCollection(collection, dir, \dots)}
 
 \arguments{
   \item{collection}{an object of class \code{CommunityCollection}.}
   \item{dir}{a directory.}
+  \item{\dots}{other values to \code{LoadCommunity} or \code{SaveCommunity}.}
 }
 
 \details{The \code{Community} objects in \code{collection} are saved to a 
@@ -24,14 +25,18 @@ collection is not saved. Any existing data in \code{dir} is ignored.}
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{CommunityCollection}}, 
-         \code{\link{OrderCollection}}}
+         \code{\link{OrderCollection}}, 
+         \code{\link{LoadCommunity}},
+         \code{\link{SaveCommunity}}}
 
 \examples{
 data(pHWebs)
-SaveCollection(pHWebs, '~/pHWebs')
-pHWebs.loaded <- LoadCollection('~/pHWebs')
-pHWebs.loaded <- OrderCollection(pHWebs.loaded, 'pH')
-identical(pHWebs, pHWebs.loaded)    # TRUE
+\dontrun{
+  SaveCollection(pHWebs, '~/pHWebs')
+  pHWebs.loaded <- LoadCollection('~/pHWebs')
+  pHWebs.loaded <- OrderCollection(pHWebs.loaded, 'pH')
+  identical(pHWebs, pHWebs.loaded)    # TRUE
+}
 }
 \keyword{utilities}
 
