@@ -57,12 +57,11 @@ resource-consumer dynamics. The American Naturalist \bold{139}, 1151--1175.}
          \code{\link{write.csv}}}
 
 \examples{
-\dontrun{
-  data(TL84)
-  SaveCommunity(TL84, '~/TL84')
-  TL84.loaded <- LoadCommunity('~/TL84')
-  identical(TL84, TL84.loaded)    # TRUE
-}
+data(TL84)
+path <- tempfile()
+on.exit(unlink(path, recursive=TRUE))
+SaveCommunity(TL84, path)
+TL84.loaded <- LoadCommunity(path)
+identical(TL84, TL84.loaded)    # TRUE
 }
 \keyword{utilities}
-

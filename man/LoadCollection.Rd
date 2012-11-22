@@ -31,12 +31,14 @@ collection is not saved. Any existing data in \code{dir} is ignored.}
 
 \examples{
 data(pHWebs)
-\dontrun{
-  SaveCollection(pHWebs, '~/pHWebs')
-  pHWebs.loaded <- LoadCollection('~/pHWebs')
-  pHWebs.loaded <- OrderCollection(pHWebs.loaded, 'pH')
-  identical(pHWebs, pHWebs.loaded)    # TRUE
-}
+
+path <- tempfile()
+on.exit(unlink(path, recursive=TRUE))
+
+SaveCollection(pHWebs, path)
+pHWebs.loaded <- LoadCollection(path)
+pHWebs.loaded <- OrderCollection(pHWebs.loaded, 'pH')
+
+identical(pHWebs, pHWebs.loaded)    # TRUE
 }
 \keyword{utilities}
-
