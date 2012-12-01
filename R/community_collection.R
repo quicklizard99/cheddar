@@ -404,7 +404,10 @@ plot.CommunityCollection <- function(x,
         on.exit(par(mfcol))
     }
 
-    junk <- sapply(x, function(community) tryCatch(plot.fn(community, ...)))
+    junk <- sapply(x, function(community)
+    {
+        tryCatch(do.call(plot.fn, c(list(community=community), list(...))))
+    })
 }
 
 LoadCollection <- function(dir, ...)
