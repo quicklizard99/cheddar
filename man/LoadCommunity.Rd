@@ -58,10 +58,10 @@ resource-consumer dynamics. The American Naturalist \bold{139}, 1151--1175.}
 
 \examples{
 data(TL84)
-path <- tempfile()
-on.exit(unlink(path, recursive=TRUE))
-SaveCommunity(TL84, path)
-TL84.loaded <- LoadCommunity(path)
+temp.path <- tempfile()
+SaveCommunity(TL84, temp.path)
+TL84.loaded <- LoadCommunity(temp.path)
+unlink(temp.path, recursive=TRUE)
 identical(TL84, TL84.loaded)    # TRUE
 }
 \keyword{utilities}

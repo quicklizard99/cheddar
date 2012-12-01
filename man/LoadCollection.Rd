@@ -31,14 +31,11 @@ collection is not saved. Any existing data in \code{dir} is ignored.}
 
 \examples{
 data(pHWebs)
-
-path <- tempfile()
-on.exit(unlink(path, recursive=TRUE))
-
-SaveCollection(pHWebs, path)
-pHWebs.loaded <- LoadCollection(path)
+temp.path <- tempfile()
+SaveCollection(pHWebs, temp.path)
+pHWebs.loaded <- LoadCollection(temp.path)
 pHWebs.loaded <- OrderCollection(pHWebs.loaded, 'pH')
-
+unlink(temp.path, recursive=TRUE)
 identical(pHWebs, pHWebs.loaded)    # TRUE
 }
 \keyword{utilities}
