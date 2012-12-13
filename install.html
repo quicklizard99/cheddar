@@ -1,0 +1,91 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cheddar</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+
+    <meta name="description" content="Cheddar - analysis and visualisation of ecological communities in R">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div id="content">
+      <header>
+        <h1>Cheddar</h1>
+        <ul id="downloads">
+          <li><a href="https://github.com/downloads/quicklizard99/cheddar/cheddar_0.1-619.zip"><strong>Windows</strong> 0.1-619</a></li>
+          <li><a href="https://github.com/downloads/quicklizard99/cheddar/cheddar_0.1-619.tgz"><strong>Mac</strong> 0.1-619</a></li>
+          <li><a href="https://github.com/downloads/quicklizard99/cheddar/cheddar_0.1-619.tar.gz"><strong>Source</strong> 0.1-619</a></li>
+        </ul>
+
+        <ul id="github">
+          <li><a href="https://github.com/quicklizard99/cheddar">View on <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+
+      <div id="menu">
+        <ul>
+          <li><a href="./">home</a></li>
+          <li><a class="menuhere" href="./install.html">install</a></li>
+          <li><a href="./news.html">news</a></li>
+        </ul>
+      </div>
+
+      <section>
+        <h2>How do I get started?</h2>
+        <p>
+          The current stable release (currently 0.1-619) is always available on 
+          <a href="http://cran.r-project.org/web/packages/cheddar/index.html">CRAN</a>
+          and can be installed in R simply by entering:
+        </p>
+        <pre>install.packages('cheddar')</pre>
+
+        <p>
+          To use the latest in-development release, download the appropriate 
+          file for your system using the blue box at the top of the page and 
+          install it in the usual way.
+        </p>
+
+        <p>Cheddar's vignettes show round the package:</p>
+<pre>library(cheddar)
+vignette('CheddarQuickstart') # Essential reading
+vignette('Community')         # Also essential
+vignette('PlotsAndStats')     # Plots and statistics
+vignette('Collections')       # Collections of communities
+vignette('ImportExport')      # Importing and exporting</pre>
+
+        <p>
+          Send questions, comments or other feedback to me (lawrence.hudson08 
+          (at) imperial.ac.uk), or use the 
+          <a href="https://github.com/quicklizard99/cheddar/issues">issue tracker</a>. 
+          If you are interested in simulating community dynamics, have a look 
+          at the <a href="http://quicklizard99.github.com/gruyere/">Gruyere</a> 
+          package.</p>
+      </section>
+
+      <section>
+        <h2>Help me get my data into Cheddar!</h2>
+
+        <p>
+          Researchers typically use their own bespoke data formats. This 
+          means that there are probably as many data formats as there are 
+          researchers! It is therefore extremely hard to write a generic 
+          'import my data into Cheddar' function.
+        </p>
+
+        <p>
+          Help is at hand! If you have community data that you would like to 
+          import into Cheddar, please contact me (lawrence.hudson08 (at) 
+          imperial.ac.uk) - I will either provide example data-import R code 
+          for you to modify or will write the required R code for you.
+        </p>
+      </section>
+    </div>
+  </body>
+</html>

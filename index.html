@@ -6,19 +6,8 @@
     <title>Cheddar</title>
 
     <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
 
-    <script src="javascripts/scale.fix.js"></script>
-
-    <!-- Syntax highlighting -->
-    <script type="text/javascript" src="javascripts/shCore.js"></script>
-    <script type="text/javascript" src="javascripts/shBrushR.js"></script>
-    <link href="stylesheets/shCore.css" rel="stylesheet" type="text/css" />
-    <link href="stylesheets/shCoreMidnight.css" rel="stylesheet" type="text/css" />
-    <link href="stylesheets/shThemeMidnight.css" rel="stylesheet" type="text/css" />
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <meta name="description" content="Analysis and visualisation of ecological communities in R">
+    <meta name="description" content="Cheddar - analysis and visualisation of ecological communities in R">
 
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -29,10 +18,6 @@
     <div id="content">
       <header>
         <h1>Cheddar</h1>
-        <p>
-          Analysis and visualisation of ecological communities in R
-        </p>
-
         <ul id="downloads">
           <li><a href="https://github.com/downloads/quicklizard99/cheddar/cheddar_0.1-619.zip"><strong>Windows</strong> 0.1-619</a></li>
           <li><a href="https://github.com/downloads/quicklizard99/cheddar/cheddar_0.1-619.tgz"><strong>Mac</strong> 0.1-619</a></li>
@@ -40,64 +25,37 @@
         </ul>
 
         <ul id="github">
-<!--          <li><a href="https://github.com/quicklizard99/cheddar/zipball/master">Download <strong>ZIP File</strong></a></li>-->
-<!--          <li><a href="https://github.com/quicklizard99/cheddar/tarball/master">Download <strong>TAR Ball</strong></a></li>-->
-          <li class="single"><a href="https://github.com/quicklizard99/cheddar">View on <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/quicklizard99/cheddar">View on <strong>GitHub</strong></a></li>
         </ul>
       </header>
 
-      <section>
-        <h2>Overview</h2>
-        <p>Cheddar is a <a href="http://www.r-project.org/">R</a> package for food-web ecologists. It provides </p>
-
+      <div id="menu">
         <ul>
-        <li>a flexible, well-defined representation of an ecological community together with functions that make data import easy and that detect many commonly-occurring errors, </li>
-        <li>several high-quality published food-web datasets, </li>
-        <li>functions for computing and plotting a range of food-web and related statistics, </li>
-        <li>functions that perform community-level manipulations such as lumping trophic species and reordering predation matrices and </li>
-        <li>support for collections of communities, allowing investigation into changes in community structure through time, across environmental gradients or resulting from experimental manipulation.</li>
+          <li><a class="menuhere" href="./">home</a></li>
+          <li><a href="./install.html">install</a></li>
+          <li><a href="./news.html">news</a></li>
         </ul>
-      </section>
+      </div>
 
-      <section>
-        <h2>How do I get started?</h2>
-
-        <p>The current stable release (0.1-619) is available on <a href="http://cran.r-project.org/web/packages/cheddar/index.html">CRAN</a>.</p>
-        <pre class="brush: R">
-          install.packages('cheddar')
-        </pre>
-
-        <p>To use the latest in-development release, download the appropriate file for your system from the blue box at the top of the page and install it in the usual way.</p>
-
-        <p>Cheddar contains unit tests, help files and vignettes.</p>
-        <pre class="brush: R">
-          library(cheddar)
-          vignette('CheddarQuickstart')
-          vignette('Community')         # Working with communities
-          vignette('PlotsAndStats')     # Plots and statistics
-          vignette('Collections')       # Collections of communities
-          vignette('ImportExport')      # Importing and exporting
-        </pre>
-
-        <p>Send questions, comments or other feedback to me (lawrence.hudson08 (at) imperial.ac.uk), or use the <a href="https://github.com/quicklizard99/cheddar/issues">issue tracker</a>. If you are interested in simulating community dynamics, have a look at the <a href="http://quicklizard99.github.com/gruyere/">Gruyere</a> package.</p>
-      </section>
+      <div class="notice">
+        If you are a food-web ecologist working in R, Cheddar will save you time
+      </div>
 
       <section>
         <h2>Different views of the same community</h2>
         <p>
-          Six different views of the dataset from 
+          Six different views of the dataset of 
           <a href="http://maps.google.co.uk/maps?q=Tuesday+Lake,+Michigan&amp;hl=en&amp;ll=46.250535,-89.501152&amp;spn=0.007389,0.01929&amp;sll=53.800651,-4.064941&amp;sspn=12.948388,39.506836&amp;hnear=Tuesday+Lake&amp;t=h&amp;z=16">Tuesday Lake</a>, 
           Michigan, USA, sampled in 1984            
           (<a href="#CarpenterAndKitchell1996">Carpenter &amp; Kitchell 1996</a>; 
            <a href="#CohenEtAl2003PNAS">Cohen et al 2003</a>; 
            <a href="#JonssonEtAl2005AER">Jonsson et al, 2005</a>). 
-          This community contains 50 species and over 250 feeding relationships. 
+          This image was generated using Cheddar and 
+          <a href="#tl84_views">a few lines of R code</a>.
         </p>
 
-        <a href="https://github.com/quicklizard99/cheddar/blob/gh-pages/cheddar.R">
-          <img src="images/cheddar.png" width=720 height=980 alt="Example Cheddar graphs"/>
-        </a>
-        <p>
+        <img src="images/cheddar.png" width=720 height=980 alt="Example Cheddar graphs"/>
+        <p style="font-size: small">
           a) shows nodes stacked vertically by prey-averaged trophic level 
           (<a href="#WilliamsAndMartinez2004AmNat">Williams &amp; Martinez, 2004</a>), 
           b) shows an overview of web complexity, 
@@ -107,32 +65,53 @@
           e) shows the predation matrix and 
           f) shows log-transformed body mass of the consumer against that of 
           the resource. 
-          a)-d) shows a point for each species and e)-f) show a point for 
+          a)-d) show a point for each species and e)-f) show a point for 
           feeding relationship. 
           Primary producers shown by green circles, invertebrates by blue 
           squares and vertebrates by purple diamonds. Cannibals are shown by 
           lighter-coloured circles. 
         </p>
 
-        <p>
-          The <a href="https://github.com/quicklizard99/cheddar/blob/gh-pages/cheddar.R"> R code</a> that generated this image.
-        </p>
-      </section>
+<pre id="tl84_views"># Creates image for http://quicklizard99.github.com/cheddar/ homepage
+# Six different views of the community of Tuesday Lake, 1984 are written to 
+# images/cheddar.png.
+library(cheddar)
+data(TL84)
 
-      <section>
-        <h2>Help me get my data into Cheddar!</h2>
+# Order the community's nodes by body mass
+TL84 <- OrderCommunity(TL84, 'M')
 
-        <p>
-          Researchers typically use their own bespoke data formats. This means that there are probably as many data formats as there are researchers! It is therefore extremely hard to write a generic 'import my data into Cheddar' function.
-        </p>
+# Create six plots on one image
+png('images/cheddar.png', width=720, height=980)
+par(mfrow=c(3,2),
+    mar=c(3, 3, 0.5, 0.5),    # bottom, left, top, right
+    mgp=c(1.6, 0.5, 0),       # title, labels, line
+    cex=1.5)
 
-        <p>
-          Help is at hand! If you have community data that you would like to import into Cheddar, please contact me (lawrence.hudson08 (at) imperial.ac.uk) - I will either provide example data-import R code for you to modify or will write the required R code for you.
-        </p>
-      </section>
+PlotWebByLevel(TL84, show.nodes.as='both', cex=2, main='', 
+               y.layout='stagger')
+mtext('a', side=2, at=par('usr')[4], line=1, las=1, cex=1.5)
 
-      <section>
-        <h2>References</h2>
+PlotCircularWeb(TL84, show.nodes.as='both', cex=2, main='')
+mtext('b)', side=2, at=par('usr')[4], line=1, las=1, cex=1.5)
+
+PlotNvM(TL84, show.nodes.as='both', cex=2, main='')
+mtext('c)', side=2, at=par('usr')[4], line=1, las=1, cex=1.5)
+
+PlotNPS(TL84, 'Log10M', 'PreyAveragedTrophicLevel', show.nodes.as='both', 
+        cex=2, main='', xlab=Log10MLabel(TL84), 
+        ylab='Prey-averaged trophic level')
+mtext('d)', side=2, at=par('usr')[4], line=1, las=1, cex=1.5)
+
+PlotPredationMatrix(TL84, main='')
+mtext('e)', side=2, at=par('usr')[4], line=1, las=1, cex=1.5)
+
+PlotMCvMR(TL84, main='')
+mtext('f)', side=2, at=par('usr')[4], line=1, las=1, cex=1.5)
+
+dev.off()</pre>
+
+        <h4>References</h4>
         <ul>
         <li id="CarpenterAndKitchell1996">Carpenter, S. & Kitchell, J. (1996) <span style="font-style: italic">The trophic cascade in lakes</span>, Cambridge University Press.</li>
         <li id="CohenEtAl2003PNAS">Cohen, J., Jonsson, T. & Carpenter, S. (2003) Ecological community description using the food web, species abundance, and body size, <span style="font-style: italic">Proceedings of the National Academy of Sciences of the United States of America</span>, 100, 1781-1786. <a href="http://dx.doi.org/10.1073/pnas.232715699">doi:10.1073/pnas.232715699</a>.</li>
@@ -140,20 +119,6 @@
         <li id="WilliamsAndMartinez2004AmNat">Williams, R.J. and Martinez, N.D. (2004) Limits to trophic levels and omnivory in complex food webs: theory and data, <span style="font-style: italic">The American Naturalist</span>, 163, 458-468. <a href="http://dx.doi.org/10.1086/381964">doi:10.1086/381964</a>.</li>
         </ul>
       </section>
-
-      <footer>
-        <p>Maintained by <a href="https://github.com/quicklizard99">quicklizard99</a></p>
-        <p>Hosted on GitHub Pages &mdash; Based on a theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
-        <p>R syntax highlighter by <a href="http://www.demitri.com/code/">Demitri Muna</a></p>
-      </footer>
-
-      <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
-
-    </div>  <!-- content-->
-
-    <script type="text/javascript">
-         SyntaxHighlighter.all()
-    </script>    
-
+    </div>
   </body>
 </html>
