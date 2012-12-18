@@ -43,6 +43,11 @@ a:hover
 img
 {
   border: 0;
+  margin: 0;
+  padding: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto
 }
 
 p
@@ -59,12 +64,12 @@ strong
 
 pre
 {
-  font-size: 14px;
+  font-size: 16px;
   background: black;
   color: white;
-  padding: 5px 30px;
+  padding: 5px 15px;
   border: 0;
-  margin: 20px 40px;
+  margin: 10px 10px;
 }
 
 header
@@ -244,4 +249,3 @@ footer p
   background: #94D4FF;
   text-align: center;
 }
-
