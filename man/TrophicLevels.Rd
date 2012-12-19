@@ -94,7 +94,7 @@ and Omnivory in Complex Food Webs: Theory and Data. American Naturalist
 
 \seealso{\code{\link{IsIsolatedNode}}, \code{\link{NPS}}, 
          \code{\link{TrophicChains}}, \code{\link{TrophicChainsStats}}, 
-q         \code{\link{PredationMatrix}}}
+         \code{\link{PredationMatrix}}}
 
 \examples{
 data(TL84)
