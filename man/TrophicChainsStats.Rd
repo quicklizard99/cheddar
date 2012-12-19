@@ -28,7 +28,9 @@ because it is much faster and requires less memory.
 
 \author{Lawrence Hudson}
 
-\seealso{\code{\link{TrophicChains}}, \code{\link{NumberOfNodes}}}
+\seealso{\code{\link{TrophicChains}}, \code{\link{NumberOfNodes}}, 
+         \code{\link{IsolatedNodes}}, \code{\link{BasalNodes}},
+         \code{\link{IntermediateNodes}}, \code{\link{TopLevelNodes}}}
 
 \examples{
 data(TL84)
@@ -47,7 +49,7 @@ chain.stats$node.pos.counts[BasalNodes(TL84),]
 # Consumers only have counts in columns two and up.
 chain.stats$node.pos.counts[c(IntermediateNodes(TL84),TopLevelNodes(TL84)),]
 
-# All counts are zero for isolated nodes (\code{IsolatedNodes}).
+# All counts are zero for isolated nodes IsolatedNodes.
 chain.stats$node.pos.counts[IsolatedNodes(TL84),]
 
 # Skipwith Pond has more than 10e5 unique chains. 
