@@ -1,5 +1,5 @@
 # Miscelaneous plot functions
-.PlotPyramid <- function(community, values, xlim, xlab, ylab, col, main, 
+.PlotPyramid <- function(values, xlim, xlab, ylab, col, main, 
                          show.level.labels, ...)
 {
     # Plots a pyramid of values
@@ -9,36 +9,75 @@
     }
 
     # Values can be -ve so offset them
-    v <- values - xlim[1] + 1
-    v[is.infinite(v)] <- 0
-    stopifnot(min(v, na.rm=TRUE)>=0)
+    plot.values <- values - xlim[1] + 1
+    stopifnot(min(plot.values, na.rm=TRUE)>=0)
 
     # The largest value that we can show
     max.lxl <- xlim[2] - xlim[1] + 1
 
     if(!is.null(names(col)))
     {
-        col <- col[names(v)]
+        col <- col[names(values)]
     }
 
     plot(NA, NA, type='n', xlim=c(-max.lxl/2, max.lxl/2), xaxt='n', xlab=xlab, 
-         ylim=c(1,1+length(v)), yaxt='n', ylab=ylab, main=main, 
+         ylim=c(1,1+length(plot.values)), yaxt='n', ylab=ylab, main=main, 
          frame.plot=FALSE, ...)
 
-    rect(-abs(v)/2, 1:length(v), abs(v)/2, 1+(1:length(v)), 
+    rect(-abs(plot.values)/2,    1:length(plot.values), 
+          abs(plot.values)/2, 1+(1:length(plot.values)), 
          col=col)
 
     to.print <- sprintf('%.2f', values)
-    to.print[is.infinite(values) | is.na(v)] <- ''
-    text(0, y=1:length(v)+0.5, to.print, ...)
+    to.print[is.na(values)] <- ''
+    text(0, y=1:length(values)+0.5, to.print, ...)
     if(show.level.labels)
     {
-        axis(2, at=1:length(v)+0.5, labels=names(v), las=1, tick=FALSE, ...)
+        axis(2, at=1:length(plot.values)+0.5, labels=names(plot.values), las=1, 
+             tick=FALSE, ...)
     }
+}
+
+.FillMissingLevels <- function(values, level, expected.levels)
+{
+    if(missing(expected.levels))
+    {
+        if(is.numeric(level))
+        {
+            expected.levels <- as.character(1:max(level))
+        }
+        else
+        {
+            expected.levels <- names(values)
+        }
+    }
+
+    duplicated.levels <- duplicated(expected.levels)
+    extra.levels <- setdiff(names(values), expected.levels)
+    if(any(duplicated.levels))
+    {
+        stop(paste('The levels [', 
+                   paste(expected.levels[duplicated.levels], collapse=','), 
+                   '] appear in expected.levels more than once', sep=''))
+    }
+    else if(length(extra.levels)>0)
+    {
+        stop(paste('The levels [', paste(extra.levels, collapse=','), 
+                   '] are not in expected.levels', sep=''))
+    }
+    else
+    {
+        missing.levels <- setdiff(expected.levels, names(values))
+        values[missing.levels] <- NA
+        values <- values[expected.levels]
+    }
+    return (values)
 }
 
 PlotNPyramid <- function(community, 
                          level=floor(PreyAveragedTrophicLevel(community)),
+                         fill.missing.levels=TRUE,
+                         expected.levels,
                          show.level.labels=TRUE,
                          xlab=Log10NLabel(community), 
                          ylab='', 
@@ -50,13 +89,20 @@ PlotNPyramid <- function(community,
     if(!is.Community(community)) stop('Not a Community')
 
     .RequireN(community)
-    values <- log10(SumNByClass(community, class=level))
-    .PlotPyramid(community, values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
+    values <- log10(SumNByClass(community, class=level, na.rm=TRUE))
+    values[is.infinite(values)] <- NA
+    if(fill.missing.levels)
+    {
+        values <- .FillMissingLevels(values, level, expected.levels)
+    }
+    .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
                  col=col, main=main, show.level.labels=show.level.labels, ...)
 }
 
 PlotBPyramid <- function(community,
                          level=floor(PreyAveragedTrophicLevel(community)),
+                         fill.missing.levels=TRUE,
+                         expected.levels,
                          show.level.labels=TRUE,
                          xlab=Log10BLabel(community), 
                          ylab='', 
@@ -69,8 +115,13 @@ PlotBPyramid <- function(community,
 
     .RequireM(community)
     .RequireN(community)
-    values <- log10(SumBiomassByClass(community, class=level))
-    .PlotPyramid(community, values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
+    values <- log10(SumBiomassByClass(community, class=level, na.rm=TRUE))
+    values[is.infinite(values)] <- NA
+    if(fill.missing.levels)
+    {
+        values <- .FillMissingLevels(values, level, expected.levels)
+    }
+    .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
                  col=col, main=main, show.level.labels=show.level.labels, ...)
 }
 
