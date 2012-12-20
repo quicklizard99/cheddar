@@ -111,6 +111,7 @@ print.CommunityCollection <- function(x, ...)
 {
     if(!is.CommunityCollection(x)) stop('Not a CommunityCollection')
     cat(paste('A collection of', length(x), 'communities\n'))
+    invisible(x)
 }
 
 summary.CommunityCollection <- function(object, ...)
@@ -406,7 +407,7 @@ plot.CommunityCollection <- function(x,
 
     junk <- sapply(x, function(community)
     {
-        tryCatch(do.call(plot.fn, c(list(community=community), list(...))))
+        tryCatch(do.call(plot.fn, c(list(community), list(...))))
     })
 }
 

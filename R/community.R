@@ -604,6 +604,7 @@ print.Community <- function(x, ...)
 {
     if(!is.Community(x)) stop('Not a Community')
     cat(paste(CPS(x)$title, 'containing', NumberOfNodes(x), 'nodes.\n'))
+    invisible(x)
 }
 
 summary.Community <- function(object, ...)
