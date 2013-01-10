@@ -746,20 +746,18 @@ SumConsumerGaps(TL84.increasing.M)
 SumConsumerGaps(TL84.increasing.TL)
 @
 The \code{MinimiseSumDietGaps} function implements simulated annealing 
-learning (a stochastic optimisation method) to minimise \code{SumDietGaps}, 
-as described by \cite{StoufferEtAl2006PNAS}.
+learning to minimise \code{SumDietGaps}, as described by 
+\cite{StoufferEtAl2006PNAS}. Simulated annealing learning is a stochastic 
+method so several optimisations might be required to find the global minimum; 
+this is done by setting the `n' parameter greater than $1$:
 \begin{center}
 \SweaveOpts{width=8,height=4}
 \setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(1,2))
-PlotPredationMatrix(TL84.increasing.M, 
-                    main=paste('Ordered by M - sum diet gaps', 
-                               SumDietGaps(TL84.increasing.M)))
-res <- MinimiseSumDietGaps(TL84)
-PlotPredationMatrix(res$reordered,
-                    main=paste('Optimised - sum diet gaps', 
-                               SumDietGaps(res$reordered)))
+PlotPredationMatrix(TL84.increasing.M, main=SumDietGaps(TL84.increasing.M))
+res <- MinimiseSumDietGaps(TL84, n=10)
+PlotPredationMatrix(res$reordered, main=SumDietGaps(res$reordered))
 @
 \end{center}
 
@@ -774,7 +772,7 @@ par(mfrow=c(1,2))
 PlotPredationMatrix(TL84.increasing.M, 
                     main=paste('Ordered by M - sum consumer gaps', 
                                SumConsumerGaps(TL84.increasing.M)))
-res <- MinimiseSumConsumerGaps(TL84)
+res <- MinimiseSumConsumerGaps(TL84, n=10)
 PlotPredationMatrix(res$reordered, 
                     main=paste('Optimised - sum consumer gaps', 
                                SumConsumerGaps(res$reordered)))

@@ -1128,7 +1128,7 @@ TestMinimiseSumDietGaps <- function()
     {
         title <- CP(community, 'title')
         res <- MinimiseSumDietGaps(community, T.start=1, T.stop=0.1, c=0.99, 
-                                   swaps.per.T=1000)
+                                   swaps.per.T=1000, n=3)
 
         if(0==expected[title])
         {

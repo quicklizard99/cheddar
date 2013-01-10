@@ -14,9 +14,11 @@ SumDietGaps(community)
 SumConsumerGaps(community)
 
 MinimiseSumDietGaps(community, T.start = 10, T.stop = 0.1, c = 0.9, 
-                    swaps.per.T = 1000, trace.anneal = FALSE) 
+                    swaps.per.T = 1000, trace.anneal = FALSE, n = 1, 
+                    best = TRUE)
 MinimiseSumConsumerGaps(community, T.start = 10, T.stop = 0.1, c = 0.9, 
-                        swaps.per.T = 1000, trace.anneal = FALSE) 
+                        swaps.per.T = 1000, trace.anneal = FALSE, n = 1, 
+                    best = TRUE)
 }
 
 \arguments{
@@ -28,6 +30,9 @@ MinimiseSumConsumerGaps(community, T.start = 10, T.stop = 0.1, c = 0.9,
   \item{swaps.per.T}{the number of predation matrix row swaps per temperature.}
   \item{trace.anneal}{logical - if \code{TRUE} the annealing process prints 
     feedback.}
+  \item{n}{numeric - the number of repetitions of the minimisation procedure.}
+  \item{best}{logical - if \code{TRUE} then only the result of the best of the 
+  \code{n} minimsations is returned.}
 }
 
 \details{\code{SumDietGaps} and \code{SumConsumerGaps} return the total number 
@@ -37,16 +42,20 @@ of gaps in each species' diet (Stouffer et al 2006) and each species' consumers
 \code{MinimiseSumDietGaps} and \code{MinimiseSumConsumerGaps} use the 
 simulated annealing learning method described by Stouffer et al (2006) to 
 minimise either \code{SumDietGaps} or \code{SumConsumerGaps}. Simulated 
-annealing learning is a stochastic method so a single call to either 
-\code{MinimiseSumDietGaps} and \code{MinimiseSumConsumerGaps} is not 
-guaranteed to find the global minimum.
-}
+annealing learning is a stochastic method so several optimisations might be 
+required to find the global minimum. Use a value of \code{n} greater than 1 to 
+perform several optimisations.}
 
-\value{Either a single number or a \code{list} containing the values
+\value{For \code{SumDietGaps} and \code{SumConsumerGaps}, a single number. 
+For the two minimisation functions, if \code{n} is 1 or \code{best} is 
+\code{TRUE}, a \code{list} containing the values
   \item{sum.gaps}{the lowest \code{SumDietGaps} or \code{SumConsumerGaps} 
     resulting from the best ordering that was found.}
   \item{order}{a vector of node names giving the best ordering.}
   \item{reordered}{\code{community} reordered by the best ordering.}
+If \code{n} is greater than 1 and \code{best} is \code{FALSE} then a list of 
+\code{n} lists, each list containing the above three values, sorted by 
+increasing \code{sum.gaps}.
 }
 
 \references{Stouffer, D.B. and Camacho, J. and Amaral, L.A.N. (2006) 
@@ -59,22 +68,27 @@ Journal of Theoretical Biology \bold{271}, 1 106--113.
 
 \author{Lawrence Hudson}
 
-\seealso{\code{\link{Community}}, \code{\link{PredationMatrix}}, 
-         \code{\link{PlotPredationMatrix}}}
+\seealso{\code{\link{Community}}, \code{\link{OrderCommunity}}, 
+         \code{\link{PredationMatrix}}, \code{\link{PlotPredationMatrix}}}
 
 \examples{
 data(TL84)
-par(mfrow=c(1,2))
-PlotPredationMatrix(TL84, main=paste('Sum diet gap', SumDietGaps(TL84)))
-res <- MinimiseSumDietGaps(TL84)
-PlotPredationMatrix(res$reordered)
+# Perform 5 independent optimisations
+res <- MinimiseSumDietGaps(TL84, n=5)
 
-# The method is stochastic so several optimisations might be required to 
-# find the global minimum. Repeat 10 times and find the run that resulted in 
-# the minimum sum diet gaps.
-res <- replicate(10, MinimiseSumDietGaps(TL84), simplify=FALSE)
-sum.gaps <- sapply(res, '[[', 'sum.gaps')
-res[[which.min(sum.gaps)]]$reordered
+# Compare the original, ordered by body mass and minimised predation matrices
+par(mfrow=c(1,3))
+PlotPredationMatrix(TL84, main=paste('Sum diet gap', SumDietGaps(TL84)))
+TL84.by.M <- OrderCommunity(TL84, 'M')
+PlotPredationMatrix(TL84.by.M, 
+                    main=paste('Sum diet gap', SumDietGaps(TL84.by.M)))
+PlotPredationMatrix(res$reordered, main=paste('Sum diet gap', res$sum.gaps))
+
+# The same comparison but retaining the original column ordering
+par(mfrow=c(1,3))
+PlotPredationMatrix(TL84)
+PlotPredationMatrix(TL84, row.order=NP(TL84.by.M, 'node'))
+PlotPredationMatrix(TL84, row.order=res$order)
 }
 
 \keyword{utilities}

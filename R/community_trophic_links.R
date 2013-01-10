@@ -981,7 +981,7 @@ SumConsumerGaps <- function(community)
 
 .MinimisePredationMatrixGaps <- function(community, T.start, T.stop, c, 
                                          swaps.per.T, trace.anneal, 
-                                         diet.gap)
+                                         diet.gap, n, best)
 {
     # Using Stouffer et al's (2006) PNAS simulated annealing learning method.
     # If diet.gap is TRUE then the sum diet gap is minimized otherwise the 
@@ -1032,6 +1032,7 @@ SumConsumerGaps <- function(community)
     {
         stop('The community has no trophic links')
     }
+    stopifnot(n>0)
 
     pm <- PredationMatrix(community)
     if(!diet.gap)
@@ -1039,69 +1040,94 @@ SumConsumerGaps <- function(community)
         pm <- t(pm)
     }
 
-    # Out-params
-    sum.gaps <- as.integer(-1)
-    best <- as.integer(rep(NA, NumberOfNodes(community)))
-    status <- as.integer(-1)
+    F <- function()
+    {
+        # Out-params
+        sum.gaps <- as.integer(-1)
+        best <- as.integer(rep(NA, NumberOfNodes(community)))
+        status <- as.integer(-1)
 
-    res <- .C('minimise_sum_diet_gaps', 
-              as.integer(pm), 
-              as.integer(NumberOfNodes(community)), 
-              as.double(T.start), 
-              as.double(T.stop), 
-              as.double(c), 
-              as.integer(swaps.per.T), 
-              as.integer(trace.anneal), 
-              sum.gaps=sum.gaps, 
-              best=best, 
-              status=status, 
-              PACKAGE='cheddar', 
-              NAOK=TRUE, DUP=FALSE)
+        res <- .C('minimise_sum_diet_gaps', 
+                  as.integer(pm), 
+                  as.integer(NumberOfNodes(community)), 
+                  as.double(T.start), 
+                  as.double(T.stop), 
+                  as.double(c), 
+                  as.integer(swaps.per.T), 
+                  as.integer(trace.anneal), 
+                  sum.gaps=sum.gaps, 
+                  best=best, 
+                  status=status, 
+                  PACKAGE='cheddar', 
+                  NAOK=TRUE, DUP=FALSE)
 
-    if(-1==res$status)
-    {
-        stop('Unexpected error')
+        if(-1==res$status)
+        {
+            stop('Unexpected error')
+        }
+        else if(0==res$status)
+        {
+            # C 0-index back to R 1-index
+            best <- res$best + 1
+            stopifnot(all(best>0 & best<=NumberOfNodes(community)))
+            
+            reordered <- OrderCommunity(community, new.order=best, 
+                                title=paste(CP(community, 'title'), 
+                                            'sum', 
+                                             ifelse(diet.gap, 'diet', 'consumer'), 
+                                            'gap minimised to',
+                                            res$sum.gaps))
+            return (list(sum.gaps=res$sum.gaps, 
+                         order=unname(NP(community, 'node'))[best], 
+                         reordered=reordered))
+        }
+        else if(1==res$status)
+        {
+            stop('Problem with an input parameter')
+        }
+        else(1==res$status)
+        {
+            stop(paste('Unknown status [', res$status, ']', sep=''))
+        }
     }
-    else if(0==res$status)
+
+    res <- replicate(n, F(), simplify=FALSE)
+    res <- res[order(sapply(res, '[[', 'sum.gaps'))]
+    if(best || 1==n)
     {
-        # C 0-index back to R 1-index
-        best <- res$best + 1
-        stopifnot(all(best>0 & best<=NumberOfNodes(community)))
-        
-        reordered <- OrderCommunity(community, new.order=best, 
-                            title=paste(CP(community, 'title'), 
-                                        'sum', 
-                                         ifelse(diet.gap, 'diet', 'consumer'), 
-                                        'gap minimised to',
-                                        res$sum.gaps))
-        return (list(sum.gaps=res$sum.gaps, 
-                     order=unname(NP(community, 'node'))[best], 
-                     reordered=reordered))
+        return (res[[1]])
     }
-    else if(1==res$status)
+    else
     {
-        stop('Problem with an input parameter')
-    }
-    else(1==res$status)
-    {
-        stop(paste('Unknown status [', res$status, ']', sep=''))
+        return (res)
     }
 }
 
 MinimiseSumDietGaps <- function(community, T.start=10, T.stop=0.1, c=0.9, 
-                                swaps.per.T=1000, trace.anneal=FALSE)
+                                swaps.per.T=1000, trace.anneal=FALSE, n=1, 
+                                best=TRUE)
 {
     return (.MinimisePredationMatrixGaps(community, T.start, T.stop, c, 
                                          swaps.per.T, trace.anneal, 
-                                         diet.gap=TRUE))
+                                         diet.gap=TRUE, n, best))
 
 }
 
 MinimiseSumConsumerGaps <- function(community, T.start=10, T.stop=0.1, c=0.9, 
-                                    swaps.per.T=1000, trace.anneal=FALSE)
+                                    swaps.per.T=1000, trace.anneal=FALSE, 
+                                    n=1, best=TRUE)
 {
     return (.MinimisePredationMatrixGaps(community, T.start, T.stop, c, 
                                          swaps.per.T, trace.anneal, 
-                                         diet.gap=FALSE))
+                                         diet.gap=FALSE, n, best))
 }
 
+#PlotPredationMatrix
+#    Take row order and col order
+
+#MinimiseSumDietGaps and MinimiseSumConsumerGaps
+#    Take n repetitions
+#    Take best only
+
+#PlotWebByLevel
+#    Take groups, group colours etc
