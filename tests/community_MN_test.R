@@ -434,3 +434,20 @@ TestNvMSlopeAndInterceptByClass <- function()
                           intercept.vert.ecto=0.00000000000000005773)))
 }
 
+TestNvMConvexHull <- function()
+{
+    stopifnot(0.5 == cheddar:::.PolygonArea(c(0, 1, 0.5, 0), c(0, 0, 1, 0)))
+    stopifnot(1 == cheddar:::.PolygonArea(c(0, 1, 1, 0, 0), c(0, 0, 1, 1, 0)))
+    res <- NvMConvexHull(TL84)
+    stopifnot(all.equal(round(res$area, 5), 30.68266))
+    stopifnot(all.equal(unname(round(res$points, 7)), 
+                        matrix(c( -2.931814, -0.8761484,
+                                 -11.000000,  3.7781513,
+                                 -13.518557,  8.1731863,
+                                 -12.460924,  9.2741578,
+                                  -9.080399,  6.6020600,
+                                  -6.522879,  4.0791812,
+                                  -2.995679,  0.2944662,
+                                  -2.889410, -0.8794261), byrow=TRUE, ncol=2), 
+                        tolerance=1e-7))
+}

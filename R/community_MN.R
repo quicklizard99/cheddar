@@ -362,3 +362,28 @@ NvMTriTrophicStatistics <- function(community)
     return (res)
 }
 
+.PolygonArea <- function(x, y)
+{
+    # htncp://en.wikipedia.org/wiki/Polygon#Area_and_centroid
+    stopifnot(length(x)==length(y))
+    upper <- 2:length(x)
+    lower <- upper-1
+    return (abs(0.5 * sum(x[lower]*y[upper] - x[upper]*y[lower])))
+}
+
+NvMConvexHull <- function(community)
+{
+    if(!is.Community(community)) stop('Not a Community')
+
+    cheddar:::.RequireM(community)
+    cheddar:::.RequireN(community)
+  
+    p <- cbind(x=Log10M(community), y=Log10N(community))
+    rownames(p) <- NULL
+    p <- p[!is.na(p[,1]) & !is.na(p[,2]),]
+    hull <- chull(p)
+
+    # Close polygon for calculation of area
+    return (list(points=p[hull,], 
+                 area=.PolygonArea(p[c(hull,hull[1]),1], p[c(hull,hull[1]),2])))
+}
