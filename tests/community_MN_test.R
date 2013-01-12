@@ -439,6 +439,12 @@ TestNvMConvexHull <- function()
     stopifnot(0.5 == cheddar:::.PolygonArea(c(0, 1, 0.5, 0), c(0, 0, 1, 0)))
     stopifnot(1 == cheddar:::.PolygonArea(c(0, 1, 1, 0, 0), c(0, 0, 1, 1, 0)))
     res <- NvMConvexHull(TL84)
+    stopifnot(all.equal(res$nodes, 
+                        c('Phoxinus neogaeus','Keratella testudo',
+                          'Chromulina sp.','Unclassified flagellates',
+                          'Chrysosphaerella longispina',
+                          'Chaoborus punctipennis','Phoxinus eos',
+                          'Umbra limi')))
     stopifnot(all.equal(round(res$area, 5), 30.68266))
     stopifnot(all.equal(unname(round(res$points, 7)), 
                         matrix(c( -2.931814, -0.8761484,

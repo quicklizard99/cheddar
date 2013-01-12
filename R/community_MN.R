@@ -371,19 +371,23 @@ NvMTriTrophicStatistics <- function(community)
     return (abs(0.5 * sum(x[lower]*y[upper] - x[upper]*y[lower])))
 }
 
-NvMConvexHull <- function(community)
+.ConvexHull <- function(community, x, y)
 {
-    if(!is.Community(community)) stop('Not a Community')
-
-    cheddar:::.RequireM(community)
-    cheddar:::.RequireN(community)
-  
-    p <- cbind(x=Log10M(community), y=Log10N(community))
+    p <- cbind(x, y)
     rownames(p) <- NULL
     p <- p[!is.na(p[,1]) & !is.na(p[,2]),]
     hull <- chull(p)
 
     # Close polygon for calculation of area
-    return (list(points=p[hull,], 
+    return (list(nodes=unname(NP(community, 'node')[hull]),
+                 points=p[hull,], 
                  area=.PolygonArea(p[c(hull,hull[1]),1], p[c(hull,hull[1]),2])))
+}
+
+NvMConvexHull <- function(community)
+{
+    if(!is.Community(community)) stop('Not a Community')
+    cheddar:::.RequireM(community)
+    cheddar:::.RequireN(community)
+    return (.ConvexHull(community, Log10M(community), Log10N(community)))
 }

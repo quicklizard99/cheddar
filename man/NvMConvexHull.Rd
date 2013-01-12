@@ -12,8 +12,8 @@ NvMConvexHull(community)
   \item{community}{an object of class \code{Community}.}
 }
 
-\details{Returns the points and area of the minimum convex hull (a polygon) in 
-log10-transformed numerical abundance versus log10-transformed body mass space 
+\details{Returns the points and area of the minimum convex hull (a polygon in 
+log10-transformed numerical abundance versus log10-transformed body mass space) 
 that bounds all the species within the community.
 }
 
@@ -23,7 +23,9 @@ body-size constraint space: data from a real food web. Ecology Letters
 }
 
 \value{A \code{list} containing the values
-  \item{points}{The matrix of the points that make up the convex hull.}
+  \item{nodes}{The names of the nodes that make up the convex hull.}
+  \item{points}{A matrix containing columns `x' and `y' that contain the 
+  coordinates of the points that make up the convex hull.}
   \item{area}{The area within the convex hull.}
 }
 
@@ -36,6 +38,9 @@ data(TL84)
 
 # Compute convex hull
 convex.hull <- NvMConvexHull(TL84)
+
+# The nodes that form the hull
+convex.hull$nodes
 
 # The area of the hull
 convex.hull$area
