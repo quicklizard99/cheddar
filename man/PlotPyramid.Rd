@@ -6,21 +6,27 @@
 \usage{
 PlotBPyramid(community, 
              level = floor(PreyAveragedTrophicLevel(community)),
+             fill.missing.levels = TRUE,
+             expected.levels,
              show.level.labels = TRUE, 
              xlab = Log10BLabel(community), 
              ylab = "", 
              xlim = NULL, 
              col = NULL, 
+             text.col = 'black',
              main = CPS(community)$title,
              \dots)
 
 PlotNPyramid(community, 
              level = floor(PreyAveragedTrophicLevel(community)),
+             fill.missing.levels = TRUE,
+             expected.levels,
              show.level.labels = TRUE, 
              xlab = Log10NLabel(community), 
              ylab = "", 
              xlim = NULL, 
              col = NULL, 
+             text.col = 'black',
              main = CPS(community)$title,
              \dots)
 
@@ -32,6 +38,8 @@ PlotNPyramid(community,
     node property, in which case it must meet the criteria of the 
     \code{properties} parameter of \code{NPS}, or a vector of length 
     \code{NumberOfNodes} that contains the levels.}
+  \item{fill.missing.levels}{}
+  \item{expected.levels}{}
   \item{show.level.labels}{logical - if \code{TRUE} then values of \code{level} 
     are shown to the left of the pyramid.}
   \item{xlab}{title of the x axis.}
@@ -39,6 +47,9 @@ PlotNPyramid(community,
   \item{xlim}{limits of the x axis.} 
   \item{col}{fill colour; either a single colour a vector containing a colour 
     per \code{level}.}
+  \item{text.col}{colour for the text showing the log10-transformed sums in the 
+    blocks of the pyramid; ; either a single colour a vector containing a 
+    colour per \code{level}.}
   \item{main}{title of the plot.}
   \item{\dots}{other values to plot functions.}
 }

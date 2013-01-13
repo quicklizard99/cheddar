@@ -1,6 +1,6 @@
 # Miscelaneous plot functions
 .PlotPyramid <- function(values, xlim, xlab, ylab, col, main, 
-                         show.level.labels, ...)
+                         show.level.labels, text.col, ...)
 {
     # Plots a pyramid of values
     if(is.null(xlim))
@@ -30,7 +30,7 @@
 
     to.print <- sprintf('%.2f', values)
     to.print[is.na(values)] <- ''
-    text(0, y=1:length(values)+0.5, to.print, ...)
+    text(0, y=1:length(values)+0.5, to.print, col=text.col, ...)
     if(show.level.labels)
     {
         axis(2, at=1:length(plot.values)+0.5, labels=names(plot.values), las=1, 
@@ -83,6 +83,7 @@ PlotNPyramid <- function(community,
                          ylab='', 
                          xlim=NULL, 
                          col=NULL, 
+                         text.col='black',
                          main=CPS(community)$title, 
                          ...)
 {
@@ -96,7 +97,8 @@ PlotNPyramid <- function(community,
         values <- .FillMissingLevels(values, level, expected.levels)
     }
     .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
-                 col=col, main=main, show.level.labels=show.level.labels, ...)
+                 col=col, main=main, show.level.labels=show.level.labels, 
+                 text.col=text.col, ...)
 }
 
 PlotBPyramid <- function(community,
@@ -108,6 +110,7 @@ PlotBPyramid <- function(community,
                          ylab='', 
                          xlim=NULL, 
                          col=NULL, 
+                         text.col='black',
                          main=CPS(community)$title, 
                          ...)
 {
@@ -122,7 +125,8 @@ PlotBPyramid <- function(community,
         values <- .FillMissingLevels(values, level, expected.levels)
     }
     .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
-                 col=col, main=main, show.level.labels=show.level.labels, ...)
+                 col=col, main=main, show.level.labels=show.level.labels, 
+                 text.col=text.col, ...)
 }
 
 .PlotAbundanceSpectrum <- function(bins, binned.data, main, 
