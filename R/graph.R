@@ -206,6 +206,11 @@ PlotAuppervAlower <- function(community,
                               ...)
 {
     # Upper vs lower link angles. Cohen et al 2009 PNAS.
+
+    # Ensure that we pick up the title of the unmanipulated community, when 
+    # using the default value of main.
+    main <- main
+
     community <- RemoveNodes(community, remove=with(NPS(community), 
                                                     node[is.na(M) | is.na(N)]))
     community <- RemoveCannibalisticLinks(community)
