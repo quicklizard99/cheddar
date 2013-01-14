@@ -1,6 +1,6 @@
 # Miscelaneous plot functions
-.PlotPyramid <- function(community, values, xlim, xlab, ylab, col, main, 
-                         show.level.labels, ...)
+.PlotPyramid <- function(values, xlim, xlab, ylab, col, main, 
+                         show.level.labels, text.col, ...)
 {
     # Plots a pyramid of values
     if(is.null(xlim))
@@ -9,59 +9,124 @@
     }
 
     # Values can be -ve so offset them
-    v <- values - xlim[1] + 1
-    v[is.infinite(v)] <- 0
-    stopifnot(min(v, na.rm=TRUE)>=0)
+    plot.values <- values - xlim[1] + 1
+    stopifnot(min(plot.values, na.rm=TRUE)>=0)
 
     # The largest value that we can show
     max.lxl <- xlim[2] - xlim[1] + 1
 
     if(!is.null(names(col)))
     {
-        col <- col[names(v)]
+        col <- col[names(values)]
     }
 
     plot(NA, NA, type='n', xlim=c(-max.lxl/2, max.lxl/2), xaxt='n', xlab=xlab, 
-         ylim=c(1,1+length(v)), yaxt='n', ylab=ylab, main=main, 
+         ylim=c(1,1+length(plot.values)), yaxt='n', ylab=ylab, main=main, 
          frame.plot=FALSE, ...)
 
-    rect(-abs(v)/2, 1:length(v), abs(v)/2, 1+(1:length(v)), 
+    rect(-abs(plot.values)/2,    1:length(plot.values), 
+          abs(plot.values)/2, 1+(1:length(plot.values)), 
          col=col)
 
     to.print <- sprintf('%.2f', values)
-    to.print[is.infinite(values) | is.na(v)] <- ''
-    text(0, y=1:length(v)+0.5, to.print, ...)
+    to.print[is.na(values)] <- ''
+    text(0, y=1:length(values)+0.5, to.print, col=text.col, ...)
     if(show.level.labels)
     {
-        axis(2, at=1:length(v)+0.5, labels=names(v), las=1, tick=FALSE, ...)
+        axis(2, at=1:length(plot.values)+0.5, labels=names(plot.values), las=1, 
+             tick=FALSE, ...)
     }
+}
+
+.PyramidLevels <- function(values, level, expected, fill.missing, 
+                           order.by.expected)
+{
+    # Some checks and processing on values used for levels in pyramid plots
+    if(missing(expected))
+    {
+        if(is.numeric(level))
+        {
+            expected <- as.character(floor(min(level)):ceiling(max(level)))
+        }
+        else if('category'==level)
+        {
+            expected <- c(.UnnamedString(),'producer','invertebrate',
+                          'vert.ecto','vert.endo')
+            expected <- intersect(expected, names(values))
+        }
+        else
+        {
+            expected <- names(values)
+        }
+    }
+
+    duplicated.levels <- duplicated(expected)
+    extra.levels <- setdiff(names(values), expected)
+    if(any(duplicated.levels))
+    {
+        stop(paste('The levels [', 
+                   paste(expected[duplicated.levels], collapse=','), 
+                   '] appear in expected.levels more than once', sep=''))
+    }
+    else if(length(extra.levels)>0)
+    {
+        stop(paste('The levels [', paste(extra.levels, collapse=','), 
+                   '] are not in expected.levels', sep=''))
+    }
+    else
+    {
+        if(fill.missing)
+        {
+            missing.levels <- setdiff(expected, names(values))
+            values[missing.levels] <- NA
+        }
+        if(order.by.expected)
+        {
+            values <- values[intersect(expected, names(values))]
+        }
+    }
+    return (values)
 }
 
 PlotNPyramid <- function(community, 
                          level=floor(PreyAveragedTrophicLevel(community)),
+                         expected.levels,
+                         fill.missing.levels=TRUE,
+                         order.by.expected=TRUE,
                          show.level.labels=TRUE,
-                         xlab=Log10NLabel(community), 
+                         xlab=Log10NLabel(community, 
+                                          name=expression(~sum(italic(N)))), 
                          ylab='', 
                          xlim=NULL, 
                          col=NULL, 
+                         text.col='black',
                          main=CPS(community)$title, 
                          ...)
 {
     if(!is.Community(community)) stop('Not a Community')
 
     .RequireN(community)
-    values <- log10(SumNByClass(community, class=level))
-    .PlotPyramid(community, values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
-                 col=col, main=main, show.level.labels=show.level.labels, ...)
+    values <- log10(SumNByClass(community, class=level, na.rm=TRUE))
+    values[is.infinite(values)] <- NA
+    values <- .PyramidLevels(values, level, expected.levels, 
+                             fill.missing.levels, order.by.expected)
+    .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
+                 col=col, main=main, show.level.labels=show.level.labels, 
+                 text.col=text.col, ...)
 }
 
 PlotBPyramid <- function(community,
                          level=floor(PreyAveragedTrophicLevel(community)),
+                         expected.levels,
+                         fill.missing.levels=TRUE,
+                         order.by.expected=TRUE,
                          show.level.labels=TRUE,
-                         xlab=Log10BLabel(community), 
+                         xlab=Log10BLabel(community, 
+                                          name=expression(~sum(italic(B)))), 
                          ylab='', 
                          xlim=NULL, 
                          col=NULL, 
+                         text.col='black',
                          main=CPS(community)$title, 
                          ...)
 {
@@ -69,9 +134,13 @@ PlotBPyramid <- function(community,
 
     .RequireM(community)
     .RequireN(community)
-    values <- log10(SumBiomassByClass(community, class=level))
-    .PlotPyramid(community, values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
-                 col=col, main=main, show.level.labels=show.level.labels, ...)
+    values <- log10(SumBiomassByClass(community, class=level, na.rm=TRUE))
+    values[is.infinite(values)] <- NA
+    values <- .PyramidLevels(values, level, expected.levels, 
+                             fill.missing.levels, order.by.expected)
+    .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
+                 col=col, main=main, show.level.labels=show.level.labels, 
+                 text.col=text.col, ...)
 }
 
 .PlotAbundanceSpectrum <- function(bins, binned.data, main, 
