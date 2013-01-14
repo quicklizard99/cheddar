@@ -40,7 +40,7 @@ PlotNPS(community,
         highlight.links = NULL, 
         highlight.nodes = Cannibals, 
         lowlight.nodes, 
-        show.na=FALSE,
+        show.na = FALSE,
         show.web = TRUE, 
         show.nodes.as = "points", 
         node.labels = NULL, 
@@ -52,25 +52,21 @@ PlotNPS(community,
 PlotMvN(community, 
         xlab = Log10NLabel(community), 
         ylab = Log10MLabel(community), 
-        show.na=TRUE,
         \dots)
 
 PlotNvM(community, 
         xlab = Log10MLabel(community), 
         ylab = Log10NLabel(community), 
-        show.na=TRUE,
         \dots)
 
 PlotBvM(community, 
         xlab = Log10MLabel(community), 
         ylab = Log10BLabel(community), 
-        show.na=TRUE,
         \dots)
 
 PlotMvB(community, 
         xlab = Log10BLabel(community), 
         ylab = Log10MLabel(community), 
-        show.na=TRUE,
         \dots)
 }
 
@@ -136,7 +132,8 @@ PlotMvB(community,
     \code{highlight.nodes}.}
   \item{show.na}{logical - if \code{TRUE} then nodes for which \code{X} and/or 
     \code{Y} is \code{NA} will be placed at the lowest extent of the relevant 
-    axis. If \code{FALSE} then these nodes will not be plotted.}
+    axis using the \code{PlaceMissingPoints} function. If \code{FALSE} then 
+    these nodes will not be plotted.}
   \item{show.web}{logical - if \code{TRUE} and \code{community} has trophic 
     links then the food web is plotted using the \code{link*} and 
     \code{highlight.links} parameters}
@@ -200,7 +197,8 @@ If \code{show.nodes.as} is equal to "points" then labels are plotted using
          \code{\link{PlotNSpectrum}}, 
          \code{\link{PlotRankNPS}}, 
          \code{\link{PlotTLPS}}, 
-         \code{\link{PlotWebByLevel}}}
+         \code{\link{PlotWebByLevel}}
+         \code{\link{PlaceMissingPoints}}}
 
 \examples{
 data(TL84)
@@ -228,7 +226,7 @@ PlotNPS(TL84, 'Log10M', 'TrophicHeight', xlab=Log10MLabel(TL84),
 par(mfrow=c(1,2))
 data(YthanEstuary)
 PlotNvM(YthanEstuary)
-PlotNvM(YthanEstuary, show.na=FALSE)
+PlotNvM(YthanEstuary, show.na=TRUE)
 }
 \keyword{hplot}
 

@@ -324,7 +324,6 @@ PlotNPS <- function(community,
 PlotNvM <- function(community, 
                     xlab=Log10MLabel(community), 
                     ylab=Log10NLabel(community), 
-                    show.na=TRUE,
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -332,13 +331,12 @@ PlotNvM <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10M', 'Log10N', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, show.na=show.na, ...)
+            are.values=FALSE, ...)
 }
 
 PlotMvN <- function(community, 
                     xlab=Log10NLabel(community), 
                     ylab=Log10MLabel(community), 
-                    show.na=TRUE,
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -346,13 +344,12 @@ PlotMvN <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10N', 'Log10M', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, show.na=show.na, ...)
+            are.values=FALSE, ...)
 }
 
 PlotBvM <- function(community, 
                     xlab=Log10MLabel(community), 
                     ylab=Log10BLabel(community), 
-                    show.na=TRUE, 
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -360,13 +357,12 @@ PlotBvM <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10M', 'Log10Biomass', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, show.na=show.na, ...)
+            are.values=FALSE, ...)
 }
 
 PlotMvB <- function(community, 
                     xlab=Log10BLabel(community), 
                     ylab=Log10MLabel(community), 
-                    show.na=TRUE, 
                     ...)
 {
     if(!is.Community(community)) stop('Not a Community')
@@ -374,7 +370,7 @@ PlotMvB <- function(community,
     .RequireM(community)
     .RequireN(community)
     PlotNPS(community, 'Log10Biomass', 'Log10M', xlab=xlab, ylab=ylab, 
-            are.values=FALSE, show.na=show.na, ...)
+            are.values=FALSE, ...)
 }
 
 PlotRankNPS <- function(community, property, rank.by=property, 
