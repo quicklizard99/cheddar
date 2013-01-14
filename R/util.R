@@ -10,6 +10,8 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     # See "Automation of Mathematical Annotation in Plots", Uwe Liggs, R News, 
     # Vol. 2/3, December 2002
 
+    fmt <- paste('%.', dp, 'f', sep='')
+
     variables <- as.character(attr(terms(model), 'variables'))
     y.name <- variables[1+attr(terms(model), 'response')]
     x.name <- names(model$coefficients)[2]
@@ -18,13 +20,13 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     confint <- ''
     if(slope.95.ci && !ci.plus.minus.style)
     {
-        ci <- round(confint(model, level=0.95)[x.name,], dp)
-        confint <- paste("~'(95% CI ", ci[1], ',', ci[2], ")'", sep='')
+        ci <- sprintf(fmt, confint(model, level=0.95)[x.name,])
+        confint <- paste("~'(95% CI ", ci[1], ",", ci[2], ")'", sep='')
         confint <- parse(text=confint)[[1]]
     }
     else if(slope.95.ci && ci.plus.minus.style)
     {
-        ci <- round(diff(as.vector(confint(model, x.name, level=0.95)))/2, dp)
+        ci <- sprintf(fmt,diff(as.vector(confint(model, x.name, level=0.95)))/2)
         n <- nrow(model$model)
         confint <- paste("'' %+-%", ci, "~'(95% CI, n=", n, ")'", sep='')
         confint <- parse(text=confint)[[1]]
@@ -35,27 +37,25 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     if(r)
     {
         r.val <- sign(model$coefficients[x.name]) * summary(model)$r.squared^0.5
-        r.val <- paste(', r =', round(r.val, dp))
+        r.val <- paste(', r=', sprintf(fmt, r.val), sep='')
     }
 
     # Coefficient of determination
     r2 <- ''
     if(r.squared)
     {
-        r2 <- substitute(expression(','~r^2 == r2), 
-                         list(r2=round(summary(model)$r.squared, dp)))
-        r2 <- paste("','~r^2==", round(summary(model)$r.squared, dp))
+        r2 <- paste("','~r^2*'=", sprintf(fmt, summary(model)$r.squared), "'", 
+                    sep='')
         r2 <- parse(text=r2)[[1]]
     }
 
     # Coefficients
-    co <- round(model$coefficients, dp)
-
+    co <- model$coefficients
     return (eval(substitute(expression(y == a~sign~b * x * confint * r * r2), 
                             list(y=ifelse(model.var.names, y.name, 'y'),
-                                 a=co[1], 
+                                 a=sprintf(fmt, co[1]), 
                                  sign=ifelse(co[2]<0, '-', '+'),
-                                 b=abs(co[2]), 
+                                 b=sprintf(fmt, abs(co[2])), 
                                  x=ifelse(model.var.names, x.name, 'x'),
                                  confint=confint, 
                                  r=r.val,
