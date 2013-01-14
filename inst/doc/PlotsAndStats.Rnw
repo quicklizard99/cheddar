@@ -111,8 +111,8 @@ properties, such as body mass, $M$, and numerical abundance, $N$, or they can
 be the names of functions that compute and return node properties. 
 
 The relationship between species-level log-transformed $N$ and $M$ has 
-implications for \cite{ReumanEtAl2008EcolLett} and ecosystem-level 
-\cite{BrownEtAl2004Ecology} theories. We can plot 
+implications for community- \citep{ReumanEtAl2008EcolLett} and ecosystem-level 
+\citep{BrownEtAl2004Ecology} theories. We can plot 
 $\log_{10}(N)$ against $\log_{10}(M)$ by using \code{PlotNPS} together with the 
 \code{Log10M} and \code{Log10N} functions. 
 \begin{center}
@@ -131,7 +131,7 @@ should be empty.
 This is explored more in Section \ref{sec:nps_colours and symbols}. 
 
 \newpage
-\noindent The \code{TL84} datasets include trophic links so \code{PlotNPS} 
+\noindent The \code{TL84} dataset includes trophic links so \code{PlotNPS} 
 will show the food web and highlights cannibals by plotting them in a 
 light-coloured filled circle with a dark border, as shown in the previous 
 example. We can turn off these behaviours.
@@ -538,15 +538,13 @@ represented by too few individuals for properties such as $M$ and $N$ to be
 accurately estimated. Other resources such as detritus, commonly eaten by 
 primary consumers in many communities, have no clearly-defined $M$ 
 or $N$. Many datasets will therefore contain food-web nodes that lack 
-one or more properties, for example Ythan Estuary dataset has a large 
+one or more properties, for example the Ythan Estuary dataset has a large 
 number of primary consumers that depend upon detritus, which has no $M$ or $N$. 
 \code{PlotNPS}, and hence the higher-level functions that use it, will place 
 nodes without a property at the lowest extent of the relevant axis if the 
-`show.na' parameter is \code{TRUE}. The \code{PlotNvM}, \code{PlotMvN}, 
-\code{PlotBvM} and \code{PlotMvB} functions all set `show.na' to \code{TRUE} by 
-default. All other functions that delegate to \code{PlotNPS} set `show.na' to 
-\code{FALSE} by default. The first of the $\log_{10}(N)$-versus-$\log_{10}(M)$ 
-plots below show detritus at the bottom-left of the plot.
+`show.na' parameter is \code{TRUE}. By default, `show.na' is \code{FALSE}.
+The second of the $\log_{10}(N)$-versus-$\log_{10}(M)$ 
+plots below shows detritus at the bottom-left of the plot.
 \SweaveOpts{width=8,height=4}
 \setkeys{Gin}{width=\textwidth}
 \begin{center}
@@ -554,7 +552,7 @@ plots below show detritus at the bottom-left of the plot.
 data(YthanEstuary)
 par(mfrow=c(1,2))
 PlotNvM(YthanEstuary)
-PlotNvM(YthanEstuary, show.na=FALSE)
+PlotNvM(YthanEstuary, show.na=TRUE)
 @
 \end{center}
 
@@ -565,7 +563,7 @@ data, or by the axes limits, if given.
 \setkeys{Gin}{width=0.5\textwidth}
 \begin{center}
 <<fig=TRUE>>=
-PlotNvM(YthanEstuary, xlim=c(-10, 4), ylim=c(-10, 13))
+PlotNvM(YthanEstuary, xlim=c(-10, 4), ylim=c(-10, 13), show.na=TRUE)
 @
 \end{center}
 The example below shows how \code{PlotNPS} behaves in four different 
@@ -582,25 +580,25 @@ par(mfrow=c(2,2))
 np <- NPS(TL84)
 np[1,'M'] <- NA
 PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
-        main='Node 1 M=NA', show.nodes.as='both',cex=2)
+        main='Node 1 M=NA', show.nodes.as='both', cex=2, show.na=TRUE)
 
 np <- NPS(TL84)
 np[1,'N'] <- NA
 PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
-        main='Node 1 N=NA', show.nodes.as='both',cex=2)
+        main='Node 1 N=NA', show.nodes.as='both', cex=2, show.na=TRUE)
 
 np <- NPS(TL84)
 np[1,'M'] <- NA
 np[1,'N'] <- NA
 PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
-        main='Node 1 M=NA and N=NA', show.nodes.as='both',cex=2)
+        main='Node 1 M=NA and N=NA', show.nodes.as='both', cex=2, show.na=TRUE)
 
 np <- NPS(TL84)
 np[c(10, 20, 30, 40),'M'] <- NA
 np[c(10, 20, 30, 40),'N'] <- NA
 PlotNvM(Community(nodes=np, trophic.links=TLPS(TL84), properties=CPS(TL84)), 
         main='Nodes 10, 20, 30 and 40 M=NA and N=NA', show.nodes.as='both', 
-        cex=2)
+        cex=2, show.na=TRUE)
 @
 \end{center}
 
