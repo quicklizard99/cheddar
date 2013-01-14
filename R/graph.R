@@ -38,26 +38,34 @@
     }
 }
 
-.FillMissingLevels <- function(values, level, expected.levels)
+.PyramidLevels <- function(values, level, expected, fill.missing, 
+                           order.by.expected)
 {
-    if(missing(expected.levels))
+    # Some checks and processing on values used for levels in pyramid plots
+    if(missing(expected))
     {
         if(is.numeric(level))
         {
-            expected.levels <- as.character(1:max(level))
+            expected <- as.character(floor(min(level)):ceiling(max(level)))
+        }
+        else if('category'==level)
+        {
+            expected <- c(.UnnamedString(),'producer','invertebrate',
+                          'vert.ecto','vert.endo')
+            expected <- intersect(expected, names(values))
         }
         else
         {
-            expected.levels <- names(values)
+            expected <- names(values)
         }
     }
 
-    duplicated.levels <- duplicated(expected.levels)
-    extra.levels <- setdiff(names(values), expected.levels)
+    duplicated.levels <- duplicated(expected)
+    extra.levels <- setdiff(names(values), expected)
     if(any(duplicated.levels))
     {
         stop(paste('The levels [', 
-                   paste(expected.levels[duplicated.levels], collapse=','), 
+                   paste(expected[duplicated.levels], collapse=','), 
                    '] appear in expected.levels more than once', sep=''))
     }
     else if(length(extra.levels)>0)
@@ -67,17 +75,24 @@
     }
     else
     {
-        missing.levels <- setdiff(expected.levels, names(values))
-        values[missing.levels] <- NA
-        values <- values[expected.levels]
+        if(fill.missing)
+        {
+            missing.levels <- setdiff(expected, names(values))
+            values[missing.levels] <- NA
+        }
+        if(order.by.expected)
+        {
+            values <- values[intersect(expected, names(values))]
+        }
     }
     return (values)
 }
 
 PlotNPyramid <- function(community, 
                          level=floor(PreyAveragedTrophicLevel(community)),
-                         fill.missing.levels=TRUE,
                          expected.levels,
+                         fill.missing.levels=TRUE,
+                         order.by.expected=TRUE,
                          show.level.labels=TRUE,
                          xlab=Log10NLabel(community), 
                          ylab='', 
@@ -92,10 +107,8 @@ PlotNPyramid <- function(community,
     .RequireN(community)
     values <- log10(SumNByClass(community, class=level, na.rm=TRUE))
     values[is.infinite(values)] <- NA
-    if(fill.missing.levels)
-    {
-        values <- .FillMissingLevels(values, level, expected.levels)
-    }
+    values <- .PyramidLevels(values, level, expected.levels, 
+                             fill.missing.levels, order.by.expected)
     .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
                  col=col, main=main, show.level.labels=show.level.labels, 
                  text.col=text.col, ...)
@@ -103,8 +116,9 @@ PlotNPyramid <- function(community,
 
 PlotBPyramid <- function(community,
                          level=floor(PreyAveragedTrophicLevel(community)),
-                         fill.missing.levels=TRUE,
                          expected.levels,
+                         fill.missing.levels=TRUE,
+                         order.by.expected=TRUE,
                          show.level.labels=TRUE,
                          xlab=Log10BLabel(community), 
                          ylab='', 
@@ -120,10 +134,8 @@ PlotBPyramid <- function(community,
     .RequireN(community)
     values <- log10(SumBiomassByClass(community, class=level, na.rm=TRUE))
     values[is.infinite(values)] <- NA
-    if(fill.missing.levels)
-    {
-        values <- .FillMissingLevels(values, level, expected.levels)
-    }
+    values <- .PyramidLevels(values, level, expected.levels, 
+                             fill.missing.levels, order.by.expected)
     .PlotPyramid(values=values, xlab=xlab, ylab=ylab, xlim=xlim, 
                  col=col, main=main, show.level.labels=show.level.labels, 
                  text.col=text.col, ...)
