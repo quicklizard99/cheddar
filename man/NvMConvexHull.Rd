@@ -19,7 +19,7 @@ that bounds all the species within the community.
 
 \references{Leaper, R. and Raffaelli, D. (1999) Defining the abundance
 body-size constraint space: data from a real food web. Ecology Letters 
-\bold{2}, 3, 191–-199.
+\bold{2}, 3, 191--199.
 }
 
 \value{A \code{list} containing the values
