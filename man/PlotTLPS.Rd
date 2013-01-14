@@ -39,8 +39,8 @@ PlotTLPS(community,
 PlotPredationMatrix(community, 
                     xlab='Consumer', 
                     ylab='Resource', 
-                    row.order,
-                    col.order
+                    resource.order,
+                    consumer.order,
                     \dots)
 
 PlotMRvMC(community, 
@@ -134,8 +134,13 @@ PlotBCvBR(community,
   \item{cex}{cex values.}
   \item{are.values}{logical - if \code{TRUE} \code{X} and \code{Y} must be 
     vectors of values of length \code{NumberOfTrophicLinks}.}
-  \item{row.order}{}
-  \item{col.order}{}
+  \item{resource.order}{the order in which to show resources. Either missing, 
+  which implies the native node order, a vector of length 
+  \code{NumberOfTrophicLinks} containing the integer order of resources, 
+  or the name of a property that meets the criteria of the \code{properties} 
+  parameter of \code{NPS}.}
+  \item{consumer.order}{the order in which to show consumer; requirements 
+  are the same as \code{resource.order}.}
   \item{\dots}{other values to plot functions.}
 }
 
@@ -158,8 +163,6 @@ The convenience functions \code{PlotMRvMC}, \code{PlotMCvMR}, \code{PlotNRvNC},
 \code{PlotNCvNR}, \code{PlotBRvBC}, \code{PlotBCvBR} are `wrappers' around 
 \code{PlotRankNPS} that plot a log10-transformed body mass, M, numerical 
 abundance, N, or biomass abundance, B.
-
-\code{row.order} and \code{col.order}.
 }
 
 \author{Lawrence Hudson}
@@ -181,7 +184,7 @@ data(TL84)
 PlotPredationMatrix(TL84)
 
 # The predation matrix with rows ordered by body mass
-PlotPredationMatrix(TL84, row.order='M')
+PlotPredationMatrix(TL84, resource.order='M')
 
 # Colours and symbols by resource.category
 PlotMCvMR(TL84)

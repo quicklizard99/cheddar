@@ -154,8 +154,8 @@ PlotTLPS <- function(community,
 PlotPredationMatrix <- function(community, 
                                 xlab='Consumer', 
                                 ylab='Resource', 
-                                row.order, 
-                                col.order,
+                                resource.order, 
+                                consumer.order,
                                 ...)
 {
     # Plots the predation matrix
@@ -166,42 +166,46 @@ PlotPredationMatrix <- function(community,
     tlp <- TLPS(community)
     nodes <- unname(NP(community, 'node'))
 
-    if(missing(row.order))
+    if(missing(resource.order))
     {
-        row.order <- nodes
+        resource.order <- nodes
     }
-    else if(1==length(row.order))
+    else if(1==length(resource.order))
     {
-        row.order <- nodes[order(NPS(TL84, row.order)[,row.order])]
+        resource.order <- order(NPS(community, resource.order)[,resource.order])
+        resource.order <- nodes[resource.order]
     }
-    else if(is.numeric(row.order))
+    else if(is.numeric(resource.order))
     {
-        stopifnot(all(0 < row.order & row.order <= NumberOfNodes(community)))
-        stopifnot(length(unique(row.order)) == NumberOfNodes(community))
-        stopifnot(range(row.order) == c(1, NumberOfNodes(community)))
-        row.order <- nodes[row.order]
-    }
-
-    if(missing(col.order))
-    {
-        col.order <- nodes
-    }
-    else if(1==length(col.order))
-    {
-        col.order <- nodes[order(NPS(TL84, col.order)[,col.order])]
-    }
-    else if(is.numeric(col.order))
-    {
-        stopifnot(all(0 < col.order & col.order <= NumberOfNodes(community)))
-        stopifnot(length(unique(col.order)) == NumberOfNodes(community))
-        stopifnot(range(col.order) == c(1, NumberOfNodes(community)))
-        col.order <- nodes[col.order]
+        stopifnot(all(0 < resource.order & 
+                      resource.order <= NumberOfNodes(community)))
+        stopifnot(length(unique(resource.order)) == NumberOfNodes(community))
+        stopifnot(range(resource.order) == c(1, NumberOfNodes(community)))
+        resource.order <- nodes[resource.order]
     }
 
-    stopifnot(sort(row.order)==sort(nodes))
-    stopifnot(sort(col.order)==sort(nodes))
-    X <- sapply(tlp[,'consumer'], function(s) return (which(s==col.order)))
-    Y <- sapply(tlp[,'resource'], function(s) return (which(s==row.order)))
+    if(missing(consumer.order))
+    {
+        consumer.order <- nodes
+    }
+    else if(1==length(consumer.order))
+    {
+        consumer.order <- order(NPS(community, consumer.order)[,consumer.order])
+        consumer.order <- nodes[consumer.order]
+    }
+    else if(is.numeric(consumer.order))
+    {
+        stopifnot(all(0 < consumer.order & 
+                      consumer.order <= NumberOfNodes(community)))
+        stopifnot(length(unique(consumer.order)) == NumberOfNodes(community))
+        stopifnot(range(consumer.order) == c(1, NumberOfNodes(community)))
+        consumer.order <- nodes[consumer.order]
+    }
+
+    stopifnot(sort(resource.order)==sort(nodes))
+    stopifnot(sort(consumer.order)==sort(nodes))
+    X <- sapply(tlp[,'consumer'], function(s) return (which(s==consumer.order)))
+    Y <- sapply(tlp[,'resource'], function(s) return (which(s==resource.order)))
 
     # Plot y values inverted
     n <- length(nodes)
@@ -213,7 +217,7 @@ PlotPredationMatrix <- function(community,
              are.values=TRUE, 
              xaxt='n', yaxt='n', ...)
 
-    if(all(row.order==col.order))
+    if(all(resource.order==consumer.order))
     {
         # Points on this line are cannibals
         abline(a=n+1, b=-1, lty=2)

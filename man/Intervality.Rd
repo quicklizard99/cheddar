@@ -87,8 +87,8 @@ PlotPredationMatrix(res$reordered, main=paste('Sum diet gap', res$sum.gaps))
 # The same comparison but retaining the original column ordering
 par(mfrow=c(1,3))
 PlotPredationMatrix(TL84)
-PlotPredationMatrix(TL84, row.order=NP(TL84.by.M, 'node'))
-PlotPredationMatrix(TL84, row.order=res$order)
+PlotPredationMatrix(TL84, resource.order=NP(TL84.by.M, 'node'))
+PlotPredationMatrix(TL84, resource.order=res$order)
 }
 
 \keyword{utilities}
