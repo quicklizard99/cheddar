@@ -45,7 +45,7 @@ convex.hull$nodes
 # The area of the hull
 convex.hull$area
 
-# Plot the hull around the data
+# Plot the hull in red around the nodes
 PlotNvM(TL84)
 polygon(convex.hull$points, lwd=2, border='red')
 }
