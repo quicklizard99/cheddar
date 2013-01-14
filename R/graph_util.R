@@ -316,6 +316,7 @@ PlotLinearModels <- function(models, colour.spec, col, ...)
     }
 
     stopifnot('list'==class(models))
+    models <- models[!sapply(models, is.null)]
 
     model.name <- names(models)
 
