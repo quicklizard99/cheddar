@@ -66,7 +66,7 @@ numerical abundance in each \code{level}.
 
 \code{expected.levels} provides two behaviours. First, it provides error 
 checking: an error is raised if values are in \code{level} that 
-are not in \code{expected.level}. Second, it interacts with 
+are not in \code{expected.levels}. Second, it interacts with 
 \code{fill.missing.levels} and \code{order.by.expected} to control which levels 
 are drawn and how. If \code{fill.missing.levels} is \code{TRUE} then values 
 in \code{expected.levels} that are not present in \code{level} are shown on the 
