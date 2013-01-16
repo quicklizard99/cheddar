@@ -105,7 +105,7 @@ This file must contain one row of data only (Table
   \end{center}
 \end{table}
 This file must contain the `title' column. The `M.units' and/or `N.units' 
-must be present if the \code{properties.csv} file contains columns called 
+must be present if the \code{nodes.csv} file contains columns called 
 `M' and/or `N'. The contents of this file can be accessed using the 
 \code{CPS} function, which returns a \code{list}.
 
