@@ -888,12 +888,14 @@ title(main='Jonsson et al. (2005) AER, Fig. 7 (p 47)', outer=TRUE)
 \setkeys{Gin}{width=\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
-tl84.levels <- floor(TrophicHeight(TL84))
-tl86.levels <- floor(TrophicHeight(TL86))
-PlotNPyramid(TL84, level=tl84.levels, main='', ylab='Trophic height')
-PlotNPyramid(TL86, level=tl86.levels, main='')
-PlotBPyramid(TL84, level=tl84.levels, main='', ylab='Trophic height')
-PlotBPyramid(TL86, level=tl86.levels, main='')
+TL84.no.iso <- RemoveIsolatedNodes(TL84)
+TL86.no.iso <- RemoveIsolatedNodes(TL86)
+tl84.levels <- floor(TrophicHeight(TL84.no.iso))
+tl86.levels <- floor(TrophicHeight(TL86.no.iso))
+PlotNPyramid(TL84.no.iso, level=tl84.levels, main='', ylab='Trophic height')
+PlotNPyramid(TL86.no.iso, level=tl86.levels, main='')
+PlotBPyramid(TL84.no.iso, level=tl84.levels, main='', ylab='Trophic height')
+PlotBPyramid(TL86.no.iso, level=tl86.levels, main='')
 title(main='Jonsson et al. (2005) AER, Fig. 8 (p 49)', outer=TRUE)
 @
 \end{center}
