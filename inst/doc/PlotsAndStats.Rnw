@@ -885,7 +885,7 @@ title(main='Jonsson et al. (2005) AER, Fig. 7 (p 47)', outer=TRUE)
 \subsubsection{\cite{JonssonEtAl2005AER}, Fig.\ 8 (p 49)}
 \begin{center}
 \SweaveOpts{width=6,height=6}
-\setkeys{Gin}{width=\textwidth}
+\setkeys{Gin}{width=0.8\textwidth}
 <<fig=TRUE>>=
 par(mfrow=c(2,2))
 TL84.no.iso <- RemoveIsolatedNodes(TL84)
