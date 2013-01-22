@@ -1,4 +1,4 @@
 bin
-README.md
 .git
+.gitignore
 .DS_Store

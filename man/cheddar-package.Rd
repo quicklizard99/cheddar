@@ -9,6 +9,9 @@ community and a range of functions for analysis and visualisation, focusing
 on food web, body mass and numerical abundance data. It also allows inter-web 
 comparisons such as examining changes in community structure over 
 environmental, temporal or spatial gradients.
+
+See https://github.com/quicklizard99/cheddar/blob/master/release_history.md for 
+a history of Cheddar releases.
 }
 
 \details{
@@ -16,7 +19,7 @@ environmental, temporal or spatial gradients.
     Package: \tab cheddar\cr
     Type: \tab Package\cr
     Version: \tab 0.1-620\cr
-    Date: \tab 2012-11-28\cr
+    Date: \tab 2013-01-22\cr
     License: \tab BSD\cr
     }
 }
