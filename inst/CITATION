@@ -1,0 +1,51 @@
+citHeader("To cite package 'cheddar' in publications use:")
+
+## R >= 2.8.0 passes package metadata to citation().
+if(!exists("meta") || is.null(meta)) meta <- packageDescription("cheddar")
+year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+vers <- paste("R package version", meta$Version)
+
+citEntry(entry="Manual",
+  title = "Cheddar: analysis and visualisation of ecological communities",
+  author = personList(person("Lawrence", "Hudson", role=c('cre','aut')), 
+                      person("Daniel", "Reuman", role=c('ctb','ths')), 
+                      person("Rob", "Emerson", role='ctb')),
+  year = year,
+  note = vers,
+  url = paste("https://github.com/quicklizard99/cheddar/,", 
+              "http://quicklizard99.github.com/cheddar/"),
+  textVersion = paste("Lawrence Hudson, Daniel Reuman and Rob Emerson (",
+                      year,
+                      "). Cheddar: analysis and visualisation of ecological ", 
+                      "communities. ",
+                      vers, ".", sep=""))
+
+citEntry(entry="Article",
+  title = "Cheddar: analysis and visualisation of ecological communities in R",
+  author = personList(as.person("Lawrence N. Hudson"), 
+                      as.person("Rob Emerson"), 
+                      as.person("Gareth B. Jenkins"), 
+                      as.person("Katrin Layer"), 
+                      as.person("Mark E. Ledger"), 
+                      as.person("Doris E. Pichler"), 
+                      as.person("Murray S. A. Thompson"), 
+                      as.person("Eoin J. O'Gorman"), 
+                      as.person("Guy Woodward"), 
+                      as.person("Daniel C. Reuman")),
+  journal = "Methods In Ecology and Evolution",
+  year =    "2013",
+  volume =  "4",
+  number =   "1",
+  pages =   "99--104",
+  doi = "10.1111/2041-210X.12005",
+  keywords =  paste("allometry, body mass, ecological network, food chain,", 
+                    "food web, mass-abundance, predator-prey,", 
+                    "resource-consumer, trophic height, trophic level"),
+  textVersion =  paste("Lawrence N. Hudson, Rob Emerson, Gareth B. Jenkins,", 
+                       "Katrin Layer, Mark E. Ledger, Doris E. Pichler,", 
+                       "Murray S. A. Thompson, Eoin J. O'Gorman,", 
+                       "Guy Woodward and Daniel C. Reuman (2013)", 
+                       "Cheddar: analysis and visualisation of ecological", 
+                       "communities in R. Methods in Ecology and Evolution", 
+                       "4, 1 99--104. (DOI 10.1111/2041-210X.12005)")
+)
