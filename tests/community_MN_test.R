@@ -83,40 +83,40 @@ TestNvMLinearRegressions <- function()
     # Using default class of category - all NA as c6 does not have category
     res <- NvMLinearRegressions(c6)
     stopifnot('all'==names(res))
-    stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
+    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
 
     # class==NULL should result in a single lm object being returned
     res <- NvMLinearRegressions(c6, class=NULL)
     stopifnot('all'==names(res))
-    stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
+    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
 
     # Each node is in it's own class. Can't fit lm through one data point 
     # so should have 'all' and three NULLs
     res <- NvMLinearRegressions(c6, class=c('a','b','c'))
     stopifnot(c('all','a','b','c')==names(res))
-    stopifnot(all(c(2.58,-1.04) == round(coef(res[['all']]), 2)))
+    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
     stopifnot(all(sapply(res[2:4], is.null)))
 
     # Node 1 in a different class to nodes 2 and 3
     res <- NvMLinearRegressions(c6, class=c('a','b','b'))
     stopifnot(c('all', 'a', 'b')==names(res))
-    stopifnot(all(c(2.58,-1.04) ==  round(coef(res[['all']]), 2)))
-    stopifnot(all(c(1.14,-0.20) ==  round(coef(res[['b']]), 2)))
+    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
+    stopifnot(all.equal(c(1.14,-0.20), unname(round(coef(res[['b']]), 2))))
     stopifnot(is.null(res[['a']]))
 
     # category is default class
     res <- NvMLinearRegressions(TL84)
     stopifnot(all(c('all', 'producer', 'invertebrate', 'vert.ecto') == 
                   names(res)))
-    stopifnot(all(c(-2.69, -0.83) == round(coef(res[['all']]), 2)))
-    stopifnot(all(c(2.56, -0.41) == round(coef(res[['producer']]), 2)))
-    stopifnot(all(c(1.47, -0.32) == round(coef(res[['invertebrate']]), 2)))
-    stopifnot(all(c(-34.66, -11.63) == round(coef(res[['vert.ecto']]), 2)))
+    stopifnot(all.equal(c(-2.69, -0.83), unname(round(coef(res[['all']]), 2))))
+    stopifnot(all.equal(c(2.56, -0.41), unname(round(coef(res[['producer']]), 2))))
+    stopifnot(all.equal(c(1.47, -0.32), unname(round(coef(res[['invertebrate']]), 2))))
+    stopifnot(all.equal(c(-34.66, -11.63), unname(round(coef(res[['vert.ecto']]), 2))))
 
     # Some nodes lack both a category and N and M
     res <- NvMLinearRegressions(BroadstoneStream)
-    stopifnot(all(c(1.08, -0.74) == round(coef(res[['all']]), 2)))
-    stopifnot(all(c(1.08, -0.74) == round(coef(res[['invertebrate']]), 2)))
+    stopifnot(all.equal(c(1.08, -0.74), unname(round(coef(res[['all']]), 2))))
+    stopifnot(all.equal(c(1.08, -0.74), unname(round(coef(res[['invertebrate']]), 2))))
     stopifnot(is.null(res[['<unnamed>']]))
     stopifnot(is.null(res[['producer']]))
 }

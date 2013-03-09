@@ -11,8 +11,8 @@ comparisons such as examining changes in community structure over
 environmental, temporal or spatial gradients. 
 
 Details of differences between versions of Cheddar are in the the online 
-release history: 
-\href{https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history}{https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history}.
+release history:
+\href{https://github.com/quicklizard99/cheddar/blob/master/release_history.md}{https://github.com/quicklizard99/cheddar/blob/master/release_history.md}.
 }
 
 \details{
@@ -20,7 +20,7 @@ release history:
     Package: \tab cheddar\cr
     Type: \tab Package\cr
     Version: \tab 0.1-621\cr
-    Date: \tab 2013-\cr
+    Date: \tab 2013-03-09\cr
     License: \tab BSD\cr
     }
 }
