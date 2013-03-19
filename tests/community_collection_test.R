@@ -4,34 +4,35 @@ TestCommunityCollectionSingle <- function()
     # Test collections containing a single community
     for(community in list(c1,c2,c3,c4,c5,c6,TL84,TL86,SkipwithPond))
     {
+        print(community)
         collection <- CommunityCollection(list(community))
-        stopifnot(1==length(collection))
-        stopifnot(CP(community,'title')==names(collection))
-        stopifnot(all(summary(community)==summary(collection)))
+        AssertEqual(1, length(collection))
+        AssertEqual(CP(community,'title'), names(collection))
+        AssertEqual(data.frame(summary(community), 
+                               row.names=CPS(community)$title), 
+                    summary(collection))
 
-        stopifnot(identical(collection, CommunityCollection(collection)))
+        AssertEqual(collection, CommunityCollection(collection))
 
         cpa <- CollectionCPS(collection)
         cpb <- data.frame(CPS(community), stringsAsFactors=FALSE)
         rownames(cpb) <- cpb$title
-        stopifnot(identical(cpa, cpb))
+        AssertEqual(cpa, cpb)
 
         npa <- CollectionNPS(collection)
-        npb <- cbind(community=CP(community,'title'), NPS(community), 
-                     stringsAsFactors=FALSE)
+        npb <- cbind(community=CP(community,'title'), NPS(community))
         rownames(npb) <- NULL
-        stopifnot(identical(npa, npb))
+        AssertEqual(npa, npb)
     
         if('c1'==CP(community, 'title'))
         {
-            stopifnot(is.null(CollectionTLPS(collection)))
+            AssertEqual(NULL, CollectionTLPS(collection))
         }
         else
         {
             cpa <- CollectionTLPS(collection)
-            cpb <- cbind(community=CP(community,'title'), TLPS(community), 
-                         stringsAsFactors=FALSE)
-            stopifnot(identical(cpa, cpb))
+            cpb <- cbind(community=CP(community,'title'), TLPS(community))
+            AssertEqual(cpa, cpb)
         }
     }
 }
@@ -85,26 +86,26 @@ TestCommunityCollectionProperties <- function()
 TestCommunityCollectionFailures <- function()
 {
     # Not communities
-    F(CommunityCollection(list()))
-    F(CommunityCollection(1))
-    F(CommunityCollection(''))
-    F(CommunityCollection(list(c1,'')))
-    F(CommunityCollection(list(c1,1)))
+    AssertRaises(CommunityCollection(list()))
+    AssertRaises(CommunityCollection(1))
+    AssertRaises(CommunityCollection(''))
+    AssertRaises(CommunityCollection(list(c1,'')))
+    AssertRaises(CommunityCollection(list(c1,1)))
 
     # Duplications
-    F(CommunityCollection(list(c1,c1)))
-    F(CommunityCollection(list(c1,c2,c1)))
+    AssertRaises(CommunityCollection(list(c1,c1)))
+    AssertRaises(CommunityCollection(list(c1,c2,c1)))
 
     # Inconsistent units
-    F(CommunityCollection(list(c5, c6)))
+    AssertRaises(CommunityCollection(list(c5, c6)))
 
     # Modifications are illegal
     collection <- CommunityCollection(list(TL84))
-    F(collection[1] <- 1)
-    F(collection[[1]] <- 1)
-    F(collection$silly <- 1)
-    F(names(collection) <- letters[1:3])
-    F(length(collection) <- 1)
+    AssertRaises(collection[1] <- 1)
+    AssertRaises(collection[[1]] <- 1)
+    AssertRaises(collection$silly <- 1)
+    AssertRaises(names(collection) <- letters[1:3])
+    AssertRaises(length(collection) <- 1)
 }
 
 TestAggregateCommunitiesSingle <- function()
@@ -113,6 +114,7 @@ TestAggregateCommunitiesSingle <- function()
     # anything
     for(community in list(c1,c2,c3,c4,c5,c6,TL84,TL86,SkipwithPond))
     {
+        print(community)
         a <- community
         b <- AggregateCommunities(CommunityCollection(list(community)), 
                                   title=CP(community,'title'))
@@ -123,20 +125,20 @@ TestAggregateCommunitiesSingle <- function()
         npa <- npa[order(npa$node),]
         npb <- NPS(b)
         npb <- npb[order(npb$node),]
-        stopifnot(all.equal(npa, npb))
+        AssertEqual(npa, npb)
 
         cpsa <- CPS(a)
         cpsa <- cpsa[order(names(cpsa))]
         cpsb <- CPS(b)
         cpsb <- cpsb[order(names(cpsb))]
-        stopifnot(identical(cpsa, cpsb))
+        AssertEqual(cpsa, cpsb)
 
         if('c1'==CP(a, 'title'))
         {
-            stopifnot(0==NumberOfTrophicLinks(a))
-            stopifnot(0==NumberOfTrophicLinks(b))
-            stopifnot(is.null(TLPS(a)))
-            stopifnot(is.null(TLPS(b)))
+            AssertEqual(0, NumberOfTrophicLinks(a))
+            AssertEqual(0, NumberOfTrophicLinks(b))
+            AssertEqual(NULL, TLPS(a))
+            AssertEqual(NULL, TLPS(b))
         }
         else
         {
@@ -146,7 +148,7 @@ TestAggregateCommunitiesSingle <- function()
             tlpb <- TLPS(b)
             tlpb <- tlpb[order(tlpb$resource, tlpb$consumer),]
             rownames(tlpb) <- NULL
-            stopifnot(all.equal(tlpa, tlpb))
+            AssertEqual(tlpa, tlpb)
         }
     }
 }
@@ -155,12 +157,12 @@ TestAggregateCommunitiesFailures <- function()
 {
     # Some failure cases
     collection <- CommunityCollection(list(c1,c2,c3,c4,c5))
-    F(AggregateCommunities(collection, 0))
-    F(AggregateCommunities(collection, 6))
-    F(AggregateCommunities(collection, 0:1))
-    F(AggregateCommunities(collection, 1:6))
-    F(AggregateCommunities(collection, ''))
-    F(AggregateCommunities(collection, c('c1','x')))
+    AssertRaises(AggregateCommunities(collection, 0))
+    AssertRaises(AggregateCommunities(collection, 6))
+    AssertRaises(AggregateCommunities(collection, 0:1))
+    AssertRaises(AggregateCommunities(collection, 1:6))
+    AssertRaises(AggregateCommunities(collection, ''))
+    AssertRaises(AggregateCommunities(collection, c('c1','x')))
 }
 
 TestAggregateCommunitiesProperties <- function()
@@ -169,9 +171,9 @@ TestAggregateCommunitiesProperties <- function()
     # properties and only the 'title' community property
     collection <- CommunityCollection(list(c1,c2,c3))
     a <- AggregateCommunities(collection)
-    stopifnot(data.frame(node=c('S','R','C'), row.names=c('S','R','C'))==NPS(a))
-    stopifnot(data.frame(resource=c('S','R'), consumer=c('S','C')) == TLPS(a))
-    stopifnot('Aggregation of c1,c2,c3' == CPS(a)$title)
+    AssertEqual(data.frame(node=c('S','R','C'), row.names=c('S','R','C')),NPS(a))
+    AssertEqual(data.frame(resource=c('S','R'), consumer=c('S','C')), TLPS(a))
+    AssertEqual('Aggregation of c1,c2,c3', CPS(a)$title)
 
     # Aggregation of two simple communities with a single node, a single link 
     # and a single community property
@@ -183,10 +185,10 @@ TestAggregateCommunitiesProperties <- function()
                    properties=list(title='y', cp='cp'))
     collection <- CommunityCollection(list(x,y))
     a <- AggregateCommunities(collection)
-    stopifnot(data.frame(node='n', np='np', row.names='n')==NPS(a))
-    stopifnot(data.frame(resource='n', consumer='n', tlp='tlp') == TLPS(a))
-    stopifnot('Aggregation of x,y' == CPS(a)$title)
-    stopifnot('cp' == CPS(a)$cp)
+    AssertEqual(data.frame(node='n', np='np', row.names='n'), NPS(a))
+    AssertEqual(data.frame(resource='n', consumer='n', tlp='tlp'), TLPS(a))
+    AssertEqual('Aggregation of x,y',  CPS(a)$title)
+    AssertEqual('cp', CPS(a)$cp)
     
     # Aggregation of two simple communities with two node, two link 
     # and two community properties
@@ -200,11 +202,11 @@ TestAggregateCommunitiesProperties <- function()
                    properties=list(title='y', cp1='cpc'))
     collection <- CommunityCollection(list(x,y))
     a <- AggregateCommunities(collection)
-    stopifnot(data.frame(node='n', np1='npa,npc', np2='npb', row.names='n')==NPS(a))
-    stopifnot(data.frame(resource='n', consumer='n', tlp1='tlpa', tlp2='tlpb,tlpc') == TLPS(a))
-    stopifnot('Aggregation of x,y' == CPS(a)$title)
-    stopifnot('cpa,cpc' == CPS(a)$cp1)
-    stopifnot('cpb' == CPS(a)$cp2)
+    AssertEqual(data.frame(node='n', np1='npa,npc', np2='npb', row.names='n'), NPS(a))
+    AssertEqual(data.frame(resource='n', consumer='n', tlp1='tlpa', tlp2='tlpb,tlpc'), TLPS(a))
+    AssertEqual('Aggregation of x,y', CPS(a)$title)
+    AssertEqual('cpa,cpc', CPS(a)$cp1)
+    AssertEqual('cpb', CPS(a)$cp2)
 
     # Aggregation of properties for TL84 and TL86
     a <- CommunityCollection(list(TL84, TL86))
@@ -218,12 +220,12 @@ TestAggregateCommunitiesProperties <- function()
 
     # Sanity check
     all.spp <- sort(unique(c(NP(TL84,'node'), NP(TL86,'node'))))
-    stopifnot(all(all.spp==sort(unique(CollectionNPS(a)[,'node']))))
-    stopifnot(all(sort(NP(b, 'node')) == all.spp))
+    AssertEqual(all.spp, sort(unique(CollectionNPS(a)[,'node'])))
+    AssertEqual(unname(sort(NP(b, 'node'))), all.spp)
 
     # Check category
-    stopifnot(all(NP(b,'category') == tapply(CollectionNPS(a)[,'category'], 
-                                             a.nodes, unique)))
+    AssertEqual(unname(NP(b,'category')),
+                as.vector(tapply(CollectionNPS(a)[,'category'], a.nodes, unique)))
 
     # TODO Test that union of trophic links taken
 }
@@ -238,7 +240,7 @@ TestAggregateCommunityMeans <- function()
         res <- NPS(AggregateCommunities(collection, weight.by=weight.by))
         check <- data.frame(node=c('S1','S2'), M=expected.M, N=expected.N, 
                             row.names=c('S1','S2'), stringsAsFactors=FALSE)
-        stopifnot(all.equal(res, check))
+        AssertEqual(check, res)
     }
 
     # 1. Both species are in both communities. Valid M and N in both communities.
@@ -525,15 +527,16 @@ TestPersistCollection <- function()
     on.exit(unlink(path, recursive=TRUE))
     for(collection in list(pHWebs, Millstream))
     {
+        print(collection)
         SaveCollection(collection, path)
         loaded <- LoadCollection(path)[names(collection)]
-        stopifnot(identical(collection, loaded))
+        AssertEqual(collection, loaded)
         unlink(path, recursive=TRUE)
 
         SaveCollection(collection, path, fn='write.table', sep='\t')
         loaded <- LoadCollection(path, fn='read.table', sep='\t')
         loaded <- loaded[names(collection)]
-        stopifnot(identical(collection, loaded))
+        AssertEqual(collection, loaded)
         unlink(path, recursive=TRUE)
     }
 }

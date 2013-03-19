@@ -3,16 +3,6 @@
 options(warn=2)
 library(cheddar)
 
-F <- function(ex)
-{
-    # A function that expects an exception to be raise when ex is evalutated
-    res <- tryCatch(eval(ex), error=function(e) e)
-    if(!"error" %in% class(res))
-    {
-        stop('F: did not raise error\n')
-    }
-}
-
 # Data for test plans
 data(Benguela, BroadstoneStream, SkipwithPond, TL84, TL86, YthanEstuary, pHWebs,
      Millstream)
@@ -79,36 +69,53 @@ c8 <- Community(nodes=data.frame(node=paste('Species', 1:8),
                                             rep('vert.ecto', 2))),
                 properties=list(title='c7', M.units='g', N.units='m^-3'))
 
+AssertEqual <- function(a, b, ...)
+{
+    res <- all.equal(a, b, ...)
+    if(!isTRUE(res))
+    {
+        stop(paste(res, collapse="\n"))
+    }
+}
+
+AssertRaises <- function(ex)
+{
+    # A function that expects an exception to be raise when ex is evalutated
+    res <- tryCatch(eval(ex), error=function(e) e)
+    if(!"error" %in% class(res))
+    {
+        stop('Did not raise error\n')
+    }
+}
+
 RunTests <- function(tests)
 {
     # tests should be a vector of function names
+    options(error=function() traceback(3), 
+            stringsAsFactors=FALSE)
+
     if(0==length(tests))
     {
         stop('No tests to run! Is the working directory cheddar/tests ?')
     }
     else
     {
-        failed <- NULL
-
         for(test in tests)
         {
             cat(paste('Running [', test, ']\n', sep=''))
             do.call(test, args=list())
-        }
-
-        cat(paste(length(tests), 'tests ran.\n'))
-        cat(paste(length(tests) - length(failed), 'passed.\n'))
-        if(!is.null(failed))
-        {
-            cat(paste(length(failed), 'failed.\n'))
-            stop()
-        }
+       }
     }
 }
 
 # Source all files in this dir except this one
 files <- list.files(getwd(), pattern='*R$')
-files <- setdiff(files, 'run_all.R')
+files <- setdiff(files, 'run.R')
 junk <- sapply(file.path(getwd(), files), source)
-RunTests(ls(pattern=glob2rx('Test*')))
+tests <- commandArgs(trailingOnly=TRUE)
+if(0==length(tests))
+{
+    tests <- ls(pattern=glob2rx('^Test*'))
+}
 
+RunTests(tests)

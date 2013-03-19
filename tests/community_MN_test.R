@@ -1,124 +1,126 @@
 # Functions requiring M and/or N
 TestBodyMassBins <- function()
 {
-    stopifnot(all(c(1,3,10)==BodyMassBins(c6)))
-    stopifnot(all(c(1,1,3)==BodyMassBins(c6, n.bins=3)))
-    stopifnot(all(c(2,2,2,1,2,1,1,5,2,2,1,1,2,3,2,3,3,2,2,1,4,3,2,3,1,2,1,2,3,
-                    4,1,4,5,5,3,6,5,6,4,4,4,7,3,3,3,6,6,4,4,4,4,6,7,10,10,10)==
-                  BodyMassBins(TL84)))
+    AssertEqual(c(1,3,10), BodyMassBins(c6), check.attributes=FALSE)
+    AssertEqual(c(1,1,3), BodyMassBins(c6, n.bins=3), check.attributes=FALSE)
+    AssertEqual(c(2,2,2,1,2,1,1,5,2,2,1,1,2,3,2,3,3,2,2,1,4,3,2,3,1,2,1,2,3,
+                    4,1,4,5,5,3,6,5,6,4,4,4,7,3,3,3,6,6,4,4,4,4,6,7,10,10,10), 
+                  BodyMassBins(TL84), check.attributes=FALSE)
 
-    F(BodyMassBins(c1))
-    F(BodyMassBins(c2))
-    F(BodyMassBins(TL84, n.bins=1))
-    F(BodyMassBins(TL84, upper=min(NP(TL84,'M')), lower=max(NP(TL84,'M'))))
-    F(BodyMassBins(TL84, lower=mean(NP(TL84,'M')), upper=max(NP(TL84,'M'))))
-    F(BodyMassBins(TL84, lower=min(NP(TL84,'M')), upper=mean(NP(TL84,'M'))))
+    AssertRaises(BodyMassBins(c1))
+    AssertRaises(BodyMassBins(c2))
+    AssertRaises(BodyMassBins(TL84, n.bins=1))
+    AssertRaises(BodyMassBins(TL84, upper=min(NP(TL84,'M')), 
+                              lower=max(NP(TL84,'M'))))
+    AssertRaises(BodyMassBins(TL84, lower=mean(NP(TL84,'M')), 
+                              upper=max(NP(TL84,'M'))))
+    AssertRaises(BodyMassBins(TL84, lower=min(NP(TL84,'M')), 
+                              upper=mean(NP(TL84,'M'))))
 }
 
 TestResourceLargerThanConsumer <- function()
 {
-    stopifnot(is.null(ResourceLargerThanConsumer(c1)))
-    stopifnot(is.null(ResourceLargerThanConsumer(c2)))
-    stopifnot(0==nrow(ResourceLargerThanConsumer(c6)))
+    AssertEqual(NULL, ResourceLargerThanConsumer(c1))
+    AssertEqual(NULL, ResourceLargerThanConsumer(c2))
+    AssertEqual(0, nrow(ResourceLargerThanConsumer(c6)))
     check <- ResourceLargerThanConsumer(TL84)
-    stopifnot(all(c('Cyclops varians rubellus', 'Leptodiaptomus siciloides')==
-                  check$resource))
-    stopifnot(all(c('Tropocyclops prasinus', 'Tropocyclops prasinus')==
-                  check$consumer))
-
+    AssertEqual(c('Cyclops varians rubellus', 'Leptodiaptomus siciloides'), 
+                  check$resource)
+    AssertEqual(c('Tropocyclops prasinus', 'Tropocyclops prasinus'), 
+                  check$consumer)
 }
 
 TestSumNByClass <- function()
 {
-    F(SumNByClass(c1))
-    F(SumNByClass(c2))
-    stopifnot(all(NP(c6,'N') == 
-                  SumNByClass(c6, class=c('a','b','c'))))
-    stopifnot(all(sum(NP(c6,'N')) == 
-                  SumNByClass(c6, class=c('a','a','a'))))
-    stopifnot(all(sum(NP(c6,'N')[1:2]) == 
-                  SumNByClass(c6, class=c('a','a',NA))))
-    stopifnot(all(c(NP(c6,'N')[3], sum(NP(c6,'N')[1:2])) == 
-                  SumNByClass(c6, class=c('a','a',''))))
+    AssertRaises(SumNByClass(c1))
+    AssertRaises(SumNByClass(c2))
+    AssertEqual(unname(NP(c6,'N')), 
+                unname(SumNByClass(c6, class=c('a','b','c'))))
+    AssertEqual(sum(NP(c6,'N')), unname(SumNByClass(c6, class=c('a','a','a'))))
+    AssertEqual(sum(NP(c6,'N')[1:2]), 
+                unname(SumNByClass(c6, class=c('a','a',NA))))
+    AssertEqual(unname(c(NP(c6,'N')[3], sum(NP(c6,'N')[1:2]))), 
+                unname(SumNByClass(c6, class=c('a','a',''))))
 
-    stopifnot(all.equal(c(invertebrate=1.8678e+06, producer=3.2107e+09, 
-                          vert.ecto=2.2350e+00), SumNByClass(TL84)))
+    AssertEqual(c(invertebrate=1.8678e+06, producer=3.2107e+09, 
+                  vert.ecto=2.2350e+00), SumNByClass(TL84))
 
-    stopifnot(all(is.na(SumNByClass(BroadstoneStream))))
-    stopifnot(all.equal(c('<unnamed>'=0, invertebrate=32081.3, producer=0.0), 
-                        SumNByClass(BroadstoneStream, na.rm=TRUE)))
+    AssertEqual(as.numeric(c(NA,NA,NA)), 
+                unname(SumNByClass(BroadstoneStream)))
+    AssertEqual(c('<unnamed>'=0, invertebrate=32081.3, producer=0.0), 
+                SumNByClass(BroadstoneStream, na.rm=TRUE))
 
-    F(SumNByClass(c6, class=NULL))
+    AssertRaises(SumNByClass(c6, class=NULL))
 }
 
 TestSumBiomassByClass <- function()
 {
-    F(SumNByClass(c1))
-    F(SumNByClass(c2))
-    stopifnot(all(Biomass(c6) == 
-                  SumBiomassByClass(c6, class=c('a','b','c'))))
-    stopifnot(all(sum(Biomass(c6)) == 
-                  SumBiomassByClass(c6, class=c('a','a','a'))))
-    stopifnot(all(sum(Biomass(c6)[1:2]) == 
-                  SumBiomassByClass(c6, class=c('a','a',NA))))
-    stopifnot(all(c(Biomass(c6)[3], sum(Biomass(c6)[1:2])) == 
-                  SumBiomassByClass(c6, class=c('a','a',''))))
+    AssertRaises(SumNByClass(c1))
+    AssertRaises(SumNByClass(c2))
+    AssertEqual(unname(Biomass(c6)), 
+                unname(SumBiomassByClass(c6, class=c('a','b','c'))))
+    AssertEqual(sum(Biomass(c6)), 
+                unname(SumBiomassByClass(c6, class=c('a','a','a'))))
+    AssertEqual(sum(Biomass(c6)[1:2]), 
+                unname(SumBiomassByClass(c6, class=c('a','a',NA))))
+    AssertEqual(unname(c(Biomass(c6)[3], sum(Biomass(c6)[1:2]))), 
+                unname(SumBiomassByClass(c6, class=c('a','a',''))))
 
-    stopifnot(all(is.na(SumBiomassByClass(BroadstoneStream))))
-    stopifnot(all.equal(c('<unnamed>'=0, invertebrate=830.4337, producer=0), 
-                      round(SumBiomassByClass(BroadstoneStream, na.rm=TRUE),4)))
+    AssertEqual(as.numeric(c(NA,NA,NA)), 
+                unname(SumBiomassByClass(BroadstoneStream)))
+    AssertEqual(c('<unnamed>'=0, invertebrate=830.4337, producer=0), 
+                round(SumBiomassByClass(BroadstoneStream, na.rm=TRUE),4))
 
-    F(SumBiomassByClass(c6, class=NULL))
+    AssertRaises(SumBiomassByClass(c6, class=NULL))
 }
 
 TestNvMLinearRegressions <- function()
 {
     res <- NvMLinearRegressions(c1)
-    stopifnot('all'==names(res))
-    stopifnot(is.null(res[[1]]))
+    AssertEqual('all', names(res))
+    AssertEqual(NULL, res[[1]])
     res <- NvMLinearRegressions(c2)
-    stopifnot('all'==names(res))
-    stopifnot(is.null(res[[1]]))
+    AssertEqual('all', names(res))
+    AssertEqual(NULL, res[[1]])
 
     # Using default class of category - all NA as c6 does not have category
     res <- NvMLinearRegressions(c6)
-    stopifnot('all'==names(res))
-    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
+    AssertEqual('all', names(res))
+    AssertEqual(c(2.58,-1.04), unname(round(coef(res[['all']]), 2)))
 
-    # class==NULL should result in a single lm object being returned
+    # class, NULL should result in a single lm object being returned
     res <- NvMLinearRegressions(c6, class=NULL)
-    stopifnot('all'==names(res))
-    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
+    AssertEqual('all', names(res))
+    AssertEqual(c(2.58,-1.04), unname(round(coef(res[['all']]), 2)))
 
     # Each node is in it's own class. Can't fit lm through one data point 
     # so should have 'all' and three NULLs
     res <- NvMLinearRegressions(c6, class=c('a','b','c'))
-    stopifnot(c('all','a','b','c')==names(res))
-    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
-    stopifnot(all(sapply(res[2:4], is.null)))
+    AssertEqual(c('all','a','b','c'), names(res))
+    AssertEqual(c(2.58,-1.04), unname(round(coef(res[['all']]), 2)))
+    AssertEqual(list(a=NULL, b=NULL, c=NULL), res[2:4])
 
     # Node 1 in a different class to nodes 2 and 3
     res <- NvMLinearRegressions(c6, class=c('a','b','b'))
-    stopifnot(c('all', 'a', 'b')==names(res))
-    stopifnot(all.equal(c(2.58,-1.04), unname(round(coef(res[['all']]), 2))))
-    stopifnot(all.equal(c(1.14,-0.20), unname(round(coef(res[['b']]), 2))))
-    stopifnot(is.null(res[['a']]))
+    AssertEqual(c('all', 'a', 'b'), names(res))
+    AssertEqual(c(2.58,-1.04), unname(round(coef(res[['all']]), 2)))
+    AssertEqual(c(1.14,-0.20), unname(round(coef(res[['b']]), 2)))
+    AssertEqual(NULL, res[['a']])
 
     # category is default class
     res <- NvMLinearRegressions(TL84)
-    stopifnot(all(c('all', 'producer', 'invertebrate', 'vert.ecto') == 
-                  names(res)))
-    stopifnot(all.equal(c(-2.69, -0.83), unname(round(coef(res[['all']]), 2))))
-    stopifnot(all.equal(c(2.56, -0.41), unname(round(coef(res[['producer']]), 2))))
-    stopifnot(all.equal(c(1.47, -0.32), unname(round(coef(res[['invertebrate']]), 2))))
-    stopifnot(all.equal(c(-34.66, -11.63), unname(round(coef(res[['vert.ecto']]), 2))))
+    AssertEqual(c('all', 'producer', 'invertebrate', 'vert.ecto'), names(res))
+    AssertEqual(c(-2.69, -0.83), unname(round(coef(res[['all']]), 2)))
+    AssertEqual(c(2.56, -0.41), unname(round(coef(res[['producer']]), 2)))
+    AssertEqual(c(1.47, -0.32), unname(round(coef(res[['invertebrate']]), 2)))
+    AssertEqual(c(-34.66, -11.63), unname(round(coef(res[['vert.ecto']]), 2)))
 
     # Some nodes lack both a category and N and M
     res <- NvMLinearRegressions(BroadstoneStream)
-    stopifnot(all.equal(c(1.08, -0.74), unname(round(coef(res[['all']]), 2))))
-    stopifnot(all.equal(c(1.08, -0.74), unname(round(coef(res[['invertebrate']]), 2))))
-    stopifnot(is.null(res[['<unnamed>']]))
-    stopifnot(is.null(res[['producer']]))
+    AssertEqual(c(1.08, -0.74), unname(round(coef(res[['all']]), 2)))
+    AssertEqual(c(1.08, -0.74), unname(round(coef(res[['invertebrate']]), 2)))
+    AssertEqual(NULL, res[['<unnamed>']])
+    AssertEqual(NULL, res[['producer']])
 }
 
 TestNvMTriTrophic1 <- function()
@@ -207,7 +209,7 @@ TestNvMTriTrophic1 <- function()
 
     colnames(check) <- colnames(res)
     rownames(check) <- rownames(res)
-    stopifnot(all.equal(round(res, 2), check))
+    AssertEqual(round(res, 2), check)
 }
 
 TestNvMTriTrophic2 <- function()
@@ -257,7 +259,7 @@ TestNvMTriTrophic2 <- function()
 
     colnames(check) <- colnames(res)
     rownames(check) <- rownames(res)
-    stopifnot(all.equal(res, check))
+    AssertEqual(check, res)
 }
 
 TestNvMTriTrophic3 <- function()
@@ -266,11 +268,11 @@ TestNvMTriTrophic3 <- function()
     # herbivores, which caused an earlier version of 
     # .NvMTrophicChainProperties() to fail with a nasty error.
     # Let's check some cases for simple communities
-    F(NvMTriTrophicStatistics(c1))
-    F(NvMTriTrophicStatistics(c2))
-    F(NvMTriTrophicStatistics(c3))
-    F(NvMTriTrophicStatistics(c4))
-    F(NvMTriTrophicStatistics(c5))
+    AssertRaises(NvMTriTrophicStatistics(c1))
+    AssertRaises(NvMTriTrophicStatistics(c2))
+    AssertRaises(NvMTriTrophicStatistics(c3))
+    AssertRaises(NvMTriTrophicStatistics(c4))
+    AssertRaises(NvMTriTrophicStatistics(c5))
 
     # Resource-consumer
     rc <- Community(nodes=data.frame(node=c('R', 'C'),
@@ -287,9 +289,9 @@ TestNvMTriTrophic3 <- function()
                         slope=-2, 
                         stringsAsFactors=FALSE, 
                         row.names="1")
-    stopifnot(all.equal(check, tts$links))
+    AssertEqual(check, tts$links)
 
-    stopifnot(is.null(tts$three.node.chains))
+    AssertEqual(NULL, tts$three.node.chains)
 
     check <- data.frame(Node.1='R',
                         Node.2='C', 
@@ -299,7 +301,7 @@ TestNvMTriTrophic3 <- function()
                         stringsAsFactors=FALSE)
     attr(check, 'link.cols') <- c('Node.1', 'Node.2')
     class(check) <- c('Chains', 'data.frame')
-    stopifnot(all.equal(check, tts$trophic.chains))
+    AssertEqual(check, tts$trophic.chains)
 
     # Tri-trophic chain
     tts <- NvMTriTrophicStatistics(c6)
@@ -310,7 +312,7 @@ TestNvMTriTrophic3 <- function()
                         slope=c(-3.82497857878639635487, -0.19956289353132869446),
                         stringsAsFactors=FALSE, 
                         row.names=c("1","2"))
-    stopifnot(all.equal(check, tts$links))
+    AssertEqual(check, tts$links)
 
     check <- data.frame(bottom='R', 
                         intermediate='C', 
@@ -324,7 +326,7 @@ TestNvMTriTrophic3 <- function()
                         stringsAsFactors=FALSE)
     attr(check, 'link.cols') <- c('bottom', 'intermediate', 'top')
     class(check) <- c('Chains', 'data.frame')
-    stopifnot(all.equal(check, tts$three.node.chains))
+    AssertEqual(check, tts$three.node.chains)
 
     check <- data.frame(Node.1='R',
                         Node.2='C', 
@@ -335,125 +337,123 @@ TestNvMTriTrophic3 <- function()
                         stringsAsFactors=FALSE)
     attr(check, 'link.cols') <- c('Node.1', 'Node.2', 'Node.3')
     class(check) <- c('Chains', 'data.frame')
-    stopifnot(all.equal(check, tts$trophic.chains))
+    AssertEqual(check, tts$trophic.chains)
 }
 
 TestNodesWithoutMOrN <- function()
 {
     NodesWithoutMOrN <- cheddar:::.NodesWithoutMOrN
-    stopifnot('S'==NodesWithoutMOrN(c1))
-    stopifnot('S'==NodesWithoutMOrN(c2))
-    stopifnot(all(c('R','C')==NodesWithoutMOrN(c3)))
-    stopifnot(all(c('R','C','P')==NodesWithoutMOrN(c4)))
-    stopifnot(all(c('R','C','O')==NodesWithoutMOrN(c5)))
-    stopifnot(0==length(NodesWithoutMOrN(c6)))
-    stopifnot(0==length(NodesWithoutMOrN(TL84)))
-    stopifnot('POM (detritus)'==NodesWithoutMOrN(YthanEstuary))
+    AssertEqual('S', NodesWithoutMOrN(c1))
+    AssertEqual('S', NodesWithoutMOrN(c2))
+    AssertEqual(c('R','C'), NodesWithoutMOrN(c3))
+    AssertEqual(c('R','C','P'), NodesWithoutMOrN(c4))
+    AssertEqual(c('R','C','O'), NodesWithoutMOrN(c5))
+    AssertEqual(0, length(NodesWithoutMOrN(c6)))
+    AssertEqual(0, length(NodesWithoutMOrN(TL84)))
+    AssertEqual('POM (detritus)', NodesWithoutMOrN(YthanEstuary))
 }
 
 TestNvMSlopeAndIntercept <- function()
 {
-    stopifnot(is.null(NvMSlope(c1)))
-    stopifnot(is.null(NvMSlope(c2)))
-    stopifnot(is.null(NvMSlope(c3)))
-    stopifnot(is.null(NvMSlope(c4)))
-    stopifnot(is.null(NvMSlope(c5)))
-    stopifnot(all.equal(NvMSlope(c6), -1.04009302605305009592))
-    stopifnot(all.equal(NvMSlope(TL84), -0.82711453844476423569))
+    AssertEqual(NULL, NvMSlope(c1))
+    AssertEqual(NULL, NvMSlope(c2))
+    AssertEqual(NULL, NvMSlope(c3))
+    AssertEqual(NULL, NvMSlope(c4))
+    AssertEqual(NULL, NvMSlope(c5))
+    AssertEqual(-1.04009302605305009592, NvMSlope(c6))
+    AssertEqual(-0.82711453844476423569, NvMSlope(TL84))
 
-    stopifnot(is.null(NvMIntercept(c1)))
-    stopifnot(is.null(NvMIntercept(c2)))
-    stopifnot(is.null(NvMIntercept(c3)))
-    stopifnot(is.null(NvMIntercept(c4)))
-    stopifnot(is.null(NvMIntercept(c5)))
-    stopifnot(all.equal(NvMIntercept(c6), 2.57689795300774049380))
-    stopifnot(all.equal(NvMIntercept(TL84), -2.68627529180856106095))
+    AssertEqual(NULL, NvMIntercept(c1))
+    AssertEqual(NULL, NvMIntercept(c2))
+    AssertEqual(NULL, NvMIntercept(c3))
+    AssertEqual(NULL, NvMIntercept(c4))
+    AssertEqual(NULL, NvMIntercept(c5))
+    AssertEqual(2.57689795300774049380, NvMIntercept(c6))
+    AssertEqual(-2.68627529180856106095, NvMIntercept(TL84))
 
-    stopifnot(is.null(NvMSlopeAndIntercept(c1)))
-    stopifnot(is.null(NvMSlopeAndIntercept(c2)))
-    stopifnot(is.null(NvMSlopeAndIntercept(c3)))
-    stopifnot(is.null(NvMSlopeAndIntercept(c4)))
-    stopifnot(is.null(NvMSlopeAndIntercept(c5)))
-    stopifnot(all.equal(NvMSlopeAndIntercept(c6), 
-                        c(slope=-1.04009302605305009592, 
-                          intercept=2.57689795300774049380)))    
-    stopifnot(all.equal(NvMSlopeAndIntercept(TL84), 
-                        c(slope=-0.82711453844476423569, 
-                          intercept=-2.68627529180856106095)))
+    AssertEqual(NULL, NvMSlopeAndIntercept(c1))
+    AssertEqual(NULL, NvMSlopeAndIntercept(c2))
+    AssertEqual(NULL, NvMSlopeAndIntercept(c3))
+    AssertEqual(NULL, NvMSlopeAndIntercept(c4))
+    AssertEqual(NULL, NvMSlopeAndIntercept(c5))
+    AssertEqual(c(slope=-1.04009302605305009592, 
+                  intercept=2.57689795300774049380), 
+                NvMSlopeAndIntercept(c6))
+    AssertEqual(c(slope=-0.82711453844476423569, 
+                  intercept=-2.68627529180856106095), 
+                NvMSlopeAndIntercept(TL84))
 }
 
 TestNvMSlopeAndInterceptByClass <- function()
 {
-    stopifnot(all.equal(NvMSlopeByClass(c6), 
-                        c(slope.all=-1.04009302605305009592)))
-    stopifnot(all.equal(NvMSlopeByClass(TL84), 
-                        c(slope.all=-0.82711453844476423569, 
-                          slope.producer=-0.40715089579609509141, 
-                          slope.invertebrate=-0.32431675051076519489, 
-                          slope.vert.ecto=-11.62787086769622924010)))
+    AssertEqual(c(slope.all=-1.04009302605305009592), NvMSlopeByClass(c6))
+    AssertEqual(c(slope.all=-0.82711453844476423569, 
+                  slope.producer=-0.40715089579609509141, 
+                  slope.invertebrate=-0.32431675051076519489, 
+                  slope.vert.ecto=-11.62787086769622924010), 
+                NvMSlopeByClass(TL84))
 
-    stopifnot(all.equal(NvMInterceptByClass(c6), 
-                        c(intercept.all=2.57689795300774049380)))
-    stopifnot(all.equal(NvMInterceptByClass(TL84), 
-                        c(intercept.all=-2.68627529180856106095, 
-                          intercept.producer=2.55833642234355362888, 
-                          intercept.invertebrate=1.46560619016986248830, 
-                          intercept.vert.ecto=-34.66097278952445748246)))
+    AssertEqual(c(intercept.all=2.57689795300774049380),NvMInterceptByClass(c6))
+    AssertEqual(c(intercept.all=-2.68627529180856106095, 
+                  intercept.producer=2.55833642234355362888, 
+                  intercept.invertebrate=1.46560619016986248830, 
+                  intercept.vert.ecto=-34.66097278952445748246), 
+                NvMInterceptByClass(TL84))
 
-    stopifnot(all.equal(NvMSlopeAndInterceptByClass(c6), 
-                        c(slope.all=-1.04009302605305009592, 
-                          intercept.all=2.57689795300774049380)))
-    stopifnot(all.equal(NvMSlopeAndInterceptByClass(TL84), 
-                        c(slope.all=-0.82711453844476423569, 
-                          slope.producer=-0.40715089579609509141, 
-                          slope.invertebrate=-0.32431675051076519489, 
-                          slope.vert.ecto=-11.62787086769622924010, 
-                          intercept.all=-2.68627529180856106095, 
-                          intercept.producer=2.55833642234355362888, 
-                          intercept.invertebrate=1.46560619016986248830, 
-                          intercept.vert.ecto=-34.66097278952445748246)))
+    AssertEqual(c(slope.all=-1.04009302605305009592, 
+                  intercept.all=2.57689795300774049380), 
+                NvMSlopeAndInterceptByClass(c6))
+    AssertEqual(c(slope.all=-0.82711453844476423569, 
+                  slope.producer=-0.40715089579609509141, 
+                  slope.invertebrate=-0.32431675051076519489, 
+                  slope.vert.ecto=-11.62787086769622924010, 
+                  intercept.all=-2.68627529180856106095, 
+                  intercept.producer=2.55833642234355362888, 
+                  intercept.invertebrate=1.46560619016986248830, 
+                  intercept.vert.ecto=-34.66097278952445748246), 
+                NvMSlopeAndInterceptByClass(TL84))
 
-    stopifnot(all.equal(NvMSlopeAndInterceptByClass(BroadstoneStream), 
-                        c(slope.all=-0.73916494129624910059, 
-                          slope.invertebrate=-0.73916494129624910059, 
-                          'slope.<unnamed>'=NA,
-                          slope.producer=NA,
-                          intercept.all=1.07951558005480174884, 
-                          intercept.invertebrate=1.07951558005480174884,
-                          'intercept.<unnamed>'=NA,
-                         intercept.producer=NA)))
+    AssertEqual(c(slope.all=-0.73916494129624910059, 
+                  slope.invertebrate=-0.73916494129624910059, 
+                  'slope.<unnamed>'=NA,
+                  slope.producer=NA,
+                  intercept.all=1.07951558005480174884, 
+                  intercept.invertebrate=1.07951558005480174884,
+                  'intercept.<unnamed>'=NA,
+                  intercept.producer=NA), 
+                NvMSlopeAndInterceptByClass(BroadstoneStream))
 
-    stopifnot(all.equal(NvMSlopeAndInterceptByClass(c8), 
-                        c(slope.all=-1.13010867280292459647,
-                          slope.vert.endo=-2.46246611880339116851, 
-                          'slope.<unnamed>'=-1.87594996135075309240, 
-                          slope.vert.ecto=2.32192809488736218171,
-                          intercept.all=1.43776079409099510897, 
-                          intercept.vert.endo=2.95188840529695939452, 
-                          'intercept.<unnamed>'=1.16171181260177314165, 
-                          intercept.vert.ecto=0.00000000000000005773)))
+    AssertEqual(c(slope.all=-1.13010867280292459647,
+                  slope.vert.endo=-2.46246611880339116851, 
+                  'slope.<unnamed>'=-1.87594996135075309240, 
+                  slope.vert.ecto=2.32192809488736218171,
+                  intercept.all=1.43776079409099510897, 
+                  intercept.vert.endo=2.95188840529695939452, 
+                  'intercept.<unnamed>'=1.16171181260177314165, 
+                  intercept.vert.ecto=0.00000000000000005773), 
+                NvMSlopeAndInterceptByClass(c8))
 }
 
 TestNvMConvexHull <- function()
 {
-    stopifnot(0.5 == cheddar:::.PolygonArea(c(0, 1, 0.5, 0), c(0, 0, 1, 0)))
-    stopifnot(1 == cheddar:::.PolygonArea(c(0, 1, 1, 0, 0), c(0, 0, 1, 1, 0)))
+    AssertEqual(0.5, cheddar:::.PolygonArea(c(0, 1, 0.5, 0), c(0, 0, 1, 0)))
+    AssertEqual(1, cheddar:::.PolygonArea(c(0, 1, 1, 0, 0), c(0, 0, 1, 1, 0)))
     res <- NvMConvexHull(TL84)
-    stopifnot(all.equal(res$nodes, 
-                        c('Phoxinus neogaeus','Keratella testudo',
-                          'Chromulina sp.','Unclassified flagellates',
-                          'Chrysosphaerella longispina',
-                          'Chaoborus punctipennis','Phoxinus eos',
-                          'Umbra limi')))
-    stopifnot(all.equal(round(res$area, 5), 30.68266))
-    stopifnot(all.equal(unname(round(res$points, 7)), 
-                        matrix(c( -2.931814, -0.8761484,
-                                 -11.000000,  3.7781513,
-                                 -13.518557,  8.1731863,
-                                 -12.460924,  9.2741578,
-                                  -9.080399,  6.6020600,
-                                  -6.522879,  4.0791812,
-                                  -2.995679,  0.2944662,
-                                  -2.889410, -0.8794261), byrow=TRUE, ncol=2), 
-                        tolerance=1e-7))
+    AssertEqual(c('Phoxinus neogaeus','Keratella testudo',
+                  'Chromulina sp.','Unclassified flagellates',
+                  'Chrysosphaerella longispina',
+                  'Chaoborus punctipennis','Phoxinus eos',
+                  'Umbra limi'), 
+                res$nodes)
+    AssertEqual(30.68266, round(res$area, 5))
+    AssertEqual(matrix(c( -2.931814, -0.8761484,
+                         -11.000000,  3.7781513,
+                         -13.518557,  8.1731863,
+                         -12.460924,  9.2741578,
+                          -9.080399,  6.6020600,
+                          -6.522879,  4.0791812,
+                          -2.995679,  0.2944662,
+                          -2.889410, -0.8794261), byrow=TRUE, ncol=2), 
+                unname(round(res$points, 7)), 
+                tolerance=1e-7)
 }

@@ -761,6 +761,7 @@ TrophicLinksForNodes <- function(community, nodes, node.properties=NULL,
     tlp <- TLPS(community, node.properties=node.properties, 
                 link.properties=link.properties)
     links <- tlp[tlp$resource %in% nodes | tlp$consumer %in% nodes,,drop=FALSE]
+    rownames(links) <- NULL
     return (links)
 }
 
@@ -900,7 +901,7 @@ ShortestPaths <- function(community, weight.by=NULL)
         # Take the subset of the matrix that we are interested in
         sp <- res$lengths
         dim(sp) <- c(n,n)
-        colnames(sp) <- rownames(sp) <- NP(community, 'node')
+        colnames(sp) <- rownames(sp) <- unname(NP(community, 'node'))
     }
     else if(1==res$status)
     {

@@ -37,14 +37,15 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     if(r)
     {
         r.val <- sign(model$coefficients[x.name]) * summary(model)$r.squared^0.5
-        r.val <- paste(', r=', sprintf(fmt, r.val), sep='')
+        r.val <- paste("','~r == '", sprintf(fmt, r.val), "'", sep='')
+        r.val <- parse(text=r.val)[[1]]
     }
 
     # Coefficient of determination
     r2 <- ''
     if(r.squared)
     {
-        r2 <- paste("','~r^2*'=", sprintf(fmt, summary(model)$r.squared), "'", 
+        r2 <- paste("','~r^2 == '", sprintf(fmt, summary(model)$r.squared), "'",
                     sep='')
         r2 <- parse(text=r2)[[1]]
     }

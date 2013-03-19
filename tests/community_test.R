@@ -3,78 +3,79 @@ TestCommunityBasic <- function()
     # Minimum community representation
     community <- Community(nodes=data.frame(node='S'), 
                            properties=list(title='test'))
-    stopifnot(CPS(community)$title=='test')
-    stopifnot(NPS(community)$node=='S')
-    stopifnot(NodePropertyNames(community)=='node')
-    stopifnot(is.Community(community))
+    AssertEqual('test', CPS(community)$title)
+    AssertEqual('S', NPS(community)$node)
+    AssertEqual('node', NodePropertyNames(community))
+    AssertEqual(TRUE, is.Community(community))
 
     # Modifications are illegal
-    F(community[1] <- 1)
-    F(community[[1]] <- 1)
-    F(community$silly <- 1)
-    F(names(community) <- letters[1:3])
-    F(length(community) <- 1)
+    AssertRaises(community[1] <- 1)
+    AssertRaises(community[[1]] <- 1)
+    AssertRaises(community$silly <- 1)
+    AssertRaises(names(community) <- letters[1:3])
+    AssertRaises(length(community) <- 1)
 
     # Non-existent node properties
-    stopifnot(all(is.na(NP(community, 'z'))))
-    stopifnot(all(names(NP(community, 'z'))=='S'))
+    AssertEqual(c(S=NA), NP(community, 'z'))
+    AssertEqual(names(NP(community, 'z')), 'S')
 
     # No nodes
-    F(Community(nodes=data.frame(), properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(), properties=list(title='test')))
 
     # Nodes not a data.frame    
-    F(Community(node='S', properties=list(title='test')))
+    AssertRaises(Community(node='S', properties=list(title='test')))
 
     # No node columns
-    F(Community(nodes=data.frame(a=LETTERS), properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(a=LETTERS), properties=list(title='test')))
 
     # The node column appears twice
-    F(Community(nodes=data.frame(node=LETTERS, node=LETTERS, 
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, node=LETTERS, 
                                  check.names=FALSE), 
                  properties=list(title='test')))
 
     # Column names must not start with 'resource.' or 'consumer.'
-    F(Community(nodes=data.frame(node='S', resource.a=TRUE), 
+    AssertRaises(Community(nodes=data.frame(node='S', resource.a=TRUE), 
                 properties=list(title='test')))
-    F(Community(nodes=data.frame(node='S', consumer.a=TRUE), 
+    AssertRaises(Community(nodes=data.frame(node='S', consumer.a=TRUE), 
                 properties=list(title='test')))
  
     # Node names that are numbers are illegal
-    F(Community(nodes=data.frame(node=1:10), properties=list(title='test')))
-    F(Community(nodes=data.frame(node=c(1, LETTERS)), 
+    AssertRaises(Community(nodes=data.frame(node=1:10), properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=c(1, LETTERS)), 
                 properties=list(title='test')))
 
     # Ensure duplicate nodes are deteced
-    F(Community(nodes=data.frame(node=c('A', 'A')), 
+    AssertRaises(Community(nodes=data.frame(node=c('A', 'A')), 
                                  properties=list(title='test')))
-    F(Community(nodes=data.frame(node=c('A', 'A ')), 
+    AssertRaises(Community(nodes=data.frame(node=c('A', 'A ')), 
                                  properties=list(title='test')))
-    F(Community(nodes=data.frame(node=c('A', 'a')), 
+    AssertRaises(Community(nodes=data.frame(node=c('A', 'a')), 
                                  properties=list(title='test')))
 
     # Empty node name
-    F(Community(nodes=data.frame(node=''), 
+    AssertRaises(Community(nodes=data.frame(node=''), 
                 properties=list(title='test')))
-    F(Community(nodes=data.frame(node=c('', LETTERS)), 
+    AssertRaises(Community(nodes=data.frame(node=c('', LETTERS)), 
                 properties=list(title='test')))
 
     # Some illegal node properties
-    F(Community(nodes=data.frame(node=LETTERS, title=LETTERS), 
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, title=LETTERS), 
                 properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS, M.units=LETTERS), 
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, M.units=LETTERS), 
                 properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS, N.units=LETTERS), 
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, N.units=LETTERS), 
                 properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS, resource=LETTERS), 
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, resource=LETTERS), 
                 properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS, consumer=LETTERS), 
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, consumer=LETTERS), 
                 properties=list(title='test')))
 
     # Factors should be converted to strings
     community <- Community(nodes=data.frame(node=LETTERS, np=letters,
                                             stringsAsFactors=TRUE), 
                            properties=list(title='test'))
-    stopifnot(all(sapply(NPS(community), class)=='character'))
+    AssertEqual(sapply(NPS(community), class), 
+                c(node='character', np='character'))
 }
 
 TestCommunityNPS <- function()
@@ -84,99 +85,102 @@ TestCommunityNPS <- function()
                                             N=26:1), 
                            properties=list(title='test', M.units='kg', 
                                            N.units='m^-2'))
-    stopifnot(all(NodePropertyNames(community)==c('node', 'x', 'M', 'N')))
-    stopifnot(all(NP(community, 'node')==LETTERS))
-    stopifnot(all(NP(community, 'x')==letters))
-    stopifnot(all(NP(community, 'M')==1:26))
-    stopifnot(all(NP(community, 'N')==26:1))
-    stopifnot(all(names(NP(community, 'x'))==LETTERS))
-    stopifnot(all(names(NP(community, 'M'))==LETTERS))
-    stopifnot(all(names(NP(community, 'N'))==LETTERS))
+    AssertEqual(c('node', 'x', 'M', 'N'), NodePropertyNames(community))
+    AssertEqual(LETTERS, unname(NP(community, 'node')))
+    AssertEqual(letters, unname(NP(community, 'x')))
+    AssertEqual(1:26, unname(NP(community, 'M')))
+    AssertEqual(26:1, unname(NP(community, 'N')))
+    AssertEqual(LETTERS, names(NP(community, 'node')))
+    AssertEqual(LETTERS, names(NP(community, 'x')))
+    AssertEqual(LETTERS, names(NP(community, 'M')))
+    AssertEqual(LETTERS, names(NP(community, 'N')))
 
     # Non-existent node properties
-    stopifnot(all(is.na(NP(community, 'z'))))
-    stopifnot(all(names(NP(community, 'z'))==LETTERS))
+    AssertEqual(rep(NA, 26), unname(NP(community, 'z')))
+    AssertEqual(LETTERS, names(NP(community, 'z')))
 
-    F(NP(community, ''))
+    AssertRaises(NP(community, ''))
 }
 
 TestCommunityProperties <- function()
 {
     # No properties at all
-    F(Community(nodes=data.frame(node='S')))
+    AssertRaises(Community(nodes=data.frame(node='S')))
 
     # Properties does not have names
-    F(Community(nodes=data.frame(node='S'), properties=list('test')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list('test')))
 
     # Properties does not include title
-    F(Community(nodes=data.frame(node='S'), properties=list(xyz='test')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(xyz='test')))
 
     # title duplicated
-    F(Community(nodes=data.frame(node='S'), 
-                 properties=list(title='test', title='test')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title='test', title='test')))
 
     # Properties is not a vector
-    F(Community(nodes=data.frame(node='S'), 
-                properties=cbind(title='test')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=cbind(title='test')))
 
     # One or more properties of length!=1
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title=paste('title', 1:10))))
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title='test', weasel=1:10)))
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title=paste('title', 1:10), weasel=1:10)))
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title='test', x=NULL)))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title=paste('title', 1:10))))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title='test', weasel=1:10)))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title=paste('title', 1:10), 
+                                           weasel=1:10)))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title='test', x=NULL)))
 
     # Some illegal names
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title='test', node='a')))
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title='test', resource='a')))
-    F(Community(nodes=data.frame(node='S'), 
-                properties=list(title='test', consumer='a')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title='test', node='a')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title='test', resource='a')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(title='test', consumer='a')))
 
     # Ensure properties are picked up
     community <- Community(nodes=data.frame(node='S'), 
                            properties=list(title='test', M.units='kg', pH=5.6, 
                                            lat=12, x=NA))
-    stopifnot(CP(community, 'title')=='test')
-    stopifnot(CP(community, 'M.units')=='kg')
-    stopifnot(CP(community, 'pH')==5.6)
-    stopifnot(CP(community, 'lat')==12)
-    stopifnot(is.na(CP(community, 'x')))
-    stopifnot(all.equal(list(title='test', pH=5.6, lat=12), 
-                        CPS(community, c('title', 'pH', 'lat'))))
-    stopifnot(all.equal(list(title='test', M.units='kg', pH=5.6, lat=12, x=NA), 
-                        CPS(community)))
-    stopifnot(all.equal(list(title='test', M.units='kg', pH=5.6, lat=12, x=NA), 
-                        CPS(community)))
+    AssertEqual('test', CP(community, 'title'))
+    AssertEqual('kg', CP(community, 'M.units'))
+    AssertEqual(5.6, CP(community, 'pH'))
+    AssertEqual(12, CP(community, 'lat'))
+    AssertEqual(NA, CP(community, 'x'))
+    AssertEqual(list(title='test', pH=5.6, lat=12), 
+                CPS(community, c('title', 'pH', 'lat')))
+    AssertEqual(list(title='test', M.units='kg', pH=5.6, lat=12, x=NA), 
+                CPS(community))
+    AssertEqual(list(title='test', M.units='kg', pH=5.6, lat=12, x=NA), 
+                CPS(community))
 
     # Computed properties
-    stopifnot(all.equal(list(NumberOfTrophicLinks=0, pH=5.6), 
-                        CPS(community, c('NumberOfTrophicLinks', 'pH'))))
-    stopifnot(all.equal(list(NumberOfTrophicLinks=0), 
-                        CPS(c1, 'NumberOfTrophicLinks')))
-    stopifnot(all.equal(list(NumberOfTrophicLinks=269), 
-                        CPS(TL84, 'NumberOfTrophicLinks')))
+    AssertEqual(list(NumberOfTrophicLinks=0, pH=5.6), 
+                CPS(community, c('NumberOfTrophicLinks', 'pH')))
+    AssertEqual(list(NumberOfTrophicLinks=0), 
+                CPS(c1, 'NumberOfTrophicLinks'))
+    AssertEqual(list(NumberOfTrophicLinks=269), 
+                CPS(TL84, 'NumberOfTrophicLinks'))
 
     # Computed property names
-    stopifnot(all.equal(list(L=269), 
-                        CPS(TL84, c(L='NumberOfTrophicLinks'))))
+    AssertEqual(list(L=269), CPS(TL84, c(L='NumberOfTrophicLinks')))
 
     # Computed property names length > 1
-    stopifnot(all.equal(list(invertebrate=0.00537614600000000005, 
-                             producer=0.00743826670000000047, 
-                             vert.ecto=0.00231559000000000018), 
-                        CPS(TL84, 'SumBiomassByClass')))
+    AssertEqual(list(invertebrate=0.00537614600000000005, 
+                     producer=0.00743826670000000047, 
+                     vert.ecto=0.00231559000000000018), 
+                CPS(TL84, 'SumBiomassByClass'))
 
     # Properties as using c() should work just as well as a list()
     community <- Community(nodes=data.frame(node='S'), 
-                           properties=c(title='test', a=1, b=TRUE))
-    stopifnot(CP(community, 'title')=='test')
-    stopifnot(CP(community, 'a')==1)
-    stopifnot(CP(community, 'b')==TRUE)
+                           properties=list(title='test', a=1, b=TRUE))
+    AssertEqual('test', CP(community, 'title'))
+    AssertEqual(1, CP(community, 'a'))
+    AssertEqual(TRUE, CP(community, 'b'))
 }
 
 TestCommunityTrophicLinks <- function()
@@ -184,11 +188,11 @@ TestCommunityTrophicLinks <- function()
     # No trophic Links
     community <- Community(nodes=data.frame(node=LETTERS), 
                            properties=list(title='test'))
-    stopifnot(all(c(26,26)==dim(PredationMatrix(community))))
-    stopifnot(all(colnames(PredationMatrix(community))==LETTERS))
-    stopifnot(all(rownames(PredationMatrix(community))==LETTERS))
-    stopifnot(0==sum(PredationMatrix(community)))
-    stopifnot(0==NumberOfTrophicLinks(community))
+    AssertEqual(c(26,26), dim(PredationMatrix(community)))
+    AssertEqual(LETTERS, colnames(PredationMatrix(community)))
+    AssertEqual(LETTERS, rownames(PredationMatrix(community)))
+    AssertEqual(0, sum(PredationMatrix(community)))
+    AssertEqual(0, NumberOfTrophicLinks(community))
 
     # Empty trophic links
     community <- Community(nodes=data.frame(node=LETTERS), 
@@ -196,123 +200,126 @@ TestCommunityTrophicLinks <- function()
                                       dimnames=list(NULL, c('resource', 
                                                             'consumer'))), 
                  properties=list(title='test'))
-    stopifnot(all(c(26,26)==dim(PredationMatrix(community))))
-    stopifnot(all(colnames(PredationMatrix(community))==LETTERS))
-    stopifnot(all(rownames(PredationMatrix(community))==LETTERS))
-    stopifnot(0==sum(PredationMatrix(community)))
-    stopifnot(0==NumberOfTrophicLinks(community))
+    AssertEqual(c(26,26), dim(PredationMatrix(community)))
+    AssertEqual(LETTERS, colnames(PredationMatrix(community)))
+    AssertEqual(LETTERS, rownames(PredationMatrix(community)))
+    AssertEqual(0, sum(PredationMatrix(community)))
+    AssertEqual(0, NumberOfTrophicLinks(community))
 
     # Make sure a minimum set of trophic.links is OK
     community <- Community(nodes=data.frame(node=LETTERS), 
                            trophic.links=data.frame(resource='A',consumer='A'),
                            properties=list(title='test'))
-    stopifnot(all(colnames(PredationMatrix(community))==LETTERS))
-    stopifnot(all(rownames(PredationMatrix(community))==LETTERS))
-    stopifnot(1==sum(PredationMatrix(community)))
-    stopifnot(1==NumberOfTrophicLinks(community))
-    stopifnot('integer'==class(PredationMatrix(community)[1]))
-    stopifnot(all(0:1==sort(unique(as.vector(PredationMatrix(community))))))
-    stopifnot(all(1==PredationMatrix(community)[1,1]))
-    stopifnot(all(0==PredationMatrix(community)[-1]))
-    stopifnot(1==sum(PredationMatrix(community)))
+    AssertEqual(LETTERS, colnames(PredationMatrix(community)))
+    AssertEqual(LETTERS, rownames(PredationMatrix(community)))
+    AssertEqual(1, sum(PredationMatrix(community)))
+    AssertEqual(1, NumberOfTrophicLinks(community))
+    AssertEqual('integer', class(PredationMatrix(community)[1]))
+    AssertEqual(0:1, sort(unique(as.vector(PredationMatrix(community)))))
+    AssertEqual(1, PredationMatrix(community)[1,1])
+    AssertEqual(rep(0, 26*26-1), PredationMatrix(community)[-1])
+    AssertEqual(1, sum(PredationMatrix(community)))
 
     # resource and/or consumer not in nodes
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='a', consumer='A'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='a'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='a', consumer='a'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='', consumer='A'), 
-                properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='a', consumer='A'),
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='a'), 
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='a', consumer='a'), 
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='', consumer='A'), 
+                           properties=list(title='test')))
 
     # Check white space is removed
     community <- Community(nodes=data.frame(node=LETTERS), 
                            trophic.links=data.frame(resource='A ',consumer='A'),
                            properties=list(title='test'))
-    stopifnot(all(matrix(c('A','A') == TLPS(community))))
+    AssertEqual(data.frame(resource='A',consumer='A'), TLPS(community))
 
     community <- Community(nodes=data.frame(node='A '), 
                            trophic.links=data.frame(resource='A',consumer='A'),
                            properties=list(title='test'))
-    stopifnot(all(matrix(c('A','A') == TLPS(community))))
+    AssertEqual(data.frame(resource='A',consumer='A'), TLPS(community))
     community <- Community(nodes=data.frame(node=' A '), 
-                       trophic.links=data.frame(resource=' A',consumer='A '),
-                       properties=list(title='test'))
-    stopifnot(all(matrix(c('A','A') == TLPS(community))))
+                           trophic.links=data.frame(resource=' A',consumer='A '),
+                           properties=list(title='test'))
+    AssertEqual(data.frame(resource='A',consumer='A'), TLPS(community))
 
     # Incorrect column names
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=cbind(x='A', t='A'), 
-                properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=cbind(x='A', t='A'), 
+                           properties=list(title='test')))
 
     # Producers appear in 'consumer' column
-    F(Community(nodes=data.frame(node=LETTERS, 
-                                 category=c(rep('producer', 25), 'consumer')), 
-                trophic.links=cbind(resource='A', consumer='W'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS, 
-                                 category=c(rep('producer', 25), 'consumer')), 
-                trophic.links=cbind(resource=c('A', 'B'), 
-                                    consumer=c('W', 'W')),
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS, 
-                                 category=c(rep('producer', 25), 'consumer')), 
-                trophic.links=cbind(resource=c('A', 'A'), 
-                                    consumer=c('W', 'Z')),
-                properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, 
+                                   category=c(rep('producer', 25), 'consumer')), 
+                           trophic.links=cbind(resource='A', consumer='W'), 
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, 
+                                   category=c(rep('producer', 25), 'consumer')),
+                           trophic.links=cbind(resource=c('A', 'B'), 
+                                               consumer=c('W', 'W')),
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS, 
+                                   category=c(rep('producer', 25), 'consumer')),
+                           trophic.links=cbind(resource=c('A', 'A'), 
+                                               consumer=c('W', 'Z')),
+                           properties=list(title='test')))
 
     # Some illegal trophic.link properties
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='A', node='A'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='A', title='A'),
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='A', 
-                                         M.units='A'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='A', 
-                                         N.units='A'), 
-                properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='A', 
+                                                    node='A'), 
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='A', 
+                                                    title='A'),
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='A', 
+                                                    M.units='A'), 
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='A', 
+                                                    N.units='A'), 
+                           properties=list(title='test')))
 
     # trophic.link properties start with either 'resource.' or 'consumer.'
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='A', 
-                                         resource.a='A'), 
-                properties=list(title='test')))
-    F(Community(nodes=data.frame(node=LETTERS), 
-                trophic.links=data.frame(resource='A', consumer='A', 
-                                         consumer.='A'), 
-                properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='A', 
+                                                    resource.a='A'), 
+                           properties=list(title='test')))
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                           trophic.links=data.frame(resource='A', consumer='A', 
+                                                    consumer.='A'), 
+                           properties=list(title='test')))
 
     # All cannibals - no other trophic links
     community <- Community(nodes=data.frame(node=LETTERS), 
                            trophic.links=data.frame(resource=LETTERS,
                                                     consumer=LETTERS),
                            properties=list(title='test'))
-    stopifnot(colnames(PredationMatrix(community))==LETTERS)
-    stopifnot(rownames(PredationMatrix(community))==LETTERS)
-    stopifnot(all(1==diag(PredationMatrix(community))))
     pm <- PredationMatrix(community)
-    stopifnot(all(0==pm[upper.tri(pm, diag=FALSE)]))
-    stopifnot(all(0==pm[lower.tri(pm, diag=FALSE)]))
+    AssertEqual(LETTERS, colnames(pm))
+    AssertEqual(LETTERS, rownames(pm))
+    AssertEqual(rep(1,26), unname(diag(pm)))
+    AssertEqual(rep(0, 325), pm[upper.tri(pm, diag=FALSE)])
+    AssertEqual(rep(0, 325), pm[lower.tri(pm, diag=FALSE)])
 
     # No cannibals, Z consumes everything
     community <- Community(nodes=data.frame(node=LETTERS), 
                            trophic.links=data.frame(resource=LETTERS,
                                                     consumer='Z'),
                            properties=list(title='test'))
-    stopifnot(colnames(PredationMatrix(community))==LETTERS)
-    stopifnot(rownames(PredationMatrix(community))==LETTERS)
-    stopifnot(all(1==PredationMatrix(community)[,'Z']))
-    stopifnot(all(0==PredationMatrix(community)[,LETTERS[1:25]]))
+    pm <- PredationMatrix(community)
+    AssertEqual(LETTERS, colnames(pm))
+    AssertEqual(LETTERS, rownames(pm))
+    AssertEqual(rep(1,26), unname(pm[,'Z']))
+    AssertEqual(rep(0,650), as.vector(pm[,LETTERS[1:25]]))
 
     # A few specific links
     tl <- data.frame(resource=c('A', 'B', 'Z'), 
@@ -320,15 +327,16 @@ TestCommunityTrophicLinks <- function()
     community <- Community(nodes=data.frame(node=LETTERS), 
                            trophic.links=tl,
                            properties=list(title='test'))
-    stopifnot(colnames(PredationMatrix(community))==LETTERS)
-    stopifnot(rownames(PredationMatrix(community))==LETTERS)
+    pm <- PredationMatrix(community)
+    AssertEqual(LETTERS, colnames(pm))
+    AssertEqual(LETTERS, rownames(pm))
     invisible(apply(tl, 1, function(row)
     {
         res <- row['resource']
         con <- row['consumer']
-        stopifnot(1==PredationMatrix(community)[res, con])
+        AssertEqual(1, pm[res, con])
     }))
-    stopifnot(all(0:1==sort(unique(as.vector(PredationMatrix(community))))))
+    AssertEqual(0:1, sort(unique(as.vector(pm))))
 
     # Factors should be converted to strings
     community <- Community(nodes=data.frame(node=LETTERS),
@@ -337,150 +345,149 @@ TestCommunityTrophicLinks <- function()
                                                     tlp=LETTERS,
                                                     stringsAsFactors=TRUE),
                            properties=list(title='test'))
-    stopifnot(all(sapply(TLPS(community), class)=='character'))
+    AssertEqual(c(resource='character', consumer="character", tlp="character"), 
+                sapply(TLPS(community), class))
 }
 
 TestNodePropertyNames <- function()
 {
     for(community in list(c1,c2,c3,c4,c5))
     {
-        stopifnot('node'==NodePropertyNames(community))
+        print(community)
+        AssertEqual('node', NodePropertyNames(community))
     }
 
-    stopifnot(all(c('node','M','N','order','family')==NodePropertyNames(c6)))
+    AssertEqual(c('node','M','N','order','family'), NodePropertyNames(c6))
 }
 
 TestNPS <- function()
 {
-    stopifnot('S'==NP(c1, 'node'))
-    stopifnot('S'==NP(c2, 'node'))
-    stopifnot(all(c('R','C')==NP(c3, 'node')))
-    stopifnot(all(c('R','C','P')==NP(c4, 'node')))
-    stopifnot(all(c('R','C','O')==NP(c5, 'node')))
-    stopifnot(all(c('R','C','P')==NP(c6, 'node')))
+    AssertEqual(c(S='S'), NP(c1, 'node'))
+    AssertEqual(c(S='S'), NP(c2, 'node'))
+    AssertEqual(c(R='R',C='C'), NP(c3, 'node'))
+    AssertEqual(c(R='R',C='C',P='P'), NP(c4, 'node'))
+    AssertEqual(c(R='R',C='C',O='O'), NP(c5, 'node'))
+    AssertEqual(c(R='R',C='C',P='P'), NP(c6, 'node'))
 
-    stopifnot(data.frame(node='S')==NPS(c1))
-    stopifnot(data.frame(node='S')==NPS(c2))
-    stopifnot(data.frame(node=c('R','C'))==NPS(c3))
-    stopifnot(data.frame(node=c('R','C','P'))==NPS(c4))
-    stopifnot(data.frame(node=c('R','C','O'))==NPS(c5))
-    stopifnot(data.frame(node=c('R','C','P'), 
-                         M=c(1.5,5,100), 
-                         N=c(1000,10,5.5), 
-                         order=c('Order 1','Order 2','Order 2'), 
-                         family=paste('Family',1:3), 
-                         row.names=c('R','C','P'))==NPS(c6))
+    AssertEqual(data.frame(node='S', row.names=c('S')), NPS(c1))
+    AssertEqual(data.frame(node='S', row.names=c('S')), NPS(c2))
+    AssertEqual(data.frame(node=c('R','C'), row.names=c('R','C')), NPS(c3))
+    AssertEqual(data.frame(node=c('R','C','P'), row.names=c('R','C','P')), 
+                NPS(c4))
+    AssertEqual(data.frame(node=c('R','C','O'), row.names=c('R','C','O')), 
+                NPS(c5))
+    AssertEqual(data.frame(node=c('R','C','P'), 
+                           M=c(1.5,5,100), 
+                           N=c(1000,10,5.5), 
+                           order=c('Order 1','Order 2','Order 2'), 
+                           family=paste('Family',1:3), 
+                           row.names=c('R','C','P')), 
+                NPS(c6))
 
     # Subsets of properties
-    stopifnot(data.frame(M=c(1.5,5,100), 
-                         row.names=c('R','C','P'))==NPS(c6, 'M'))
-    stopifnot(data.frame(M=c(1.5,5,100), 
+    AssertEqual(data.frame(M=c(1.5,5,100), row.names=c('R','C','P')), 
+                NPS(c6, 'M'))
+    AssertEqual(data.frame(M=c(1.5,5,100), 
                          family=paste('Family',1:3), 
-                         row.names=c('R','C','P'))==NPS(c6, c('M','family')))
+                         row.names=c('R','C','P')), 
+                NPS(c6, c('M','family')))
 
     # Computed properties
-    stopifnot(data.frame(Biomass=c(1500,50,550), 
-                         row.names=c('R','C','P')) == NPS(c6, 'Biomass'))
-    stopifnot(data.frame(M=c(1.5,5,100), 
-                         PreyAveragedTrophicLevel=c(1,2,3), 
-                         IsBasalNode=c(TRUE,FALSE,FALSE),
-                         IsTopLevelNode=c(FALSE,FALSE,TRUE), 
-                         row.names=c('R','C','P')) == 
-              NPS(c6, c('M', 'PreyAveragedTrophicLevel', 'IsBasalNode', 
-                        'IsTopLevelNode')))
+    AssertEqual(data.frame(Biomass=c(1500,50,550), row.names=c('R','C','P')), 
+                NPS(c6, 'Biomass'))
+    AssertEqual(data.frame(M=c(1.5,5,100), 
+                           PreyAveragedTrophicLevel=c(1,2,3), 
+                           IsBasalNode=c(TRUE,FALSE,FALSE),
+                           IsTopLevelNode=c(FALSE,FALSE,TRUE), 
+                           row.names=c('R','C','P')), 
+                NPS(c6, c('M', 'PreyAveragedTrophicLevel', 'IsBasalNode', 
+                          'IsTopLevelNode')))
 
     # Computed property names
-    stopifnot(data.frame(x=c(1500,50,550), 
-                         row.names=c('R','C','P')) == NPS(c6, c(x='Biomass')))
+    AssertEqual(data.frame(x=c(1500,50,550), row.names=c('R','C','P')), 
+                NPS(c6, c(x='Biomass')))
 
     # Computed property names with extra params
-    a <- data.frame(TS=TrophicSpecies(TL84, include.isolated=FALSE))
-    b <- NPS(TL84, list(TS=list('TrophicSpecies', include.isolated=FALSE)))
-    stopifnot(identical(a, b))
+    AssertEqual(data.frame(TS=TrophicSpecies(TL84, include.isolated=FALSE)), 
+                NPS(TL84, list(TS=list('TrophicSpecies', include.isolated=FALSE))))
 
-    a <- data.frame(TS=TrophicSpecies(TL84, include.isolated=TRUE))
-    b <- NPS(TL84, list(TS=list('TrophicSpecies', include.isolated=TRUE)))
-    stopifnot(identical(a, b))
+    AssertEqual(data.frame(TS=TrophicSpecies(TL84, include.isolated=TRUE)), 
+                NPS(TL84, list(TS=list('TrophicSpecies', include.isolated=TRUE))))
 
     # Function returns incorrect length
-    F(NPS(TL84, 'NumberOfTrophicLinks'))
+    AssertRaises(NPS(TL84, 'NumberOfTrophicLinks'))
 
     # Missing node properties
-    F(NP(TL84, ''))
-    stopifnot(all(is.na(NP(TL84, 'x'))))
+    AssertRaises(NP(TL84, ''))
+    AssertEqual(rep(NA,56), unname(NP(TL84, 'x')))
 }
 
 TestTrophicLinkPropertyNames <- function()
 {
-    stopifnot(is.null(TrophicLinkPropertyNames(c1)))
+    AssertEqual(NULL, TrophicLinkPropertyNames(c1))
     for(community in list(c2,c3,c4,c5))
     {
-        stopifnot(all(c('resource', 'consumer') == 
-                      TrophicLinkPropertyNames(community)))
+        print(community)
+        AssertEqual(c('resource', 'consumer'), 
+                    TrophicLinkPropertyNames(community))
     }
 
-    stopifnot(all(c('resource','consumer','link.evidence','link.strength') == 
-                  TrophicLinkPropertyNames(c6)))
+    AssertEqual(c('resource','consumer','link.evidence','link.strength'), 
+                TrophicLinkPropertyNames(c6))
 }
 
 TestTLPS <- function()
 {
     # First-class link properties
-    stopifnot(is.null(TLPS(c1)))
-    stopifnot(identical(data.frame(resource='S', consumer='S', 
-                                   stringsAsFactors=FALSE), 
-                       TLPS(c2)))
-    stopifnot(identical(data.frame(resource='R', consumer='C', 
-                                   stringsAsFactors=FALSE), 
-                       TLPS(c3)))
-    stopifnot(identical(data.frame(resource=c('R','C'), consumer=c('C','P'), 
-                                   stringsAsFactors=FALSE), 
-                       TLPS(c4)))
-    stopifnot(identical(data.frame(resource=c('R','R','C'), 
-                                   consumer=c('C','O','O'), 
-                                   stringsAsFactors=FALSE), 
-                       TLPS(c5)))
-    stopifnot(identical(data.frame(resource=c('R','C'), consumer=c('C','P'), 
-                                   link.evidence=c('Inferred','Known'), 
-                                   link.strength=c(0.5, 0.2), 
-                                   stringsAsFactors=FALSE), 
-                       TLPS(c6)))
+    AssertEqual(NULL, TLPS(c1))
+    AssertEqual(data.frame(resource='S', consumer='S'), TLPS(c2))
+    AssertEqual(data.frame(resource='R', consumer='C'), TLPS(c3))
+    AssertEqual(data.frame(resource=c('R','C'), consumer=c('C','P')), TLPS(c4))
+    AssertEqual(data.frame(resource=c('R','R','C'), 
+                           consumer=c('C','O','O')), 
+                TLPS(c5))
+    AssertEqual(data.frame(resource=c('R','C'), consumer=c('C','P'), 
+                           link.evidence=c('Inferred','Known'), 
+                           link.strength=c(0.5, 0.2)), 
+                TLPS(c6))
 
-    stopifnot(269==nrow(TLPS(TL84)))
-    stopifnot(264==nrow(TLPS(RemoveCannibalisticLinks(TL84))))
+    AssertEqual(269, nrow(TLPS(TL84)))
+    AssertEqual(264, nrow(TLPS(RemoveCannibalisticLinks(TL84))))
 
-    stopifnot(all(c('Inferred','Known') == TLP(c6, 'link.evidence')))
-    stopifnot(all(c(0.5, 0.2) == TLP(c6, 'link.strength')))
-    stopifnot(all(is.na(TLP(c6, 'x'))))
+    AssertEqual(c('Inferred','Known'), TLP(c6, 'link.evidence'))
+    AssertEqual(c(0.5, 0.2), TLP(c6, 'link.strength'))
+    AssertEqual(c(NA, NA), TLP(c6, 'x'))
 
     # Node properties
     tlps <- TLPS(TL84, c('M','N','Biomass'))
-    stopifnot(all(colnames(tlps)==c('resource', 'consumer', 
-                                    'resource.M', 'resource.N', 
-                                    'resource.Biomass', 
-                                    'consumer.M', 'consumer.N', 
-                                    'consumer.Biomass')))
-    stopifnot(all(tlps[,'resource.M'] == NP(TL84,'M')[tlps[,'resource']]))
-    stopifnot(all(tlps[,'consumer.M'] == NP(TL84,'M')[tlps[,'consumer']]))
-    stopifnot(all(tlps[,'resource.N'] == NP(TL84,'N')[tlps[,'resource']]))
-    stopifnot(all(tlps[,'consumer.N'] == NP(TL84,'N')[tlps[,'consumer']]))
-    stopifnot(all(tlps[,'resource.Biomass'] ==Biomass(TL84)[tlps[,'resource']]))
-    stopifnot(all(tlps[,'consumer.Biomass'] ==Biomass(TL84)[tlps[,'consumer']]))
+    AssertEqual(colnames(tlps), c('resource', 'consumer', 
+                                  'resource.M', 'resource.N', 
+                                  'resource.Biomass', 
+                                  'consumer.M', 'consumer.N', 
+                                  'consumer.Biomass'))
+    AssertEqual(tlps[,'resource.M'], unname(NP(TL84,'M')[tlps[,'resource']]))
+    AssertEqual(tlps[,'consumer.M'], unname(NP(TL84,'M')[tlps[,'consumer']]))
+    AssertEqual(tlps[,'resource.N'], unname(NP(TL84,'N')[tlps[,'resource']]))
+    AssertEqual(tlps[,'consumer.N'], unname(NP(TL84,'N')[tlps[,'consumer']]))
+    AssertEqual(tlps[,'resource.Biomass'], 
+                unname(Biomass(TL84)[tlps[,'resource']]))
+    AssertEqual(tlps[,'consumer.Biomass'], 
+                unname(Biomass(TL84)[tlps[,'consumer']]))
 
     # Missing node properties should be NA
     tlps <- TLPS(TL84, 'x')
-    stopifnot(all(is.na(tlps[,'resource.x'])))
-    stopifnot(all(is.na(tlps[,'consumer.x'])))
+    AssertEqual(rep(NA, 269), tlps[,'resource.x'])
+    AssertEqual(rep(NA, 269), tlps[,'consumer.x'])
 }
 
 TestCommunityPropertyNames <- function()
 {
-    stopifnot('title'==CommunityPropertyNames(c1))
-    stopifnot('title'==CommunityPropertyNames(c2))
-    stopifnot('title'==CommunityPropertyNames(c3))
-    stopifnot('title'==CommunityPropertyNames(c4))
-    stopifnot('title'==CommunityPropertyNames(c5))
-    stopifnot(all(c('title','M.units','N.units')==CommunityPropertyNames(c6)))
+    AssertEqual('title', CommunityPropertyNames(c1))
+    AssertEqual('title', CommunityPropertyNames(c2))
+    AssertEqual('title', CommunityPropertyNames(c3))
+    AssertEqual('title', CommunityPropertyNames(c4))
+    AssertEqual('title', CommunityPropertyNames(c5))
+    AssertEqual(c('title','M.units','N.units'), CommunityPropertyNames(c6))
 }
 
 TestPersistCommunity <- function()
@@ -491,13 +498,13 @@ TestPersistCommunity <- function()
     for(community in list(c1,c2,c3,c4,c5,c6,TL84,TL86,YthanEstuary,
                           SkipwithPond,BroadstoneStream,Benguela))
     {
+        print(community)
         SaveCommunity(community, path)
-        stopifnot(identical(community, LoadCommunity(path)))
+        AssertEqual(community, LoadCommunity(path))
         unlink(path, recursive=TRUE)
 
         SaveCommunity(community, path, fn='write.table', sep='\t')
-        stopifnot(identical(community, 
-                            LoadCommunity(path, fn='read.table', sep='\t')))
+        AssertEqual(community, LoadCommunity(path, fn='read.table', sep='\t'))
         unlink(path, recursive=TRUE)
     }
 }
@@ -505,114 +512,113 @@ TestPersistCommunity <- function()
 TestResolveToNodeIndices <- function()
 {
     ResolveToNodeIndices <- cheddar:::.ResolveToNodeIndices
-    stopifnot(1==ResolveToNodeIndices(c1, 'S'))
-    stopifnot(1==ResolveToNodeIndices(c1, 1))
-    stopifnot(1==ResolveToNodeIndices(c1, TRUE))
-    stopifnot(0==length(ResolveToNodeIndices(c1, FALSE)))
+    AssertEqual(c(S=1), ResolveToNodeIndices(c1, 'S'))
+    AssertEqual(c(S=1), ResolveToNodeIndices(c1, 1))
+    AssertEqual(c(S=1), ResolveToNodeIndices(c1, TRUE))
+    AssertEqual(0, length(ResolveToNodeIndices(c1, FALSE)))
 
-    stopifnot(1==ResolveToNodeIndices(c4, 'R'))
-    stopifnot(all(c(1,3)==ResolveToNodeIndices(c4, c('R','P'))))
-    stopifnot(1==ResolveToNodeIndices(c4, 1))
-    stopifnot(all(c(1,2)==ResolveToNodeIndices(c4, c(1,2))))
-    stopifnot(all(c(2,3)==ResolveToNodeIndices(c4, c(FALSE,TRUE,TRUE))))
-    stopifnot(0==length(ResolveToNodeIndices(c4, c(FALSE,FALSE,FALSE))))
+    AssertEqual(c(R=1), ResolveToNodeIndices(c4, 'R'))
+    AssertEqual(c(R=1,P=3), ResolveToNodeIndices(c4, c('R','P')))
+    AssertEqual(c(R=1), ResolveToNodeIndices(c4, 1))
+    AssertEqual(c(R=1,C=2), ResolveToNodeIndices(c4, c(1,2)))
+    AssertEqual(c(C=2,P=3), ResolveToNodeIndices(c4, c(FALSE,TRUE,TRUE)))
+    AssertEqual(0, length(ResolveToNodeIndices(c4, c(FALSE,FALSE,FALSE))))
 
-    stopifnot(is.null(ResolveToNodeIndices(c4, NULL)))
+    AssertEqual(NULL, ResolveToNodeIndices(c4, NULL))
 
-    F(ResolveToNodeIndices(c4, ''))
-    F(ResolveToNodeIndices(c4, 'x'))
-    F(ResolveToNodeIndices(c4, 0))
-    F(ResolveToNodeIndices(c4, 4))
-    F(ResolveToNodeIndices(c4, TRUE))
-    F(ResolveToNodeIndices(c4, rep(TRUE,4)))
+    AssertRaises(ResolveToNodeIndices(c4, ''))
+    AssertRaises(ResolveToNodeIndices(c4, 'x'))
+    AssertRaises(ResolveToNodeIndices(c4, 0))
+    AssertRaises(ResolveToNodeIndices(c4, 4))
+    AssertRaises(ResolveToNodeIndices(c4, TRUE))
+    AssertRaises(ResolveToNodeIndices(c4, rep(TRUE,4)))
 }
 
 TestNodeNameIndices <- function()
 {
-    stopifnot(all(1==NodeNameIndices(c1, 'S')))
-    stopifnot(all(1==NodeNameIndices(c2, 'S')))
-    stopifnot(all(2:1==NodeNameIndices(c3, c('C','R'))))
-    stopifnot(all(1:2==NodeNameIndices(c3, c('R','C'))))
-    stopifnot(all(c(2,2)==NodeNameIndices(c3, c('C','C'))))
-    stopifnot(all(1:3==NodeNameIndices(c4, c('R','C','P'))))
-    stopifnot(all(3:1==NodeNameIndices(c4, c('P','C','R'))))
-    stopifnot(all(2==NodeNameIndices(c4, 'C')))
+    AssertEqual(c(S=1), NodeNameIndices(c1, 'S'))
+    AssertEqual(c(S=1), NodeNameIndices(c2, 'S'))
+    AssertEqual(c(C=2,R=1), NodeNameIndices(c3, c('C','R')))
+    AssertEqual(c(R=1,C=2), NodeNameIndices(c3, c('R','C')))
+    AssertEqual(c(C=2,C=2), NodeNameIndices(c3, c('C','C')))
+    AssertEqual(c(R=1,C=2,P=3), NodeNameIndices(c4, c('R','C','P')))
+    AssertEqual(c(P=3,C=2,R=1), NodeNameIndices(c4, c('P','C','R')))
+    AssertEqual(c(C=2), NodeNameIndices(c4, 'C'))
 
-    F(NodeNameIndices(c1, ''))
-    F(NodeNameIndices(c1, 'x'))
+    AssertRaises(NodeNameIndices(c1, ''))
+    AssertRaises(NodeNameIndices(c1, 'x'))
 }
 
 TestNumberOfNodes <- function()
 {
-    stopifnot(1==NumberOfNodes(c1))
-    stopifnot(1==NumberOfNodes(c2))
-    stopifnot(2==NumberOfNodes(c3))
-    stopifnot(3==NumberOfNodes(c4))
-    stopifnot(3==NumberOfNodes(c5))
-    stopifnot(3==NumberOfNodes(c6))
-    stopifnot(56==NumberOfNodes(TL84))
-    stopifnot(57==NumberOfNodes(TL86))
-    stopifnot(37==NumberOfNodes(SkipwithPond))
+    AssertEqual(1, NumberOfNodes(c1))
+    AssertEqual(1, NumberOfNodes(c2))
+    AssertEqual(2, NumberOfNodes(c3))
+    AssertEqual(3, NumberOfNodes(c4))
+    AssertEqual(3, NumberOfNodes(c5))
+    AssertEqual(3, NumberOfNodes(c6))
+    AssertEqual(56, NumberOfNodes(TL84))
+    AssertEqual(57, NumberOfNodes(TL86))
+    AssertEqual(37, NumberOfNodes(SkipwithPond))
 }
 
 TestRemoveNodes <- function()
 {
-    F(RemoveNodes(c1, 0))  # Illegal node index
-    F(RemoveNodes(c1, 1))  # Would result in empty community
-    F(RemoveNodes(c1, 2))  # Illegal node index
-    F(RemoveNodes(c2, 1))  # Would result in empty community
+    AssertRaises(RemoveNodes(c1, 0))  # Illegal node index
+    AssertRaises(RemoveNodes(c1, 1))  # Would result in empty community
+    AssertRaises(RemoveNodes(c1, 2))  # Illegal node index
+    AssertRaises(RemoveNodes(c2, 1))  # Would result in empty community
 
-    stopifnot(identical(c1, RemoveNodes(c1, NULL)))
-    stopifnot(identical(c1, RemoveNodes(c1, vector(mode='character'))))
+    AssertEqual(c1, RemoveNodes(c1, NULL))
+    AssertEqual(c1, RemoveNodes(c1, vector(mode='character')))
 
-    stopifnot(all.equal(RemoveNodes(c3, 'R', title='c3'), 
-                        RemoveNodes(c3, 'R', title='c3')))
-    stopifnot('C'==NP(RemoveNodes(c3, 1),'node'))
-    stopifnot(is.null(TLPS(RemoveNodes(c3, 1))))
-    stopifnot('R'==NP(RemoveNodes(c3, 2),'node'))
-    stopifnot(is.null(TLPS(RemoveNodes(c3, 2))))
+    AssertEqual(RemoveNodes(c3, 'R', title='c3'), 
+                RemoveNodes(c3, 'R', title='c3'))
+    AssertEqual(c(C='C'), NP(RemoveNodes(c3, 1),'node'))
+    AssertEqual(NULL, TLPS(RemoveNodes(c3, 1)))
+    AssertEqual(c(R='R'), NP(RemoveNodes(c3, 2),'node'))
+    AssertEqual(NULL, TLPS(RemoveNodes(c3, 2)))
 
-    stopifnot(all(c('C','P')==NP(RemoveNodes(c4, 1),'node')))
-    stopifnot(all(c('R','P')==NP(RemoveNodes(c4, 2),'node')))
-    stopifnot(all(c('R','C')==NP(RemoveNodes(c4, 3),'node')))
-    stopifnot(all(c('R')==NP(RemoveNodes(c4, 2:3),'node')))
-    F(RemoveNodes(c4, 1:3))
+    AssertEqual(c(C='C',P='P'), NP(RemoveNodes(c4, 1),'node'))
+    AssertEqual(c(R='R',P='P'), NP(RemoveNodes(c4, 2),'node'))
+    AssertEqual(c(R='R',C='C'), NP(RemoveNodes(c4, 3),'node'))
+    AssertEqual(c(R='R'), NP(RemoveNodes(c4, 2:3),'node'))
+    AssertRaises(RemoveNodes(c4, 1:3))
 
-    stopifnot(identical(TL84, RemoveNodes(TL84, NULL)))
-    stopifnot(identical(TL84, RemoveNodes(TL84, vector(mode='character'))))
+    AssertEqual(TL84, RemoveNodes(TL84, NULL))
+    AssertEqual(TL84, RemoveNodes(TL84, vector(mode='character')))
 
     TL84r <- RemoveNodes(TL84, 56)
-    stopifnot(identical(NPS(TL84)[-56,], NPS(TL84r)))
+    AssertEqual(NPS(TL84)[-56,], NPS(TL84r))
     TL84r <- RemoveNodes(TL84, 'Umbra limi')
-    stopifnot(identical(NPS(TL84)[-56,], NPS(TL84r)))
+    AssertEqual(NPS(TL84)[-56,], NPS(TL84r))
 
     TL84r <- RemoveNodes(TL84, c(1,56))
-    stopifnot(identical(NPS(TL84)[-c(1,56),],NPS(TL84r)))
+    AssertEqual(NPS(TL84)[-c(1,56),],NPS(TL84r))
 
     TL84r <- RemoveNodes(TL84, c('Nostoc sp.', 'Umbra limi'))
-    stopifnot(identical(NPS(TL84)[-c(1,56),],NPS(TL84r)))
+    AssertEqual(NPS(TL84)[-c(1,56),],NPS(TL84r))
 }
 
 TestRemoveIsolatedNodes <- function()
 {
-    F(RemoveIsolatedNodes(c1))
-    F(RemoveIsolatedNodes(c2))
-    stopifnot(identical(c3, RemoveIsolatedNodes(c3, title=c3$title)))
-    stopifnot(identical(c4, RemoveIsolatedNodes(c4, title=c4$title)))
-    stopifnot(identical(c5, RemoveIsolatedNodes(c5, title=c5$title)))
-    stopifnot(identical(c6, RemoveIsolatedNodes(c6, title=c6$title)))
+    AssertRaises(RemoveIsolatedNodes(c1))
+    AssertRaises(RemoveIsolatedNodes(c2))
+    AssertEqual(c3, RemoveIsolatedNodes(c3, title=c3$title))
+    AssertEqual(c4, RemoveIsolatedNodes(c4, title=c4$title))
+    AssertEqual(c5, RemoveIsolatedNodes(c5, title=c5$title))
+    AssertEqual(c6, RemoveIsolatedNodes(c6, title=c6$title))
 
     TL84.no.iso <- RemoveIsolatedNodes(TL84, title=TL84$title)
-    stopifnot(50==NumberOfNodes(TL84.no.iso))
+    AssertEqual(50, NumberOfNodes(TL84.no.iso))
 
     isolated <- c('Asterionella formosa','Chrysosphaerella longispina',
                   'Diceras sp.', 'Rhizosolenia sp.', 'Spinocosmarium sp.',
                   'Staurastrum sp.')
-    stopifnot(all(isolated == IsolatedNodes(TL84)))
+    AssertEqual(isolated, IsolatedNodes(TL84))
 
-    stopifnot(identical(NPS(TL84)[!NP(TL84,'node') %in% isolated,], 
-                        NPS(TL84.no.iso)))
-    stopifnot(identical(TLPS(TL84), TLPS(TL84.no.iso)))
+    AssertEqual(NPS(TL84)[!NP(TL84,'node') %in% isolated,], NPS(TL84.no.iso))
+    AssertEqual(TLPS(TL84), TLPS(TL84.no.iso))
 }
 
 TestLumpNodes <- function()
@@ -621,68 +627,74 @@ TestLumpNodes <- function()
     # original.
     lump <- NP(TL84, 'node')
     TL84.lumped <- LumpNodes(TL84, lump, title=CP(TL84, 'title'))
-    stopifnot(isTRUE(all.equal(TL84, TL84.lumped)))
+    AssertEqual(TL84, TL84.lumped)
 
     # Lump all nodes into a single node
     TL84.lumped <- LumpNodes(TL84, paste('S', rep(1, 56)))
-    stopifnot(1==NumberOfNodes(TL84.lumped))
-    stopifnot(weighted.mean(NP(TL84, 'M'), NP(TL84, 'N'))==NP(TL84.lumped, 'M'))
-    stopifnot(mean(NP(TL84, 'N'))==NP(TL84.lumped, 'N'))
-    stopifnot("producer,invertebrate,vert.ecto"==NP(TL84.lumped, 'category'))
+    AssertEqual(1, NumberOfNodes(TL84.lumped))
+    AssertEqual(weighted.mean(NP(TL84, 'M'), NP(TL84, 'N')), 
+                unname(NP(TL84.lumped, 'M')))
+    AssertEqual(mean(NP(TL84, 'N')), unname(NP(TL84.lumped, 'N')))
+    AssertEqual("producer,invertebrate,vert.ecto", 
+                unname(NP(TL84.lumped, 'category')))
 
     # Lump all nodes into a single node without weighting by N
     TL84.lumped <- LumpNodes(TL84, paste('S', rep(1, 56)), weight.by=NULL)
-    stopifnot(1==NumberOfNodes(TL84.lumped))
-    stopifnot(mean(NP(TL84, 'M'))==NP(TL84.lumped, 'M'))
-    stopifnot(mean(NP(TL84, 'N'))==NP(TL84.lumped, 'N'))
-    stopifnot("producer,invertebrate,vert.ecto"==NP(TL84.lumped, 'category'))
+    AssertEqual(1, NumberOfNodes(TL84.lumped))
+    AssertEqual(mean(NP(TL84, 'M')), unname(NP(TL84.lumped, 'M')))
+    AssertEqual(mean(NP(TL84, 'N')), unname(NP(TL84.lumped, 'N')))
+    AssertEqual("producer,invertebrate,vert.ecto", 
+                unname(NP(TL84.lumped, 'category')))
 
     # Lump some specific nodes
     lump <- NP(TL84, 'node')
     lump[c(1,3)] <- 'Lump 1 and 3'
     lump[c(2,4)] <- 'Lump 2 and 4'
     TL84.lumped <- LumpNodes(TL84, lump)
-    stopifnot(54==NumberOfNodes(TL84.lumped))
-    stopifnot(weighted.mean(NP(TL84, 'M')[c(1,3)], NP(TL84, 'N')[c(1,3)]) == 
-              NP(TL84.lumped, 'M')['Lump 1 and 3'])
-    stopifnot(mean(NP(TL84, 'N')[c(1,3)])==NP(TL84.lumped, 'N')['Lump 1 and 3'])
-    stopifnot('producer'==NP(TL84.lumped, 'category')['Lump 1 and 3'])
-    stopifnot('Bacteria,Chromista'==NP(TL84.lumped, 'kingdom')['Lump 1 and 3'])
-    stopifnot(weighted.mean(NP(TL84, 'M')[c(2,4)], NP(TL84, 'N')[c(2,4)]) == 
-              NP(TL84.lumped, 'M')['Lump 2 and 4'])
-    stopifnot(mean(NP(TL84, 'N')[c(2,4)])==NP(TL84.lumped, 'N')['Lump 2 and 4'])
-    stopifnot('producer'==NP(TL84.lumped, 'category')['Lump 2 and 4'])
-    stopifnot('Plantae,Chromista'==NP(TL84.lumped, 'kingdom')['Lump 2 and 4'])
-    stopifnot(all.equal(NPS(TL84)[5:56,], NPS(TL84.lumped)[3:54,]))
+    AssertEqual(54, NumberOfNodes(TL84.lumped))
+    AssertEqual(weighted.mean(NP(TL84, 'M')[c(1,3)], NP(TL84, 'N')[c(1,3)]), 
+                unname(NP(TL84.lumped, 'M')['Lump 1 and 3']))
+    AssertEqual(mean(NP(TL84, 'N')[c(1,3)]), 
+                unname(NP(TL84.lumped, 'N')['Lump 1 and 3']))
+    AssertEqual('producer', unname(NP(TL84.lumped, 'category')['Lump 1 and 3']))
+    AssertEqual('Bacteria,Chromista', 
+                unname(NP(TL84.lumped, 'kingdom')['Lump 1 and 3']))
+    AssertEqual(weighted.mean(NP(TL84, 'M')[c(2,4)], NP(TL84, 'N')[c(2,4)]), 
+                unname(NP(TL84.lumped, 'M')['Lump 2 and 4']))
+    AssertEqual(mean(NP(TL84, 'N')[c(2,4)]), 
+                unname(NP(TL84.lumped, 'N')['Lump 2 and 4']))
+    AssertEqual('producer', unname(NP(TL84.lumped, 'category')['Lump 2 and 4']))
+    AssertEqual('Plantae,Chromista', 
+                unname(NP(TL84.lumped, 'kingdom')['Lump 2 and 4']))
+    AssertEqual(NPS(TL84)[5:56,], NPS(TL84.lumped)[3:54,])
 
 
     # Lump isolated nodes
-    stopifnot(56==NumberOfNodes(TL84))
-    stopifnot(6==length(IsolatedNodes(TL84)))
+    AssertEqual(56, NumberOfNodes(TL84))
+    AssertEqual(6, length(IsolatedNodes(TL84)))
     lump <- NP(TL84, 'node')
     lump[IsolatedNodes(TL84)] <- 'Isolated'
     TL84.lumped <- LumpNodes(TL84, lump)
-    stopifnot(51==NumberOfNodes(TL84.lumped))
-    stopifnot(weighted.mean(NP(TL84, 'M')[IsolatedNodes(TL84)], 
-                            NP(TL84, 'N')[IsolatedNodes(TL84)]) == 
-              NP(TL84.lumped, 'M')['Isolated'])
-    stopifnot(mean(NP(TL84, 'N')[IsolatedNodes(TL84)]) == 
-              NP(TL84.lumped, 'N')['Isolated'])
-    stopifnot("producer"==NP(TL84.lumped, 'category')['Isolated'])
-
+    AssertEqual(51, NumberOfNodes(TL84.lumped))
+    AssertEqual(weighted.mean(NP(TL84, 'M')[IsolatedNodes(TL84)], 
+                              NP(TL84, 'N')[IsolatedNodes(TL84)]), 
+                unname(NP(TL84.lumped, 'M')['Isolated']))
+    AssertEqual(mean(NP(TL84, 'N')[IsolatedNodes(TL84)]), 
+                unname(NP(TL84.lumped, 'N')['Isolated']))
+    AssertEqual("producer", unname(NP(TL84.lumped, 'category')['Isolated']))
 
     # Lump isolated nodes without weighting by N
-    stopifnot(56==NumberOfNodes(TL84))
-    stopifnot(6==length(IsolatedNodes(TL84)))
+    AssertEqual(56, NumberOfNodes(TL84))
+    AssertEqual(6, length(IsolatedNodes(TL84)))
     lump <- NP(TL84, 'node')
     lump[IsolatedNodes(TL84)] <- 'Isolated'
     TL84.lumped <- LumpNodes(TL84, lump, weight.by=NULL)
-    stopifnot(51==NumberOfNodes(TL84.lumped))
-    stopifnot(mean(NP(TL84, 'M')[IsolatedNodes(TL84)]) == 
-              NP(TL84.lumped, 'M')['Isolated'])
-    stopifnot(mean(NP(TL84, 'N')[IsolatedNodes(TL84)]) == 
-              NP(TL84.lumped, 'N')['Isolated'])
-    stopifnot("producer"==NP(TL84.lumped, 'category')['Isolated'])
+    AssertEqual(51, NumberOfNodes(TL84.lumped))
+    AssertEqual(mean(NP(TL84, 'M')[IsolatedNodes(TL84)]), 
+                unname(NP(TL84.lumped, 'M')['Isolated']))
+    AssertEqual(mean(NP(TL84, 'N')[IsolatedNodes(TL84)]), 
+                unname(NP(TL84.lumped, 'N')['Isolated']))
+    AssertEqual("producer", unname(NP(TL84.lumped, 'category')['Isolated']))
 
 
     # Lump Ythan Estuary nodes
@@ -700,47 +712,43 @@ TestLumpNodes <- function()
 
     # Weight by N
     YthanEstuary.lumped <- LumpNodes(YthanEstuary, lump)
-    stopifnot(all.equal(NP(YthanEstuary.lumped, 'M')["Somateria mollissima"], 
-                        1637.01774691358014024445, 
-                        check.attributes=FALSE))
-    stopifnot(all.equal(NP(YthanEstuary.lumped, 'N')["Somateria mollissima"], 
-                        2592, 
-                        check.attributes=FALSE))
+    AssertEqual(unname(NP(YthanEstuary.lumped, 'M')["Somateria mollissima"]), 
+                1637.01774691358014024445)
+    AssertEqual(unname(NP(YthanEstuary.lumped, 'N')["Somateria mollissima"]), 
+                2592)
 
     # No weighting
     YthanEstuary.lumped2 <- LumpNodes(YthanEstuary, lump, weight.by=NULL)
-    stopifnot(all.equal(NP(YthanEstuary.lumped2, 'M')["Somateria mollissima"], 
-                        1425, 
-                        check.attributes=FALSE))
-    stopifnot(all.equal(NP(YthanEstuary.lumped2, 'N')["Somateria mollissima"], 
-                        2592, 
-                        check.attributes=FALSE))
+    AssertEqual(unname(NP(YthanEstuary.lumped2, 'M')["Somateria mollissima"]), 
+                1425)
+    AssertEqual(unname(NP(YthanEstuary.lumped2, 'N')["Somateria mollissima"]), 
+                2592)
 }
 
 TestLumpTrophicSpecies <- function()
 {
-    stopifnot(1==NumberOfNodes(c1))
-    stopifnot(1==NumberOfNodes(LumpTrophicSpecies(c1)))
-    stopifnot(1==NumberOfNodes(c2))
-    stopifnot(1==NumberOfNodes(LumpTrophicSpecies(c2)))
-    stopifnot(2==NumberOfNodes(c3))
-    stopifnot(2==NumberOfNodes(LumpTrophicSpecies(c3)))
-    stopifnot(3==NumberOfNodes(c4))
-    stopifnot(3==NumberOfNodes(LumpTrophicSpecies(c4)))
-    stopifnot(3==NumberOfNodes(c5))
-    stopifnot(3==NumberOfNodes(LumpTrophicSpecies(c5)))
-    stopifnot(3==NumberOfNodes(c6))
-    stopifnot(3==NumberOfNodes(LumpTrophicSpecies(c6)))
-    stopifnot(all(c('Inferred','Known') == 
-                  TLPS(LumpTrophicSpecies(c6))[,'link.evidence']))
-    stopifnot(all(c(0.5,0.2) == 
-                  TLPS(LumpTrophicSpecies(c6))[,'link.strength']))
+    AssertEqual(1, NumberOfNodes(c1))
+    AssertEqual(1, NumberOfNodes(LumpTrophicSpecies(c1)))
+    AssertEqual(1, NumberOfNodes(c2))
+    AssertEqual(1, NumberOfNodes(LumpTrophicSpecies(c2)))
+    AssertEqual(2, NumberOfNodes(c3))
+    AssertEqual(2, NumberOfNodes(LumpTrophicSpecies(c3)))
+    AssertEqual(3, NumberOfNodes(c4))
+    AssertEqual(3, NumberOfNodes(LumpTrophicSpecies(c4)))
+    AssertEqual(3, NumberOfNodes(c5))
+    AssertEqual(3, NumberOfNodes(LumpTrophicSpecies(c5)))
+    AssertEqual(3, NumberOfNodes(c6))
+    AssertEqual(3, NumberOfNodes(LumpTrophicSpecies(c6)))
+    AssertEqual(c('Inferred','Known'), 
+                TLPS(LumpTrophicSpecies(c6))[,'link.evidence'])
+    AssertEqual(c(0.5,0.2), 
+                TLPS(LumpTrophicSpecies(c6))[,'link.strength'])
 
-    stopifnot(56==NumberOfNodes(TL84))
+    AssertEqual(56, NumberOfNodes(TL84))
 
     # Exclude isolated species.
     lumped <- LumpTrophicSpecies(TL84, include.isolated=FALSE, weight.by=NULL)
-    stopifnot(21==NumberOfNodes(lumped))
+    AssertEqual(21, NumberOfNodes(lumped))
 
     # From Jonsson et al 2005 AER. Isolated species assigned NA.
     trophic.species <- c(1,2,NA,3,4,3,5,NA,6,1,1,NA,4,7,4,8,6,7,2,3,6,7,
@@ -748,204 +756,197 @@ TestLumpTrophicSpecies <- function()
                          15,16,15,9,15,17,18,15,15,15,15,12,19,20,20,21)
 
     # Are my trophic species the same as those calculated by cheddar?
-    stopifnot(identical(trophic.species, 
-                        unname(TrophicSpecies(TL84, include.isolated=FALSE))))
+    AssertEqual(trophic.species, 
+                unname(TrophicSpecies(TL84, include.isolated=FALSE)))
 
     # Check M and N have been averaged correctly
     for(ts in unique(trophic.species[!is.na(trophic.species)]))
     {
-        stopifnot(identical(unname(NP(lumped,'M')[ts]), 
-                            mean(NP(TL84,'M')[which(ts==trophic.species)])))
-        stopifnot(identical(unname(NP(lumped,'N')[ts]), 
-                            mean(NP(TL84,'N')[which(ts==trophic.species)])))
+        AssertEqual(unname(NP(lumped,'M')[ts]), 
+                    mean(NP(TL84,'M')[which(ts==trophic.species)]))
+        AssertEqual(unname(NP(lumped,'N')[ts]), 
+                    mean(NP(TL84,'N')[which(ts==trophic.species)]))
     }
 
     # Include isolated species.
     lumped <- LumpTrophicSpecies(TL84, include.isolated=TRUE, weight.by=NULL)
-    stopifnot(22==NumberOfNodes(lumped))
+    AssertEqual(22, NumberOfNodes(lumped))
 
     trophic.species <- c(1,2,3,4,5,4,6,3,7,1,1,3,5,8,5,9,7,8,2,4,7,8,5,7,
                          4,3,4,3,3,7,4,10,10,11,12,13,14,15,16,12,16,17,16,
                          10,16,18,19,16,16,16,16,13,20,21,21,22)
 
     # Are my trophic species the same as those calculated by cheddar?
-    stopifnot(identical(trophic.species, 
-                        unname(TrophicSpecies(TL84, include.isolated=TRUE))))
+    AssertEqual(trophic.species, 
+                unname(TrophicSpecies(TL84, include.isolated=TRUE)))
 
     # Check M and N have been averaged correctly
     for(ts in unique(trophic.species[!is.na(trophic.species)]))
     {
-        stopifnot(identical(unname(NP(lumped,'M')[ts]), 
-                            mean(NP(TL84,'M')[which(ts==trophic.species)])))
-        stopifnot(identical(unname(NP(lumped,'N')[ts]), 
-                            mean(NP(TL84,'N')[which(ts==trophic.species)])))
+        AssertEqual(unname(NP(lumped,'M')[ts]), 
+                    mean(NP(TL84,'M')[which(ts==trophic.species)]))
+        AssertEqual(unname(NP(lumped,'N')[ts]), 
+                    mean(NP(TL84,'N')[which(ts==trophic.species)]))
     }
 }
 
 TestOrderCommunity <- function()
 {
     # Order unchanged
-    stopifnot(identical(c1, OrderCommunity(c1, 'node', title=CP(c1,'title'))))
-    stopifnot(identical(c2, OrderCommunity(c2, 'node', title=CP(c2,'title'))))
-    stopifnot(identical(c3, OrderCommunity(c3, new.order=1:2, 
-                                           title=CP(c3,'title'))))
-    stopifnot(identical(c4, OrderCommunity(c4, new.order=1:3, 
-                                           title=CP(c4,'title'))))
-    stopifnot(identical(c5, OrderCommunity(c5, new.order=1:3, 
-                                           title=CP(c5,'title'))))
-    stopifnot(identical(c6, OrderCommunity(c6, new.order=1:3, 
-                                           title=CP(c6,'title'))))
+    AssertEqual(c1, OrderCommunity(c1, 'node', title='c1'))
+    AssertEqual(c2, OrderCommunity(c2, 'node', title='c2'))
+    AssertEqual(c3, OrderCommunity(c3, new.order=1:2, title='c3'))
+    AssertEqual(c4, OrderCommunity(c4, new.order=1:3, title='c4'))
+    AssertEqual(c5, OrderCommunity(c5, new.order=1:3, title='c5'))
+    AssertEqual(c6, OrderCommunity(c6, new.order=1:3, title='c6'))
 
     # Reverse order
     c6r <- OrderCommunity(c6, new.order=3:1)
-    target1 <- NPS(c6)
-    target2 <- NPS(c6r)[3:1,]
-    stopifnot(identical(target1, target2))
+    AssertEqual(NPS(c6), NPS(c6r)[3:1,])
 
     target1 <- TLPS(c6)
     target1 <- target1[order(target1$resource, target1$consumer),]
     target2 <- TLPS(c6r)
     target2 <- target2[order(target2$resource, target2$consumer),]
-    stopifnot(identical(target1, target2))
+    AssertEqual(target1, target2)
 
     # Order nodes alphabetically
     SkipwithPondr <- OrderCommunity(SkipwithPond, 'node')
     target1 <- NPS(SkipwithPond)[order(NP(SkipwithPond,'node')),]
     target2 <- NPS(SkipwithPondr)
-    stopifnot(identical(target1, target2))
+    AssertEqual(target1, target2)
     target1 <- TLPS(SkipwithPond)
     target1 <- target1[order(target1$resource, target1$consumer),]
     target2 <- TLPS(SkipwithPondr)
     target2 <- target2[order(target2$resource, target2$consumer),]
-    stopifnot(identical(target1, target2))
+    AssertEqual(target1, target2)
 
     # Order by property
-    stopifnot(all(c("Chromulina sp.","Dactylococcopsis fascicularis", 
-                    "Diceras sp.", "Trachelomonas sp.", "Cryptomonas sp. 1", 
-                    "Closteriopsis longissimus", "Chroococcus dispersus",
-                    "Selenastrum minutum", "Unclassified flagellates",
-                    "Dictyosphaerium pulchellum", "Dinobryon sociale",
-                    "Rhizosolenia sp.","Nostoc sp.","Mallomonas sp. 1", 
-                    "Asterionella formosa","Mallomonas sp. 2",
-                    "Cryptomonas sp. 2","Arthrodesmus sp.", 
-                    "Dinobryon cylindricum","Peridinium pulsillum", 
-                    "Dinobryon bavaricum","Spinocosmarium sp.", 
-                    "Staurastrum sp.",  "Glenodinium quadridens", 
-                    "Keratella cochlearis","Keratella testudo",
-                    "Dinobryon sertularia","Microcystis aeruginosa", 
-                    "Kellicottia sp.",  "Conochilus (solitary)", 
-                    "Peridinium wisconsinense","Peridinium cinctum", 
-                    "Peridinium limbatum","Synedra sp.","Ploesoma sp.", 
-                    "Gastropus stylifer","Ascomorpha eucadis", 
-                    "Conochiloides dossuarius","Filinia longispina", 
-                    "Trichocerca multicrinis", "Trichocerca cylindrica",
-                    "Polyarthra vulgaris","Chrysosphaerella longispina", 
-                    "Synchaeta sp.","Bosmina longirostris",
-                    "Diaphanosoma leuchtenbergianum", "Tropocyclops prasinus",
-                    "Leptodiaptomus siciloides","Cyclops varians rubellus",
-                    "Orthocyclops modestus","Daphnia pulex",
-                    "Holopedium gibberum", "Chaoborus punctipennis",
-                    "Phoxinus eos","Phoxinus neogaeus","Umbra limi") == 
-                  NP(OrderCommunity(TL84, 'M'), 'node')))
-    stopifnot(all(c('Umbra limi','Phoxinus neogaeus','Phoxinus eos',
-                    'Holopedium gibberum','Daphnia pulex','Filinia longispina',
-                    'Leptodiaptomus siciloides','Keratella testudo',
-                    'Cyclops varians rubellus','Chaoborus punctipennis',
-                    'Ascomorpha eucadis','Diaphanosoma leuchtenbergianum',
-                    'Orthocyclops modestus','Synchaeta sp.',
-                    'Gastropus stylifer','Conochilus (solitary)',
-                    'Trichocerca multicrinis','Tropocyclops prasinus',
-                    'Ploesoma sp.','Trichocerca cylindrica',
-                    'Bosmina longirostris','Conochiloides dossuarius',
-                    'Kellicottia sp.','Polyarthra vulgaris',
-                    'Keratella cochlearis','Synedra sp.','Nostoc sp.',
-                    'Dinobryon sertularia','Spinocosmarium sp.',
-                    'Dinobryon cylindricum','Chrysosphaerella longispina',
-                    'Asterionella formosa','Peridinium cinctum',
-                    'Staurastrum sp.','Dictyosphaerium pulchellum',
-                    'Microcystis aeruginosa','Diceras sp.',
-                    'Peridinium wisconsinense','Peridinium limbatum',
-                    'Mallomonas sp. 1','Chroococcus dispersus',
-                    'Mallomonas sp. 2','Cryptomonas sp. 2','Dinobryon sociale',
-                    'Dinobryon bavaricum','Dactylococcopsis fascicularis',
-                    'Arthrodesmus sp.','Rhizosolenia sp.','Cryptomonas sp. 1',
-                    'Glenodinium quadridens','Closteriopsis longissimus',
-                    'Peridinium pulsillum','Chromulina sp.',
-                    'Selenastrum minutum','Trachelomonas sp.',
-                    'Unclassified flagellates') == 
-                  NP(OrderCommunity(TL84, 'N'), 'node')))
+    AssertEqual(c("Chromulina sp.","Dactylococcopsis fascicularis", 
+                  "Diceras sp.", "Trachelomonas sp.", "Cryptomonas sp. 1", 
+                  "Closteriopsis longissimus", "Chroococcus dispersus",
+                  "Selenastrum minutum", "Unclassified flagellates",
+                  "Dictyosphaerium pulchellum", "Dinobryon sociale",
+                  "Rhizosolenia sp.","Nostoc sp.","Mallomonas sp. 1", 
+                  "Asterionella formosa","Mallomonas sp. 2",
+                  "Cryptomonas sp. 2","Arthrodesmus sp.", 
+                  "Dinobryon cylindricum","Peridinium pulsillum", 
+                  "Dinobryon bavaricum","Spinocosmarium sp.", 
+                  "Staurastrum sp.",  "Glenodinium quadridens", 
+                  "Keratella cochlearis","Keratella testudo",
+                  "Dinobryon sertularia","Microcystis aeruginosa", 
+                  "Kellicottia sp.",  "Conochilus (solitary)", 
+                  "Peridinium wisconsinense","Peridinium cinctum", 
+                  "Peridinium limbatum","Synedra sp.","Ploesoma sp.", 
+                  "Gastropus stylifer","Ascomorpha eucadis", 
+                  "Conochiloides dossuarius","Filinia longispina", 
+                  "Trichocerca multicrinis", "Trichocerca cylindrica",
+                  "Polyarthra vulgaris","Chrysosphaerella longispina", 
+                  "Synchaeta sp.","Bosmina longirostris",
+                  "Diaphanosoma leuchtenbergianum", "Tropocyclops prasinus",
+                  "Leptodiaptomus siciloides","Cyclops varians rubellus",
+                  "Orthocyclops modestus","Daphnia pulex",
+                  "Holopedium gibberum", "Chaoborus punctipennis",
+                  "Phoxinus eos","Phoxinus neogaeus","Umbra limi"), 
+                 unname(NP(OrderCommunity(TL84, 'M'), 'node')))
+    AssertEqual(c('Umbra limi','Phoxinus neogaeus','Phoxinus eos',
+                  'Holopedium gibberum','Daphnia pulex','Filinia longispina',
+                  'Leptodiaptomus siciloides','Keratella testudo',
+                  'Cyclops varians rubellus','Chaoborus punctipennis',
+                  'Ascomorpha eucadis','Diaphanosoma leuchtenbergianum',
+                  'Orthocyclops modestus','Synchaeta sp.',
+                  'Gastropus stylifer','Conochilus (solitary)',
+                  'Trichocerca multicrinis','Tropocyclops prasinus',
+                  'Ploesoma sp.','Trichocerca cylindrica',
+                  'Bosmina longirostris','Conochiloides dossuarius',
+                  'Kellicottia sp.','Polyarthra vulgaris',
+                  'Keratella cochlearis','Synedra sp.','Nostoc sp.',
+                  'Dinobryon sertularia','Spinocosmarium sp.',
+                  'Dinobryon cylindricum','Chrysosphaerella longispina',
+                  'Asterionella formosa','Peridinium cinctum',
+                  'Staurastrum sp.','Dictyosphaerium pulchellum',
+                  'Microcystis aeruginosa','Diceras sp.',
+                  'Peridinium wisconsinense','Peridinium limbatum',
+                  'Mallomonas sp. 1','Chroococcus dispersus',
+                  'Mallomonas sp. 2','Cryptomonas sp. 2','Dinobryon sociale',
+                  'Dinobryon bavaricum','Dactylococcopsis fascicularis',
+                  'Arthrodesmus sp.','Rhizosolenia sp.','Cryptomonas sp. 1',
+                  'Glenodinium quadridens','Closteriopsis longissimus',
+                  'Peridinium pulsillum','Chromulina sp.',
+                  'Selenastrum minutum','Trachelomonas sp.',
+                  'Unclassified flagellates'), 
+                unname(NP(OrderCommunity(TL84, 'N'), 'node')))
 
     # Reorder by function
-    stopifnot(all(c('Asterionella formosa','Chrysosphaerella longispina',
-                    'Diceras sp.','Rhizosolenia sp.','Spinocosmarium sp.',
-                    'Staurastrum sp.','Dinobryon bavaricum',
-                    'Microcystis aeruginosa','Peridinium limbatum',
-                    'Peridinium wisconsinense','Synedra sp.',
-                    'Dinobryon sertularia','Mallomonas sp. 1',
-                    'Peridinium cinctum','Arthrodesmus sp.',
-                    'Closteriopsis longissimus','Mallomonas sp. 2','Nostoc sp.',
-                    'Dinobryon cylindricum','Dactylococcopsis fascicularis',
-                    'Cryptomonas sp. 2','Dictyosphaerium pulchellum',
-                    'Dinobryon sociale','Peridinium pulsillum',
-                    'Glenodinium quadridens','Filinia longispina',
-                    'Gastropus stylifer','Kellicottia sp.','Keratella testudo',
-                    'Ploesoma sp.','Polyarthra vulgaris',
-                    'Trichocerca multicrinis','Trichocerca cylindrica',
-                    'Phoxinus eos','Phoxinus neogaeus','Ascomorpha eucadis',
-                    'Synchaeta sp.','Conochilus (solitary)',
-                    'Conochiloides dossuarius','Keratella cochlearis',
-                    'Umbra limi','Bosmina longirostris','Cryptomonas sp. 1',
-                    'Chroococcus dispersus','Unclassified flagellates',
-                    'Chromulina sp.','Selenastrum minutum','Trachelomonas sp.',
-                    'Diaphanosoma leuchtenbergianum','Holopedium gibberum',
-                    'Orthocyclops modestus','Cyclops varians rubellus',
-                    'Leptodiaptomus siciloides','Tropocyclops prasinus',
-                    'Chaoborus punctipennis','Daphnia pulex') == 
-                  NP(OrderCommunity(TL84, 'Degree'), 'node')))
-    stopifnot(all(c("Daphnia pulex", "Chaoborus punctipennis", 
-                    "Cyclops varians rubellus", "Leptodiaptomus siciloides", 
-                    "Tropocyclops prasinus", "Holopedium gibberum", 
-                    "Orthocyclops modestus", "Cryptomonas sp. 1",           
-                    "Chroococcus dispersus", "Unclassified flagellates", 
-                    "Chromulina sp.", "Selenastrum minutum", 
-                    "Trachelomonas sp.", "Diaphanosoma leuchtenbergianum", 
-                    "Bosmina longirostris", "Umbra limi",       
-                    "Ascomorpha eucadis", "Synchaeta sp.", 
-                    "Conochilus (solitary)", "Conochiloides dossuarius", 
-                    "Keratella cochlearis", "Filinia longispina", 
-                    "Gastropus stylifer", "Kellicottia sp.", 
-                    "Keratella testudo", "Ploesoma sp.", 
-                    "Polyarthra vulgaris", "Trichocerca multicrinis", 
-                    "Trichocerca cylindrica", "Phoxinus eos", 
-                    "Phoxinus neogaeus", "Glenodinium quadridens", 
-                    "Cryptomonas sp. 2", "Dictyosphaerium pulchellum", 
-                    "Dinobryon sociale", "Peridinium pulsillum", 
-                    "Nostoc sp.", "Dinobryon cylindricum", 
-                    "Dactylococcopsis fascicularis", "Arthrodesmus sp.", 
-                    "Closteriopsis longissimus", "Mallomonas sp. 2", 
-                    "Dinobryon sertularia", "Mallomonas sp. 1", 
-                    "Peridinium cinctum", "Dinobryon bavaricum", 
-                    "Microcystis aeruginosa", "Peridinium limbatum", 
-                    "Peridinium wisconsinense", "Synedra sp.", 
-                    "Asterionella formosa", "Chrysosphaerella longispina", 
-                    "Diceras sp.", "Rhizosolenia sp.", "Spinocosmarium sp.", 
-                    "Staurastrum sp.") == 
-                  NP(OrderCommunity(TL84, 'Degree', decreasing=TRUE), 'node')))
+    AssertEqual(c('Asterionella formosa','Chrysosphaerella longispina',
+                  'Diceras sp.','Rhizosolenia sp.','Spinocosmarium sp.',
+                  'Staurastrum sp.','Dinobryon bavaricum',
+                  'Microcystis aeruginosa','Peridinium limbatum',
+                  'Peridinium wisconsinense','Synedra sp.',
+                  'Dinobryon sertularia','Mallomonas sp. 1',
+                  'Peridinium cinctum','Arthrodesmus sp.',
+                  'Closteriopsis longissimus','Mallomonas sp. 2','Nostoc sp.',
+                  'Dinobryon cylindricum','Dactylococcopsis fascicularis',
+                  'Cryptomonas sp. 2','Dictyosphaerium pulchellum',
+                  'Dinobryon sociale','Peridinium pulsillum',
+                  'Glenodinium quadridens','Filinia longispina',
+                  'Gastropus stylifer','Kellicottia sp.','Keratella testudo',
+                  'Ploesoma sp.','Polyarthra vulgaris',
+                  'Trichocerca multicrinis','Trichocerca cylindrica',
+                  'Phoxinus eos','Phoxinus neogaeus','Ascomorpha eucadis',
+                  'Synchaeta sp.','Conochilus (solitary)',
+                  'Conochiloides dossuarius','Keratella cochlearis',
+                  'Umbra limi','Bosmina longirostris','Cryptomonas sp. 1',
+                  'Chroococcus dispersus','Unclassified flagellates',
+                  'Chromulina sp.','Selenastrum minutum','Trachelomonas sp.',
+                  'Diaphanosoma leuchtenbergianum','Holopedium gibberum',
+                  'Orthocyclops modestus','Cyclops varians rubellus',
+                  'Leptodiaptomus siciloides','Tropocyclops prasinus',
+                  'Chaoborus punctipennis','Daphnia pulex'), 
+                unname(NP(OrderCommunity(TL84, 'Degree'), 'node')))
+    AssertEqual(c("Daphnia pulex", "Chaoborus punctipennis", 
+                  "Cyclops varians rubellus", "Leptodiaptomus siciloides", 
+                  "Tropocyclops prasinus", "Holopedium gibberum", 
+                  "Orthocyclops modestus", "Cryptomonas sp. 1",           
+                  "Chroococcus dispersus", "Unclassified flagellates", 
+                  "Chromulina sp.", "Selenastrum minutum", 
+                  "Trachelomonas sp.", "Diaphanosoma leuchtenbergianum", 
+                  "Bosmina longirostris", "Umbra limi",       
+                  "Ascomorpha eucadis", "Synchaeta sp.", 
+                  "Conochilus (solitary)", "Conochiloides dossuarius", 
+                  "Keratella cochlearis", "Filinia longispina", 
+                  "Gastropus stylifer", "Kellicottia sp.", 
+                  "Keratella testudo", "Ploesoma sp.", 
+                  "Polyarthra vulgaris", "Trichocerca multicrinis", 
+                  "Trichocerca cylindrica", "Phoxinus eos", 
+                  "Phoxinus neogaeus", "Glenodinium quadridens", 
+                  "Cryptomonas sp. 2", "Dictyosphaerium pulchellum", 
+                  "Dinobryon sociale", "Peridinium pulsillum", 
+                  "Nostoc sp.", "Dinobryon cylindricum", 
+                  "Dactylococcopsis fascicularis", "Arthrodesmus sp.", 
+                  "Closteriopsis longissimus", "Mallomonas sp. 2", 
+                  "Dinobryon sertularia", "Mallomonas sp. 1", 
+                  "Peridinium cinctum", "Dinobryon bavaricum", 
+                  "Microcystis aeruginosa", "Peridinium limbatum", 
+                  "Peridinium wisconsinense", "Synedra sp.", 
+                  "Asterionella formosa", "Chrysosphaerella longispina", 
+                  "Diceras sp.", "Rhizosolenia sp.", "Spinocosmarium sp.", 
+                  "Staurastrum sp."), 
+                unname(NP(OrderCommunity(TL84, 'Degree', decreasing=TRUE), 'node')))
 }
 
 TestNumberOfNodesByClass <- function()
 {
-    stopifnot(NumberOfNodesByClass(TL84) == 
-              c(invertebrate=22, producer=31, vert.ecto=3))
-    stopifnot(NumberOfNodesByClass(BroadstoneStream) == 
-              c('<unnamed>'=2, invertebrate=34, producer=1))
+    AssertEqual(c(invertebrate=22, producer=31, vert.ecto=3), 
+                NumberOfNodesByClass(TL84))
+    AssertEqual(c('<unnamed>'=2, invertebrate=34, producer=1), 
+                NumberOfNodesByClass(BroadstoneStream))
 }
 
 FractionOfNodesByClass <- function()
 {
-    stopifnot(all.equal(FractionOfNodesByClass(TL84), 
-                        c(invertebrate=0.39285714285714284921, 
-                          producer=0.55357142857142860315, 
-                          vert.ecto=0.05357142857142856845)))
+    AssertEqual(c(invertebrate=0.39285714285714284921, 
+                  producer=0.55357142857142860315, 
+                  vert.ecto=0.05357142857142856845), 
+                FractionOfNodesByClass(TL84))
 }
-
