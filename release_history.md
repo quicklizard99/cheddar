@@ -1,9 +1,19 @@
 #  Cheddar release history
 
+## 0.1-622 Released 2013-03-19
+**Available on CRAN**
+
+#### Improvements
+* [Issue 21](https://github.com/quicklizard99/cheddar/issues/21)
+  Some units tests are testing equality of computed values
+
+#  Cheddar release history
+
 ## 0.1-621 Released 2013-03-09
 
 #### Improvements
-* [Issue 15](https://github.com/quicklizard99/cheddar/issues/21)
+* A first attempt at fixing 
+  [Issue 21](https://github.com/quicklizard99/cheddar/issues/21)
   Some units tests are testing equality of computed values
 
 ## 0.1-620 Released 2013-01-22
