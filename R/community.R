@@ -149,6 +149,13 @@ Community <- function(nodes, properties, trophic.links=NULL)
     CheckDF(data.frame(properties, check.names=FALSE), 'properties', 
              c(reserved.tl.names, reserved.node.names))
 
+    # Title should be present. Must do this check before putting title first.
+    if(is.null(properties$title) || ''==properties$title)
+    {
+        stop(paste("The 'properties' parameter must contain a character", 
+                   "named 'title'"))
+    }
+
     # Put title first.
     # WARNING: Must do this after the call to CheckDF() because it has the 
     # effect of removing duplicated 'title'
@@ -227,13 +234,6 @@ Community <- function(nodes, properties, trophic.links=NULL)
 
         # rowtitles are processed node names
         rownames(nodes) <- nodes$node
-    }
-
-    # Validation
-    if(is.null(properties$title) || ''==properties$title)
-    {
-        stop(paste("The 'properties' parameter must contain a character", 
-                   "named 'title'"))
     }
 
     # Check M

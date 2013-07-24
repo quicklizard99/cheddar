@@ -70,6 +70,10 @@ TestCommunityBasic <- function()
     AssertRaises(Community(nodes=data.frame(node=LETTERS, consumer=LETTERS), 
                 properties=list(title='test')))
 
+    # Illegal properties
+    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
+                properties=list(title='test')))
+
     # Factors should be converted to strings
     community <- Community(nodes=data.frame(node=LETTERS, np=letters,
                                             stringsAsFactors=TRUE), 
@@ -114,6 +118,12 @@ TestCommunityProperties <- function()
     # Properties does not include title
     AssertRaises(Community(nodes=data.frame(node='S'), 
                            properties=list(xyz='test')))
+
+    # Title in not in lowercase
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(Title='test')))
+    AssertRaises(Community(nodes=data.frame(node='S'), 
+                           properties=list(TITLE='test')))
 
     # title duplicated
     AssertRaises(Community(nodes=data.frame(node='S'), 
