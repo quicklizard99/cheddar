@@ -334,7 +334,7 @@ how they broke cycles. Because Cheddar is open source, users can refer readers
 to the function and version used to completely specify the algorithm used.
 
 \code{NPS} returns \code{NA} for any names that are neither a first-class 
-properties nor the name of a function.
+property of the community nor the name of a function.
 <<>>=
 head(NPS(TL84, c('Not a property or function')))
 @
