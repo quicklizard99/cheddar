@@ -48,8 +48,12 @@
     network <- .ResolveToNodeIndices(community, network)
     dim(network) <- c(length(network)/2, 2)
 
-    .PlotNetwork(x, y, network, link.col, link.lty, link.lwd, 
-                 highlight.links, ...)
+    # Strip out the names that we are using
+    args <- list(x=x, y=y, network=network, col=link.col, lty=link.lty, 
+                 lwd=link.lwd, highlight=highlight.links)
+    dots <- list(...)
+    args <- c(args, dots[setdiff(names(dots), names(args))])
+    do.call(.PlotNetwork, args)
 }
 
 .PlotNodes <- function(community, x, y, 
