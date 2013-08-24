@@ -7,8 +7,6 @@
 * [Issue 21](https://github.com/quicklizard99/cheddar/issues/21)
   Some units tests are testing equality of computed values
 
-#  Cheddar release history
-
 ## 0.1-621 Released 2013-03-09
 
 #### Improvements
