@@ -386,7 +386,7 @@ NvMTriTrophicStatistics <- function(community)
 NvMConvexHull <- function(community)
 {
     if(!is.Community(community)) stop('Not a Community')
-    cheddar:::.RequireM(community)
-    cheddar:::.RequireN(community)
+    .RequireM(community)
+    .RequireN(community)
     return (.ConvexHull(community, Log10M(community), Log10N(community)))
 }
