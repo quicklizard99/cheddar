@@ -70,10 +70,6 @@ TestCommunityBasic <- function()
     AssertRaises(Community(nodes=data.frame(node=LETTERS, consumer=LETTERS), 
                 properties=list(title='test')))
 
-    # Illegal properties
-    AssertRaises(Community(nodes=data.frame(node=LETTERS), 
-                properties=list(title='test')))
-
     # Factors should be converted to strings
     community <- Community(nodes=data.frame(node=LETTERS, np=letters,
                                             stringsAsFactors=TRUE), 
