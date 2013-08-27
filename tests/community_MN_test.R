@@ -439,21 +439,20 @@ TestNvMConvexHull <- function()
     AssertEqual(0.5, cheddar:::.PolygonArea(c(0, 1, 0.5, 0), c(0, 0, 1, 0)))
     AssertEqual(1, cheddar:::.PolygonArea(c(0, 1, 1, 0, 0), c(0, 0, 1, 1, 0)))
     res <- NvMConvexHull(TL84)
-    AssertEqual(c('Phoxinus neogaeus','Keratella testudo',
-                  'Chromulina sp.','Unclassified flagellates',
-                  'Chrysosphaerella longispina',
-                  'Chaoborus punctipennis','Phoxinus eos',
-                  'Umbra limi'), 
-                res$nodes)
+    # Can't guarantee in ordering of points on the hull
+    nodes <- c('Chaoborus punctipennis','Chromulina sp.',
+               'Chrysosphaerella longispina','Keratella testudo','Phoxinus eos',
+               'Phoxinus neogaeus','Umbra limi','Unclassified flagellates')
+    AssertEqual(nodes, sort(res$nodes))
     AssertEqual(30.68266, round(res$area, 5))
-    AssertEqual(matrix(c( -2.931814, -0.8761484,
-                         -11.000000,  3.7781513,
+    AssertEqual(matrix(c( -6.522879,  4.0791812,
                          -13.518557,  8.1731863,
-                         -12.460924,  9.2741578,
                           -9.080399,  6.6020600,
-                          -6.522879,  4.0791812,
+                         -11.000000,  3.7781513,
                           -2.995679,  0.2944662,
-                          -2.889410, -0.8794261), byrow=TRUE, ncol=2), 
-                unname(round(res$points, 7)), 
+                          -2.931814, -0.8761484,
+                          -2.889410, -0.8794261,
+                         -12.460924,  9.2741578), byrow=TRUE, ncol=2), 
+                unname(round(res$points[nodes,], 7)), 
                 tolerance=1e-7)
 }

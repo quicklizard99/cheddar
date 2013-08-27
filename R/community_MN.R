@@ -374,7 +374,6 @@ NvMTriTrophicStatistics <- function(community)
 .ConvexHull <- function(community, x, y)
 {
     p <- cbind(x, y)
-    rownames(p) <- NULL
     p <- p[!is.na(p[,1]) & !is.na(p[,2]),]
     hull <- chull(p)
 
