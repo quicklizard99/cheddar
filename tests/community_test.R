@@ -578,7 +578,7 @@ TestRemoveNodes <- function()
     AssertEqual(c1, RemoveNodes(c1, NULL))
     AssertEqual(c1, RemoveNodes(c1, vector(mode='character')))
 
-    AssertEqual(RemoveNodes(c3, 'R', title='c3'), 
+    AssertEqual(RemoveNodes(c3, 1, title='c3'), 
                 RemoveNodes(c3, 'R', title='c3'))
     AssertEqual(c(C='C'), NP(RemoveNodes(c3, 1),'node'))
     AssertEqual(NULL, TLPS(RemoveNodes(c3, 1)))
@@ -604,6 +604,27 @@ TestRemoveNodes <- function()
 
     TL84r <- RemoveNodes(TL84, c('Nostoc sp.', 'Umbra limi'))
     AssertEqual(NPS(TL84)[-c(1,56),],NPS(TL84r))
+
+    # Test cascade
+    AssertRaises(RemoveNodes(c3, 'R', secondary=TRUE))
+    AssertEqual(c(P='P'), NP(RemoveNodes(c4, 'R', secondary=TRUE), 'node'))
+    AssertRaises(RemoveNodes(c4, 'R', secondary=TRUE, cascade=TRUE))
+    AssertEqual(c(O='O'), NP(RemoveNodes(c5, 'R', secondary=TRUE), 'node'))
+    AssertRaises(RemoveNodes(c5, 'R', secondary=TRUE, cascade=TRUE))
+    AssertEqual(c(R='R', O='O'), NP(RemoveNodes(c5, 'C', secondary=TRUE), 'node'))
+    AssertEqual(c(R='R', C='C'), NP(RemoveNodes(c5, 'O', secondary=TRUE), 'node'))
+    AssertEqual(c(C='C', D='D', E='E'), 
+                NP(RemoveNodes(c7, 'A', secondary=TRUE), 'node'))
+    AssertEqual(c(D='D', E='E'), 
+                NP(RemoveNodes(c7, 'A', secondary=TRUE, cascade=TRUE), 'node'))
+    AssertEqual(c(A='A', D='D', E='E'), 
+                NP(RemoveNodes(c7, 'B', secondary=TRUE), 'node'))
+    AssertEqual(c(A='A', B='B', D='D', E='E'), 
+                NP(RemoveNodes(c7, 'C', secondary=TRUE), 'node'))
+    AssertEqual(c(A='A', B='B', C='C', E='E'), 
+                NP(RemoveNodes(c7, 'D', secondary=TRUE), 'node'))
+    AssertEqual(c(A='A', B='B', C='C', D='D'), 
+                NP(RemoveNodes(c7, 'E', secondary=TRUE), 'node'))
 }
 
 TestRemoveIsolatedNodes <- function()

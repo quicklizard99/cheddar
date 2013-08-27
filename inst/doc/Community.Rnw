@@ -810,7 +810,18 @@ NumberOfNodes(TL84.r)
 NumberOfTrophicLinks(TL84.r)
 
 # Remove species by name
-TL84.r <- RemoveNodes(TL84, c("Phoxinus eos","Phoxinus neogaeus","Umbra limi"))
+to.remove <- c("Cryptomonas sp. 1", "Chroococcus dispersus", 
+               "Unclassified flagellates", "Chromulina sp.", 
+               "Selenastrum minutum", "Trachelomonas sp.")
+TL84.r <- RemoveNodes(TL84, to.remove)
+NumberOfNodes(TL84.r)
+NumberOfTrophicLinks(TL84.r)
+
+TL84.r <- RemoveNodes(TL84, to.remove, secondary=TRUE)
+NumberOfNodes(TL84.r)
+NumberOfTrophicLinks(TL84.r)
+
+TL84.r <- RemoveNodes(TL84, to.remove, secondary=TRUE, cascade=TRUE)
 NumberOfNodes(TL84.r)
 NumberOfTrophicLinks(TL84.r)
 @
