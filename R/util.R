@@ -94,20 +94,14 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
 PredationMatrixToLinks <- function(pm)
 {
     # Returns a data.frame containing columns resource and consumer. 
-    # pm should be a matrix or data.frame containing 0 or 1. 
-    # 1 indicates a trophic link between a consumer (column) and a resource 
-    # (row). 
+    # pm should be a matrix or data.frame containing. Non-zero values indicate 
+    # a trophic link between a consumer (column) and a resource (row).
 
-    # The same names must appear in both rows and cols but need not be sorted 
-    # the same, i.e. all(sort(colnames) == sort(rownames)) should be TRUE.
+    # TODO Extract property from pm
+
     if(2!=length(dim(pm)))
     {
         stop('pm is not a matrix')
-    }
-
-    if(any(is.na(pm) | (pm!=0 & pm!=1)))
-    {
-        stop('pm contains some values that are not 0 or 1')
     }
 
     # Check names
@@ -116,16 +110,13 @@ PredationMatrixToLinks <- function(pm)
         stop('pm is missing either rownames or colnames')
     }
 
-    resource <- which(pm>0) %% nrow(pm)
-    consumer <- 1+(which(pm>0) %/% nrow(pm))
+    resource <- which(pm!=0 & !is.na(pm)) %% nrow(pm)
+    consumer <- 1+(which(pm!=0 & !is.na(pm)) %/% nrow(pm))
 
     # Fix the last row
     last.row <- which(resource==0)
     consumer[last.row] <- consumer[last.row]-1
     resource[last.row] <- nrow(pm)
-
-    names(resource) <- NULL
-    names(consumer) <- NULL
 
     return (data.frame(resource=rownames(pm)[resource], 
                        consumer=colnames(pm)[consumer], 
@@ -278,16 +269,9 @@ PredationMatrixToLinks <- function(pm)
     # values should be a list like those returned by ConsumersByNode() and 
     # ResourcesByNode().
 
-    # The returned matrix will have NumberOfNodes() rows in which first col is 
-    # number of consumers (resources) of that node and subsequent cols are ids 
-    # of consumers (resource). Elements are 0-indexed node indices.
-    # Returns an adjacency list. 
-    # values should be a list like those returned by ConsumersByNode() and 
-    # ResourcesByNode().
-
-    # The returned matrix will have NumberOfNodes() rows in which first col is 
-    # number of consumers (resources) of that node and subsequent cols are ids 
-    # of consumers (resource).
+    # The returned matrix will have NumberOfNodes() rows in which first col 
+    # contains the number of consumers (resources) of that node and subsequent 
+    # cols contains the zero-indexed indices of the consumers (resource).
     values <- lapply(values, NodeNameIndices, community=community)
     values <- lapply(values, unname)
     a <- matrix(NA, nrow=NumberOfNodes(community), 

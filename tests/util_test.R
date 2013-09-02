@@ -26,6 +26,24 @@ TestPredationMatrixToLinks <- function()
     t2 <- TLPS(TL84)[,c('resource', 'consumer')]
     AssertEqual(t1, t2)
 
+    # Logical values
+    m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
+    m[1,1] <- m[10,10] <- TRUE
+    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+                PredationMatrixToLinks(m))
+
+    # NA
+    m <- matrix(NA, ncol=10, nrow=10, dimnames=list(n,n))
+    m[1,1] <- m[10,10] <- TRUE
+    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+                PredationMatrixToLinks(m))
+
+    # Values other than 1
+    m <- matrix(NA, ncol=10, nrow=10, dimnames=list(n,n))
+    m[1,1] <- m[10,10] <- -10
+    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+                PredationMatrixToLinks(m))
+
     # Non-square matrices
     m <- matrix(0, ncol=3, nrow=2)
     colnames(m) <- letters[1:3]
@@ -45,12 +63,6 @@ TestPredationMatrixToLinks <- function()
     AssertRaises(PredationMatrixToLinks(NA))
     AssertRaises(PredationMatrixToLinks(1:10))
     AssertRaises(PredationMatrixToLinks(NA))
-
-    # Illegal values
-    m <- matrix(-1, ncol=10, nrow=10, dimnames=list(n,n))
-    AssertRaises(PredationMatrixToLinks(m))
-    m <- matrix(NA, ncol=10, nrow=10, dimnames=list(n,n))
-    AssertRaises(PredationMatrixToLinks(m))
 
     # No names
     AssertRaises(PredationMatrixToLinks(matrix(0, ncol=10, nrow=10)))

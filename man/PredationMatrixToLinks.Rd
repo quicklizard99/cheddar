@@ -9,14 +9,13 @@ PredationMatrixToLinks(pm)
 }
 
 \arguments{
-  \item{pm}{a \code{matrix} or \code{data.frame} whose elements are either 0 
-    or 1.}
+  \item{pm}{a \code{matrix} or \code{data.frame}.}
 }
 
 \details{Returns a \code{data.frame} of trophic links contained within
-\code{pm}. A 1 indicates a trophic link between a resource (row) and consumer 
-(column). \code{pm} should have both row names and column names. The returned 
-\code{data.frame} contains the columns `resource' and `consumer'.
+\code{pm}. Non-zero and non-code{NA} values indicate a trophic link between 
+a resource (row) and consumer (column). \code{pm} should have both row names 
+and column names. The returned \code{data.frame} contains the columns `resource' and `consumer'.
 
 If you have existing food-web data in predation-matrix form then this function 
 can help to import your data in to Cheddar.
