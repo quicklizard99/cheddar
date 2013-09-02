@@ -98,7 +98,7 @@
 PredationMatrix <- function(community, weight=NULL)
 {
     # Returns a predation matrix. Columns and rows are named by node. 
-    # Columns are consumers, rows are resource. If weight is NULL, elements 
+    # Columns are consumers, rows are resources. If weight is NULL, elements 
     # will be either 0 (no trophic link) or 1 (trophic link).
     # If not NULL, weight should be the names of a link property; non-zero 
     # elements of the matrix will contain the value of the weight property.
@@ -111,8 +111,8 @@ PredationMatrix <- function(community, weight=NULL)
     # Create predation matrix
     # Casts to as.integer keep pm as a matrix of integer rather than 
     # numeric, which I think what we want.
-    pm <- matrix(as.integer(0), ncol=n.nodes, nrow=n.nodes)
-    colnames(pm) <- rownames(pm) <- np$node
+    pm <- matrix(as.integer(0), ncol=n.nodes, nrow=n.nodes, 
+                 dimnames=list(np$node, np$node))
 
     if(!is.null(tlp))
     {
@@ -120,12 +120,16 @@ PredationMatrix <- function(community, weight=NULL)
         stopifnot(all(tlp$consumer %in% np$node))
 
         # Get numerical indices of resources and consumers
-        res <- sapply(tlp$resource, function(n) return (which(n==np$node)))
-        con <- sapply(tlp$consumer, function(n) return (which(n==np$node)))
+        decode <- 1:nrow(np)
+        names(decode) <- np$node
+        res <- decode[tlp$resource]
+        con <- decode[tlp$consumer]
 
-        pm[res + n.nodes * (con-1)] <- as.integer(1)
-
-        if(!is.null(weight))
+        if(is.null(weight))
+        {
+            pm[res + n.nodes * (con-1)] <- as.integer(1)
+        }
+        else
         {
             pm[res + n.nodes * (con-1)] <- tlp[,weight]
         }
