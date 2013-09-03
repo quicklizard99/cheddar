@@ -44,20 +44,42 @@ TestPredationMatrixToLinks <- function()
     AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
                 PredationMatrixToLinks(m))
 
-    # Non-square matrices
+    # A non-square matrix
     m <- matrix(0, ncol=3, nrow=2)
     colnames(m) <- letters[1:3]
     rownames(m) <- letters[4:5]
-    m[1,2] <- m[2,3] <- m[,1] <- 1
-    AssertEqual(data.frame(resource=c('d','e','d','e'), 
-                           consumer=c('a','a','b','c')), 
+    m[1,1] <- 0.3
+    m[2,1] <- 0.7
+    m[1,2] <- 1
+    m[1,3] <- 0.1
+    m[2,3] <- 0.9
+    AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
+                           consumer=c('a','a','b','c','c')), 
                 PredationMatrixToLinks(m))
 
-    # data.frame as input
-    m <- data.frame(a=c(1,1), b=c(1,0), c=c(0,1), row.names=c('d', 'e'))
-    AssertEqual(data.frame(resource=c('d','e','d','e'), 
-                           consumer=c('a','a','b','c')), 
+    # The same non-square matrix with the link property extracted
+    AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
+                           consumer=c('a','a','b','c','c'), 
+                           diet.fraction=c(0.3,0.7,1,0.1,0.9)), 
+                PredationMatrixToLinks(m, link.property='diet.fraction'))
+
+    # A data.frame as input
+    m <- data.frame(a=c(1,1), b=c(1,0), c=c(1,1), row.names=c('d', 'e'))
+    AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
+                           consumer=c('a','a','b','c','c')), 
                 PredationMatrixToLinks(m))
+
+    # A data.frame with a link property
+    m <- data.frame(a=c(0.3,0.7), b=c(1,0), c=c(0.1,0.9), row.names=c('d', 'e'))
+    AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
+                           consumer=c('a','a','b','c','c')), 
+                PredationMatrixToLinks(m))
+
+    # The same data.frame with the link property extracted
+    AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
+                           consumer=c('a','a','b','c','c'), 
+                           diet.fraction=c(0.3,0.7,1,0.1,0.9)), 
+                PredationMatrixToLinks(m, link.property='diet.fraction'))
 
     # Not a matrix
     AssertRaises(PredationMatrixToLinks(NA))

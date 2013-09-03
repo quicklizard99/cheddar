@@ -91,13 +91,12 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     return (res)
 }
 
-PredationMatrixToLinks <- function(pm)
+PredationMatrixToLinks <- function(pm, link.property=NULL)
 {
     # Returns a data.frame containing columns resource and consumer. 
     # pm should be a matrix or data.frame containing. Non-zero values indicate 
     # a trophic link between a consumer (column) and a resource (row).
-
-    # TODO Extract property from pm
+    # If property is non-NULL then 
 
     if(2!=length(dim(pm)))
     {
@@ -118,9 +117,16 @@ PredationMatrixToLinks <- function(pm)
     consumer[last.row] <- consumer[last.row]-1
     resource[last.row] <- nrow(pm)
 
-    return (data.frame(resource=rownames(pm)[resource], 
-                       consumer=colnames(pm)[consumer], 
-                       stringsAsFactors=FALSE))
+    df <- data.frame(resource=rownames(pm)[resource], 
+                     consumer=colnames(pm)[consumer], 
+                     stringsAsFactors=FALSE)
+
+    if(!is.null(link.property))
+    {
+        df <- cbind(df, pm[pm!=0 & !is.na(pm)])
+        colnames(df) <- c('resource', 'consumer', link.property)
+    }
+    return (df)
 }
 
 .CallAssemblePropertiesFunction <- function(f, expected.size, args, 
