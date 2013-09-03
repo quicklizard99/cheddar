@@ -540,3 +540,18 @@ TestPersistCollection <- function()
         unlink(path, recursive=TRUE)
     }
 }
+
+TestSiteBySpeciesMatrix <- function()
+{
+    res <- SiteBySpeciesMatrix(Millstream)
+    AssertEqual(c(67,2), dim(res))
+    AssertEqual('Valvata piscinalis', rownames(res)[67])
+    AssertEqual(c(c4=1, d4=1), res[1,])
+    AssertEqual(c(c4=1, d4=0), res[67,])
+
+    res <- SiteBySpeciesMatrix(Millstream, abundance='M', na.missing=TRUE)
+    AssertEqual(c(67,2), dim(res))
+    AssertEqual('Valvata piscinalis', rownames(res)[67])
+    AssertEqual(c(c4=0.00000000000158818101, d4=0.00000000000158818101),res[1,])
+    AssertEqual(c(c4=7.18124923883473975650, d4=NA), res[67,])
+}
