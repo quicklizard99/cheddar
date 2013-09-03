@@ -605,26 +605,37 @@ TestRemoveNodes <- function()
     TL84r <- RemoveNodes(TL84, c('Nostoc sp.', 'Umbra limi'))
     AssertEqual(NPS(TL84)[-c(1,56),],NPS(TL84r))
 
-    # Test cascade
-    AssertRaises(RemoveNodes(c3, 'R', secondary=TRUE))
-    AssertEqual(c(P='P'), NP(RemoveNodes(c4, 'R', secondary=TRUE), 'node'))
-    AssertRaises(RemoveNodes(c4, 'R', secondary=TRUE, cascade=TRUE))
-    AssertEqual(c(O='O'), NP(RemoveNodes(c5, 'R', secondary=TRUE), 'node'))
-    AssertRaises(RemoveNodes(c5, 'R', secondary=TRUE, cascade=TRUE))
-    AssertEqual(c(R='R', O='O'), NP(RemoveNodes(c5, 'C', secondary=TRUE), 'node'))
-    AssertEqual(c(R='R', C='C'), NP(RemoveNodes(c5, 'O', secondary=TRUE), 'node'))
+    # Test secondary and cascade
+    AssertRaises(RemoveNodes(c3, 'R', method='secondary'))
+    AssertEqual(c(P='P'), NP(RemoveNodes(c4, 'R', method='secondary'), 'node'))
+    AssertRaises(RemoveNodes(c4, 'R', method='cascade'))
+    AssertEqual(c(O='O'), NP(RemoveNodes(c5, 'R', method='secondary'), 'node'))
+    AssertRaises(RemoveNodes(c5, 'R', method='cascade'))
+    AssertEqual(c(R='R', O='O'), NP(RemoveNodes(c5, 'C', method='secondary'), 'node'))
+    AssertEqual(c(R='R', C='C'), NP(RemoveNodes(c5, 'O', method='secondary'), 'node'))
     AssertEqual(c(C='C', D='D', E='E'), 
-                NP(RemoveNodes(c7, 'A', secondary=TRUE), 'node'))
+                NP(RemoveNodes(c7, 'A', method='secondary'), 'node'))
     AssertEqual(c(D='D', E='E'), 
-                NP(RemoveNodes(c7, 'A', secondary=TRUE, cascade=TRUE), 'node'))
+                NP(RemoveNodes(c7, 'A', method='cascade'), 'node'))
     AssertEqual(c(A='A', D='D', E='E'), 
-                NP(RemoveNodes(c7, 'B', secondary=TRUE), 'node'))
+                NP(RemoveNodes(c7, 'B', method='secondary'), 'node'))
     AssertEqual(c(A='A', B='B', D='D', E='E'), 
-                NP(RemoveNodes(c7, 'C', secondary=TRUE), 'node'))
+                NP(RemoveNodes(c7, 'C', method='secondary'), 'node'))
     AssertEqual(c(A='A', B='B', C='C', E='E'), 
-                NP(RemoveNodes(c7, 'D', secondary=TRUE), 'node'))
+                NP(RemoveNodes(c7, 'D', method='secondary'), 'node'))
     AssertEqual(c(A='A', B='B', C='C', D='D'), 
-                NP(RemoveNodes(c7, 'E', secondary=TRUE), 'node'))
+                NP(RemoveNodes(c7, 'E', method='secondary'), 'node'))
+
+    # 56 - 25 = 31 nodes remain
+    AssertEqual(56, NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84))))
+    AssertEqual(13, 
+        NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84), method='secondary')))
+    cascaded <- NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84), method='cascade'))
+    AssertEqual(6, cascaded)
+    isolated <- c('Asterionella formosa','Chrysosphaerella longispina',
+                  'Diceras sp.', 'Rhizosolenia sp.', 'Spinocosmarium sp.',
+                  'Staurastrum sp.')
+    AssertEqual(isolated, IsolatedNodes(TL84))
 }
 
 TestRemoveIsolatedNodes <- function()

@@ -759,17 +759,20 @@ NumberOfNodes <- function(community)
     return (nrow(NPS(community)))
 }
 
-RemoveNodes <- function(community, remove, title=NULL, secondary=FALSE, 
-                        cascade=FALSE)
+RemoveNodes <- function(community, remove, title=NULL, 
+                        method=c('direct','secondary','cascade'))
 {
     # Returns a new community which is community with the given nodes removed.
-    # If secondary is TRUE, secondarily extinct nodes are removed.
-    # If secondary and cascade are both TRUE, extinctions are propogated
+    # If method is 'direct', only the nodes in remove are removed.
+    # If method is 'secondary', secondarily extinct nodes are removed.
+    # If method is 'cascade', extinctions are propogated upwards.
     if(!is.Community(community)) stop('Not a Community')
     if(is.null(remove) || 0==length(remove))
     {
         return (community)
     }
+    method <- match.arg(method)
+
     np <- NPS(community)
 
     if(is.logical(remove))
@@ -789,8 +792,17 @@ RemoveNodes <- function(community, remove, title=NULL, secondary=FALSE,
 
     if(is.null(title))
     {
-        title <- paste(CP(community, 'title'),  ' (', 
-                       paste(remove, collapse=', '), ' removed)', sep='')
+        if(length(remove)>4)
+        {
+            remove.string <- paste(length(remove), 'nodes')
+        }
+        else
+        {
+            remove.string <- paste(remove, collapse=', ')
+        }
+
+        title <- paste(CP(community, 'title'),  ' (', remove.string, 
+                       ' directly removed)', sep='')
     }
 
     new.nodes <- np[-NodeNameIndices(community, remove),,drop=FALSE]
@@ -814,7 +826,7 @@ RemoveNodes <- function(community, remove, title=NULL, secondary=FALSE,
 
     new.community <- Community(nodes=new.nodes, trophic.links=new.trophic.links,
                                properties=new.properties)
-    if(secondary)
+    if(method %in% c('secondary', 'cascade'))
     {
         # Remove consumers of 'remove' that are now basal, isolated or consume 
         # only other consumers of 'remove'
@@ -831,8 +843,7 @@ RemoveNodes <- function(community, remove, title=NULL, secondary=FALSE,
 
         s <- sort(s)
         return (RemoveNodes(new.community, s, title=title, 
-                            secondary=ifelse(cascade, TRUE, FALSE), 
-                            cascade=cascade))
+                         method=ifelse('cascade'==method, 'cascade', 'direct')))
     }
     else
     {
