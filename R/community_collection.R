@@ -489,3 +489,30 @@ CollectionApply <- function(collection, f, ...)
     return(CommunityCollection(lapply(collection, f, ...)))
 }
 
+SiteBySpeciesMatrix <- function(collection, abundance=NULL, na.missing=FALSE)
+{
+    # Returns a matrix with a column per community and a row per unique node 
+    # within all communities in the collection.
+    if (!is.CommunityCollection(collection)) 
+        stop("Not a CommunityCollection")
+    # The names of all nodes in the collection
+    cps <- CollectionNPS(collection, c('node', abundance))
+    nodes <- sort(unique(unname(cps[,'node'])))
+
+    res <- matrix(ifelse(na.missing, NA, 0), 
+                  ncol=length(collection), nrow=length(nodes), 
+                  dimnames=list(nodes, names(collection)))
+
+    decode.node <- 1:length(nodes)
+    names(decode.node) <- nodes
+
+    decode.site <- 1:length(collection)
+    names(decode.site) <- names(collection)
+
+    indices <- decode.node[cps$node] + 
+               length(nodes)*(decode.site[cps$community]-1)
+    if(is.null(abundance)) res[indices] <- 1
+    else                   res[indices] <- cps[,abundance]
+
+    return (res)
+}
