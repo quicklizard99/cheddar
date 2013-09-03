@@ -27,10 +27,7 @@
 # community in a collection - CollectionLike?
 
 # TODO More structural models
-# Cascade
-# Cohen, J. E., and C. M. Newman. 1985. A stochastic theory of community food 
-# webs. I. Models and aggregated data. Proceedings of the Royal Society of 
-# London Series B 224:421–448.
+
 
 # Generalized cascade model
 # Stouffer DB, Camacho J, Guimera` R, Ng CA, Amaral LAN (2005) Ecology 
@@ -80,17 +77,64 @@ RandomLinks <- function(pool, n, C=0.15)
     return (lapply(rows, function(r) possible[r,]))
 }
 
-NicheModelLinks1 <- function(pool, n, C=0.15, niche.positions=NULL, 
+CascadeModelLinks <- function(pool, n, C=0.15)
+{
+    # Cascade model of Cohen, J. E., and C. M. Newman. 1985. A stochastic 
+    # theory of community food webs. I. Models and aggregated data. Proceedings 
+    # of the Royal Society of London Series B 224:421–448.
+    stopifnot(0<C && C<1)
+    stopifnot(0<length(pool))
+    stopifnot(length(pool)==length(unique(pool)))
+    stopifnot(0<n)
+    S <- length(pool)
+
+    possible <- data.frame(resource=pool, consumer=rep(pool, each=S), 
+                           stringsAsFactors=FALSE)
+
+    # A matrix of S x S  - TRUE if that link is possible
+    p <- matrix(FALSE, ncol=S,  nrow=S)
+
+    # Only links in the upper triangle are possible
+    p[upper.tri(p)] <- TRUE
+
+    link.possible <- which(p)
+
+    # The number of possible links
+    n.possible <- length(link.possible)
+
+    res <- vector("list", n)    # Container for output
+    for(index in 1:n)
+    {
+        pm <- p
+        pm[link.possible] <- 2*C*S/(S-1)>runif(n.possible)
+        if(any(pm[link.possible]>0))
+        {
+            res[[index]] <- possible[which(pm>0),]
+        }
+        else
+        {
+            # No links - nothing to do
+        }
+    }
+    return (res)
+}
+
+.NicheModelLinks1 <- function(pool, n, C=0.15, niche.positions=NULL, 
                             probabilistic=FALSE)
 {
     # First idea - generate values per web
+
+    # Niche model of Williams, R.J. and Martinez, N.D. (2000) Nature 404, 6447, 
+    # 180--183.
+    # Probabilistic niche model of Williams, R.J. and Anandanadesan, A. and 
+    # Purves, D.W. (2010) PLoS One 5, 8, e12092.
 
     # Returns a list of n webs generated using the niche model
     # pool - node names
     # n - number of webs
     # C - directed connectance
     # niche.positions - either NULL or length(pool) real numbers between 0 and 1
-    stopifnot(0<C && C<1)
+    stopifnot(0<C && C<0.5)
     stopifnot(0<length(pool))
     stopifnot(length(pool)==length(unique(pool)))
     stopifnot(0<n)
@@ -134,23 +178,31 @@ NicheModelLinks1 <- function(pool, n, C=0.15, niche.positions=NULL,
                   outer(niche.positions, c+r/2, '<=')
         }
 
-        res[[index]] <- possible[which(pm),]
+        if(any(pm))
+        {
+            res[[index]] <- possible[which(pm),]
+        }
     }
 
     return (res)
 }
 
-NicheModelLinks2 <- function(pool, n, C=0.15, niche.positions=NULL, 
+.NicheModelLinks2 <- function(pool, n, C=0.15, niche.positions=NULL, 
                             probabilistic=FALSE)
 {
     # Second idea - generate all values up front
+
+    # Niche model of Williams, R.J. and Martinez, N.D. (2000) Nature 404, 6447, 
+    # 180--183.
+    # Probabilistic niche model of Williams, R.J. and Anandanadesan, A. and 
+    # Purves, D.W. (2010) PLoS One 5, 8, e12092.
 
     # Returns a list of n webs generated using the niche model
     # pool - node names
     # n - number of webs
     # C - directed connectance
     # niche.positions - either NULL or length(pool) real numbers between 0 and 1
-    stopifnot(0<C && C<1)
+    stopifnot(0<C && C<0.5)
     stopifnot(0<length(pool))
     stopifnot(length(pool)==length(unique(pool)))
     stopifnot(0<n)
@@ -214,7 +266,7 @@ NicheModelLinks2 <- function(pool, n, C=0.15, niche.positions=NULL,
     return (return (lapply(1:n, fn)))
 }
 
-NicheModelLinks <- NicheModelLinks2
+NicheModelLinks <- .NicheModelLinks2
 
 CommunityFactory <- function(S, node=paste('Node', 1:S), 
                              generator=NicheModelLinks, n=1, accept=NULL, 

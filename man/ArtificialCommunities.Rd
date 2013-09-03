@@ -4,6 +4,7 @@
 \alias{CommunitiesLike}
 \alias{NicheModelLinks}
 \alias{RandomLinks}
+\alias{CascadeModelLinks}
 \title{Artificial communities}
 \description{Functions for creating artificial communities.}
 
@@ -15,6 +16,7 @@ CommunityFactory(S, node=paste('Node', 1:S), generator = NicheModelLinks,
 CommunitiesLike(community, ...)
 
 RandomLinks(pool, n, C = 0.15)
+CascadeModelLinks(pool, n, C = 0.15)
 NicheModelLinks(pool, n, C = 0.15, niche.positions = NULL, 
                 probabilistic = FALSE)
 }
@@ -34,7 +36,8 @@ NicheModelLinks(pool, n, C = 0.15, niche.positions = NULL,
   \item{community}{an object of class \code{Community}.}
   \item{...}{other values to functions that create trophic links.}
   \item{pool}{character - the names of the nodes in the generated communities.}
-  \item{C}{numeric - the directed connectance of the generated communities.}
+  \item{C}{numeric - the target directed connectance of the generated 
+    communities.}
   \item{niche.positions}{numeric - each species' position on the niche axis; 
     must be of length \code{S} and $0<=niche.positions<=1$.}
   \item{probabilistic}{logical - if \code{TRUE} then links are generated using 
@@ -53,10 +56,17 @@ that are similar to an existing \code{Community}. The new communities will have
 the same number of nodes, the same node names and the same or a similar number 
 of trophic links, depending on how the trophic links are generated.
 
-\code{RandomLinks} returns a \code{data.frame} containing exaclty $CSS$ trophic 
-links. Each possible trophic link has an equal chance of being drawn.
+\code{RandomLinks} returns a \code{data.frame} containing exactly $CSS$ trophic 
+links. Each possible trophic link has an equal chance of being drawn. The 
+target directed connectance, \code{C}, must satisfy the condition $0<C<1$. 
+
+\code{CascadeModelLinks} implements the cascade model of Cohen and Newman. The 
+target directed connectance, \code{C}, must satisfy the condition $0<C<0.5$. 
+The cascade model is stochastic so the returned communities are not guaranteed 
+to contain exactly $CSS$ trophic links.
 
 \code{NicheModelLinks} implements the niche model of Williams and Martinez. 
+The target directed connectance, \code{C}, must satisfy the condition $0<C<0.5$. 
 The niche model is stochastic so the returned communities are not guaranteed 
 to contain exactly $CSS$ trophic links. If provided, \code{niche.positions} 
 gives the location of each node on the niche axis, defined by Williams and 
@@ -66,9 +76,9 @@ communities that are created. If \code{probabilistic} is \code{TRUE} then the
 links are generated using the probabilistic niche model described by Williams 
 et al 2010.
 
-You should never need to call \code{RandomLinks} or \code{NicheModelLinks} 
-directly - just pass them as arguments to \code{CommunityFactory} or 
-\code{CommunitiesLike}.
+You should never need to call \code{RandomLinks}, \code{CascadeModelLinks} or 
+\code{NicheModelLinks} directly - just pass them as arguments to 
+\code{CommunityFactory} or \code{CommunitiesLike}.
 
 TODO - writing your own trophic links functions
 }
@@ -81,10 +91,15 @@ TODO - writing your own trophic links functions
 containing columns `resource' and `consumer'.
 }
 
-\references{Williams, R.J. and Martinez, N.D. (2000) Nature \bold{404}, 6447, 
+\references{
+Cohen, J.E. and Newman, C.M. (1985) A stochastic theory of community food 
+webs. I. Models and aggregated data. Proceedings of the Royal Society of London 
+Series B \bold{224}, 421--448.
+
+Williams, R.J. and Martinez, N.D. (2000) Nature \bold{404}, 6447, 
 180--183.
 
-Williams, R.J. and Anandanadesan, A. and  Purves, D.W. (2010) PLoS One 
+Williams, R.J. and Anandanadesan, A. and Purves, D.W. (2010) PLoS One 
 \bold{5}, 8, e12092.
 }
 
