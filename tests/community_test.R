@@ -949,7 +949,7 @@ TestNumberOfNodesByClass <- function()
                 NumberOfNodesByClass(BroadstoneStream))
 }
 
-FractionOfNodesByClass <- function()
+TestFractionOfNodesByClass <- function()
 {
     AssertEqual(c(invertebrate=0.39285714285714284921, 
                   producer=0.55357142857142860315, 
