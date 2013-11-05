@@ -24,7 +24,7 @@
         links <- links[,c(1,2),drop=FALSE]
     }
 
-    node <- NP(community, 'node')
+    node <- unname(NP(community, 'node'))
 
     # Get resource and consumer as a node name
     f <- function(values)
@@ -98,7 +98,7 @@
 PredationMatrix <- function(community, weight=NULL)
 {
     # Returns a predation matrix. Columns and rows are named by node. 
-    # Columns are consumers, rows are resources. If weight is NULL, elements 
+    # Columns are consumers, rows are resource. If weight is NULL, elements 
     # will be either 0 (no trophic link) or 1 (trophic link).
     # If not NULL, weight should be the names of a link property; non-zero 
     # elements of the matrix will contain the value of the weight property.
@@ -111,8 +111,8 @@ PredationMatrix <- function(community, weight=NULL)
     # Create predation matrix
     # Casts to as.integer keep pm as a matrix of integer rather than 
     # numeric, which I think what we want.
-    pm <- matrix(as.integer(0), ncol=n.nodes, nrow=n.nodes, 
-                 dimnames=list(np$node, np$node))
+    pm <- matrix(as.integer(0), ncol=n.nodes, nrow=n.nodes)
+    colnames(pm) <- rownames(pm) <- np$node
 
     if(!is.null(tlp))
     {
@@ -120,16 +120,12 @@ PredationMatrix <- function(community, weight=NULL)
         stopifnot(all(tlp$consumer %in% np$node))
 
         # Get numerical indices of resources and consumers
-        decode <- 1:nrow(np)
-        names(decode) <- np$node
-        res <- decode[tlp$resource]
-        con <- decode[tlp$consumer]
+        res <- sapply(tlp$resource, function(n) return (which(n==np$node)))
+        con <- sapply(tlp$consumer, function(n) return (which(n==np$node)))
 
-        if(is.null(weight))
-        {
-            pm[res + n.nodes * (con-1)] <- as.integer(1)
-        }
-        else
+        pm[res + n.nodes * (con-1)] <- as.integer(1)
+
+        if(!is.null(weight))
         {
             pm[res + n.nodes * (con-1)] <- tlp[,weight]
         }
@@ -145,7 +141,7 @@ InDegree <- TrophicGenerality <- NumberOfResources <- function(community)
     if(is.null(tlps))
     {
         res <- rep(0, NumberOfNodes(community))
-        names(res) <- NP(community, 'node')
+        names(res) <- unname(NP(community, 'node'))
         return (res)
     }
     else
@@ -169,7 +165,7 @@ OutDegree <- TrophicVulnerability <- NumberOfConsumers <- function(community)
     if(is.null(tlps))
     {
         res <- rep(0, NumberOfNodes(community))
-        names(res) <- NP(community, 'node')
+        names(res) <- unname(NP(community, 'node'))
         return (res)
     }
     else
@@ -282,8 +278,8 @@ ConnectedNodes <- function(community)
 
 ResourcesByNode <- function(community)
 {
-    # A named list of length NumberOfNodes(). Each element is a vector 
-    # containing those node that are resources.
+    # A named list of length NumberOfNodes(). Elements are vectors containing 
+    # those nodes that are resources.
     tlps <- TLPS(community)
     if(is.null(tlps))
     {
@@ -318,8 +314,8 @@ ResourcesOfNodes <- function(community, nodes)
 
 ConsumersByNode <- function(community)
 {
-    # A named list of length NumberOfNodes(). Each element is a vector 
-    # containing those nodes that are consumers.
+    # A named list of length NumberOfNodes(). Elements are vectors containing 
+    # those nodes that are consumers.
     if(!is.Community(community)) stop('Not a Community')
 
     tlps <- TLPS(community)
@@ -351,6 +347,15 @@ ConsumersOfNodes <- function(community, nodes)
         # A list of consumers by node
         return (c[nodes])
     }
+}
+
+ResourcesAndConsumersByNode <- function(community)
+{
+    # A named list of length NumberOfNodes(). Elements are vectors containing 
+    # those nodes that are either resources or consumers.
+    rc <- mapply(c, ResourcesByNode(community), ConsumersByNode(community), 
+                 SIMPLIFY=FALSE)
+    return (lapply(rc, unique))
 }
 
 NumberOfTrophicLinks <- function(community)
@@ -406,7 +411,7 @@ IsCannibal <- function(community)
     if(is.null(tlps))
     {
         res <- rep(FALSE, NumberOfNodes(community))
-        names(res) <- NP(community, 'node')
+        names(res) <- unname(NP(community, 'node'))
         return (res)
     }
     else
@@ -420,6 +425,12 @@ Cannibals <- function(community)
 {
     # The names of those nodes which consume themselves
     return (names(which(IsCannibal(community))))
+}
+
+FractionCannibalistic <- function(community)
+{
+    n <- IsCannibal(community)
+    return (sum(n)/length(n))
 }
 
 .MatrixInversionTL <- function(community, weight.by, include.isolated)
@@ -445,7 +456,7 @@ Cannibals <- function(community)
     if(0==NumberOfTrophicLinks(community))
     {
         tl <- rep(NA, NumberOfNodes(community))
-        names(tl) <- NP(community, 'node')
+        names(tl) <- unname(NP(community, 'node'))
     }
     else
     {
@@ -705,7 +716,7 @@ TrophicSpecies <- function(community, include.isolated=TRUE)
 
     if(!is.Community(community)) stop('Not a Community')
     trophic.species = rep(NA, NumberOfNodes(community))
-    names(trophic.species) <- NP(community, 'node')
+    names(trophic.species) <- unname(NP(community, 'node'))
 
     remaining <- 1:NumberOfNodes(community)
 
@@ -759,7 +770,7 @@ TrophicLinksForNodes <- function(community, nodes, node.properties=NULL,
               all(0<nodes & nodes<=NumberOfNodes(community)))
     if(!is.character(nodes))
     {
-        nodes <- NP(community, 'node')[nodes]
+        nodes <- unname(NP(community, 'node')[nodes])
     }
 
     tlp <- TLPS(community, node.properties=node.properties, 
@@ -1127,12 +1138,338 @@ MinimiseSumConsumerGaps <- function(community, T.start=10, T.stop=0.1, c=0.9,
                                          diet.gap=FALSE, n, best))
 }
 
-#PlotPredationMatrix
-#    Take row order and col order
+TrophicSimilarity <- function(community)
+{
+    # Martinez 1991 Ecol. Monog. 61, 367-392 p 370.
+    # I = c/(a+b+c)
+    # where c = number of predators and prey common to the two taxa, 
+    # a = number of predators and prey unique to one taxon, and b = number 
+    # of predators and prey unique to one taxon. When the two taxa have the 
+    # same set of predators and prey, I = 1, When the two taxa have no 
+    # common predators or common prey, I = 0.
 
-#MinimiseSumDietGaps and MinimiseSumConsumerGaps
-#    Take n repetitions
-#    Take best only
+    rc <- ResourcesAndConsumersByNode(community)
+    nodes <- names(rc)
+    I <- matrix(NA, ncol=length(nodes), nrow=length(nodes), 
+                  dimnames=list(nodes,nodes))
+    diag(I) <- 1
 
-#PlotWebByLevel
-#    Take groups, group colours etc
+    if(1<NumberOfNodes(community))
+    {
+        # Inner loop depends upon the community having more than one node
+        for(x in 1:(length(nodes)-1))
+        {
+            for(y in (x+1):length(nodes))
+            {
+                a <- length(setdiff(rc[[x]], rc[[y]]))
+                b <- length(setdiff(rc[[y]], rc[[x]])) 
+                c <- length(intersect(rc[[x]], rc[[y]]))
+                I[x,y] <- I[y,x] <- c/(a+b+c)
+            }
+        }
+    }
+
+    I[IsolatedNodes(community),IsolatedNodes(community)] <- NA
+    stopifnot(all.equal(I, t(I)))
+    stopifnot(all(is.na(I)) || 1>=max(I, na.rm=TRUE))
+    stopifnot(1==diag(I)[-which(IsIsolatedNode(community))])
+    return (I)
+}
+
+MeanMaximumTrophicSimilarity <- function(community)
+{
+    # Williams and Martinez 2000 Nature 404 180-182, p 181.
+    # MxSim = 1/S \sum_1^S max(s_{ij}) (i!=j)
+    I <- TrophicSimilarity(community)
+    diag(I) <- NA    # Exclude diagonal
+    return (mean(apply(I, 1, max, na.rm=TRUE)))
+}
+
+IsOmnivore <- function(community, level=PreyAveragedTrophicLevel)
+{
+    # Species that consume two or more species and have a non-integer 
+    # trophic level
+    # Polis, G. A. Complex desert food webs: an empirical critique of food web 
+    # theory. Am. Nat. 138, 123-155 (1991).
+    n.resources <- sapply(ResourcesByNode(community), length)
+    tl <- level(community)
+    return (n.resources>=2 & 0!=(tl %% 1))
+}
+
+Omnivores <- function(community, ...)
+{
+    return (names(which(IsOmnivore(community, ...))))
+}
+
+FractionOmnivorous <- Omnivory <- function(community, ...)
+{
+    # The fraction of species that are omnivores
+    return (length(Omnivores(community, ...))/NumberOfNodes(community))
+}
+
+NodeQuantitativeDescriptors <- function(community, weight)
+{
+    # Bersier et al (2002) Ecology
+
+    if(!is.Community(community)) stop('Not a Community')
+    .RequireTrophicLinks(community)
+
+    # A common operation
+    vlog2v <- function(v)   v*log2(v)
+
+    b <- PredationMatrix(community, weight)
+    bIn <- colSums(b)
+    bOut <- rowSums(b)
+
+    # Diversity of inflows and outflows
+    HN <- -rowSums(vlog2v(t(b)/bIn), na.rm=TRUE)    # p 2397, eq 5
+    HP <- -rowSums(vlog2v(b/bOut), na.rm=TRUE)      # p 2397, eq 6
+
+    # Equivalent numbers of prey and predators
+    nN <-2^HN          # p 2397, eq 7
+    nN[0==bIn] <- 0
+    nP <-2^HP          # p 2397, eq 8
+    nP[0==bOut] <- 0
+
+    d.prime <- nN / (nN + nP)            # p 2397, eq 9
+    d <- bIn*nN / (bIn*nN + bOut*nP)     # p 2397, eq 10
+
+    # p 2396:
+    # Trophic level of a taxon (Yodzis 1989); the characterization we adopt 
+    # here is ‘‘one plus the length of the longest chain from the focal taxon 
+    # to a basal taxon.’’
+    t <- LongestTrophicLevel(community)
+    res <- ResourcesByNode(community)
+    o.prime <- -1 + 2^sapply(1:NumberOfNodes(community), function(k)
+    {
+        # Compute the number of prey taxa located at each trophic level t
+        r <- res[[k]]     # Resources of k
+        n <- table(t[r])  # The number of resources at each trophic level
+        return (-sum(vlog2v(n/sum(n))))
+    })
+    o <- -1 + 2^sapply(1:NumberOfNodes(community), function(k)
+    {
+        r <- res[[k]]     # Resources of k
+        # Biomass going into k summed by trophic level of resource
+        bt <- tapply(b[r,k], t[r], sum)
+        return (-sum(vlog2v(bt/sum(bt))))
+    })
+
+    # Standardised quantitative G and V, p 2400, eq 28-29
+    g.prime <- nN*NumberOfNodes(community) / sum(nN)
+    g <- bIn*nN*NumberOfNodes(community) / sum(bIn*nN)
+    v.prime <- nP*NumberOfNodes(community) / sum(nP)
+    v <- bOut*nP*NumberOfNodes(community) / sum(bOut*nP)
+
+    # Bersier et al table 1
+    res <- cbind(NResources=NumberOfResources(community), 
+                 NConsumers=NumberOfConsumers(community), 
+                 bIn,
+                 bOut,
+                 nN, 
+                 nP, 
+                 d.prime, 
+                 d,
+                 o.prime, 
+                 o,
+                 g.prime, 
+                 g, 
+                 v.prime, 
+                 v)
+    rownames(res) <- unname(NP(community, 'node'))
+    return (res)
+}
+
+QuantitativeDescriptors <- function(community, weight, top.level.threshold=0.99)
+{
+    # A common operation
+    vlog2v <- function(v)   v*log2(v)
+
+    # Community-level descriptors are derived from the node-level decsriptors
+    np <- NodeQuantitativeDescriptors(community, weight)
+
+    b <- PredationMatrix(community, weight)
+    sumb <- sum(b)
+
+    # Diversity of inflows and outflows
+    HN <- -rowSums(vlog2v(t(b)/np[,'bIn']), na.rm=TRUE)    # p 2397, eq 5
+    HP <- -rowSums(vlog2v(b/np[,'bOut']), na.rm=TRUE)      # p 2397, eq 6
+
+    # See comment at bottom of 2397 about about top-level threshold
+    fracT.q.prime <- mean(np[,'d.prime']>=top.level.threshold)
+    fracI.q.prime <- mean(0<np[,'d.prime'] & np[,'d.prime']<top.level.threshold)
+    fracB.q.prime <- mean(0==np[,'d.prime'])
+
+    fracT.q <- mean(np[,'d']>=top.level.threshold)
+    fracI.q <- mean(0<np[,'d'] & np[,'d']<top.level.threshold)
+    fracB.q <- mean(0==np[,'d'])
+
+    # Ratios of resources to consumers - p 2398, eq 11 and 12
+    NP.q.prime <- 2^(-sum(vlog2v(np[,'nP']/sum(np[,'nP'])), na.rm=TRUE)) / 
+                  2^(-sum(vlog2v(np[,'nN']/sum(np[,'nN'])), na.rm=TRUE))
+
+    NP.q <- 2^(-sum(vlog2v((np[,'bOut']*np[,'nP'])/sum(np[,'bOut']*np[,'nP'])), na.rm=TRUE)) / 
+            2^(-sum(vlog2v((np[,'bIn']*np[,'nN'])/sum(np[,'bIn']*np[,'nN'])), na.rm=TRUE))
+
+    # Link properties
+    # p 2398, eq 13
+    LD.q.prime <- (sum(np[,'nP']) + sum(np[,'nN'])) / (2*NumberOfNodes(community))
+    # p 2398, eq 14
+    LD.q <- (sum(np[,'bOut']*np[,'nP']/sumb, na.rm=TRUE) + 
+             sum(np[,'bIn']*np[,'nN']/sumb, na.rm=TRUE))/2
+
+    # p 2398, col 2
+    C.q.prime <- LD.q.prime/NumberOfNodes(community)
+    C.q <- LD.q/NumberOfNodes(community)
+
+    # ...the sum of the diversity of outflows weighted by the total outflows, 
+    # of the diversity of inflows weighted by the total inflows. Phi can be 
+    # thought of as the average amount of choice in trophic pathways (Ulanowicz 
+    # and Wolff 1991)
+    Phi <- sum(HP*np[,'bOut']/sumb) + sum(HN*np[,'bIn']/sumb) # p 2398, eq 16
+    m <- 2^(Phi/2) # Effective connectance per node p 2398, eq 15
+
+    # Page 2398, eq 18
+    PhiAB <- function(A, B)
+    {
+        # A and B should be functions that take a community and return node 
+        # names or indices.
+        A <- A(community)
+        B <- B(community)
+        bOut <- rowSums(b)[A]
+        bIn <- colSums(b)[B]
+        return (sum((bOut/sumb) * -vlog2v(b[A,B]/bOut),  na.rm=TRUE) + 
+                sum((bIn/sumb)  * -vlog2v(t(b[A,B])/bIn), na.rm=TRUE))
+    }
+
+    fracTI.q <- PhiAB(IntermediateNodes, TopLevelNodes) / Phi
+    fracTB.q <- PhiAB(BasalNodes, TopLevelNodes) / Phi
+    fracII.q <- PhiAB(IntermediateNodes, IntermediateNodes) / Phi
+    fracIB.q <- PhiAB(BasalNodes, IntermediateNodes) / Phi
+
+    # Page 2399, top left
+    PhiPrime <- sum(HP/NumberOfNodes(community)) + sum(HN/NumberOfNodes(community))
+    PhiABPrime <- function(A, B)
+    {
+        # A and B should be functions that take a community and return node 
+        # names or indices.
+        A <- A(community)
+        B <- B(community)
+        bOut <- rowSums(b)[A]
+        bIn <- colSums(b)[B]
+        s <- NumberOfNodes(community)
+        return (sum((1/s) * -vlog2v(b[A,B]/bOut),  na.rm=TRUE) + 
+                sum((1/s) * -vlog2v(t(b[A,B])/bIn), na.rm=TRUE))
+    }
+
+    fracTI.q.prime <- PhiABPrime(IntermediateNodes, TopLevelNodes) / PhiPrime
+    fracTB.q.prime <- PhiABPrime(BasalNodes, TopLevelNodes) / PhiPrime
+    fracII.q.prime <- PhiABPrime(IntermediateNodes, IntermediateNodes) / PhiPrime
+    fracIB.q.prime <- PhiABPrime(BasalNodes, IntermediateNodes) / PhiPrime
+
+    # Weighted chain lengths, p 2399, eq 19 and 20
+    tlps <- TLPS(community, link.properties=weight)
+    chains <- TrophicChains(community)
+    chains.length <- ChainLength(chains)
+
+    # The biomass flowing through every link in every chain
+    bc <- apply(as.matrix(chains), 1, function(r)
+    {
+        links <- r[which(""!= r)]
+        sapply(2:length(links), function(index)
+        {
+            tlps[tlps$resource==links[index-1] & tlps$consumer==links[index],3]
+        })
+    })
+    cl.q.prime <- 2^(-sapply(bc, function(b.chain) sum(vlog2v(b.chain/sum(b.chain)))))
+    bc.mean <- sapply(bc, sum)/cl.q.prime
+    cl.q <- cl.q.prime*bc.mean*nrow(chains) / sum(bc.mean)
+
+    # Quantitative generality and vulnerability, p 2400, eq 24-27
+    nT <- length(TopLevelNodes(community))
+    nI <- length(IntermediateNodes(community))
+    nB <- length(BasalNodes(community))
+    G.q.prime <- sum(np[,'nN'])/(nT+nI)
+    G.q <- sum(np[,'nN']*np[,'bIn']/sumb, na.rm=TRUE)
+    V.q.prime <- sum(np[,'nP'])/(nI+nB)
+    V.q <- sum(np[,'nP']*np[,'bOut']/sumb, na.rm=TRUE)
+
+    # Bersier et al table 2
+    tlps <- TLPS(community, node.properties=c('IsTopLevelNode', 'IsIntermediateNode', 'IsBasalNode'))
+    fracTI <- with(tlps, sum(resource.IsIntermediateNode & consumer.IsTopLevelNode))/nrow(tlps)
+    fracTB <- with(tlps, sum(resource.IsBasalNode & consumer.IsTopLevelNode))/nrow(tlps)
+    fracII <- with(tlps, sum(resource.IsIntermediateNode & consumer.IsIntermediateNode))/nrow(tlps)
+    fracIB <- with(tlps, sum(resource.IsBasalNode & consumer.IsIntermediateNode))/nrow(tlps)
+    chains <- TrophicChains(community)
+    chains.length <- ChainLength(chains)
+    Qualitative <- c(FractionTopLevelNodes(community), 
+                     FractionIntermediateNodes(community), 
+                     FractionBasalNodes(community), 
+                     sum(NumberOfConsumers(community)>0) / sum(NumberOfResources(community)>0), 
+                     LinkageDensity(community), 
+                     DirectedConnectance(community), 
+                     fracTI, 
+                     fracTB, 
+                     fracII, 
+                     fracIB, 
+                     mean(chains.length), 
+                     median(chains.length), 
+                     sd(chains.length), 
+                     max(chains.length), 
+                     Omnivory(community, level=ChainAveragedTrophicLevel),
+                     mean(TrophicGenerality(community)[NumberOfResources(community)>0]), 
+                     mean(TrophicVulnerability(community)[NumberOfConsumers(community)>0]), 
+                     sd(NormalisedTrophicGenerality(community)), 
+                     sd(NormalisedTrophicVulnerability(community)))
+
+    Unweighted <- c(fracT.q.prime, 
+                    fracI.q.prime, 
+                    fracB.q.prime, 
+                    NP.q.prime, 
+                    LD.q.prime,
+                    C.q.prime, 
+                    fracTI.q.prime, 
+                    fracTB.q.prime, 
+                    fracII.q.prime, 
+                    fracIB.q.prime, 
+                    mean(cl.q.prime), 
+                    median(cl.q.prime), 
+                    sd(cl.q.prime), 
+                    max(cl.q.prime), 
+                    mean(np[,'o.prime']), 
+                    G.q.prime, 
+                    V.q.prime, 
+                    sd(np[,'g.prime']), 
+                    sd(np[,'v.prime']))
+
+    Weighted <- c(fracT.q, 
+                  fracI.q, 
+                  fracB.q, 
+                  NP.q, 
+                  LD.q,
+                  C.q, 
+                  fracTI.q, 
+                  fracTB.q, 
+                  fracII.q, 
+                  fracIB.q, 
+                  mean(cl.q), 
+                  median(cl.q), 
+                  sd(cl.q), 
+                  max(cl.q), 
+                  mean(np[,'o']), 
+                  G.q, 
+                  V.q, 
+                  sd(np[,'g']), 
+                  sd(np[,'v']))
+    res <- cbind(Qualitative, Unweighted, Weighted)
+
+    rownames(res) <- c('Fraction top level', 
+        'Fraction intermediate', 'Fraction basal', 'Ratio resources:consumers', 
+        'Link density', 'Connectance', 'Fraction links top:intermediate', 
+        'Fraction links top:basal', 'Fraction links intermediate:intermediate', 
+        'Fraction links intermediate:basal', 'Mean chain length', 
+        'Median chain length', 'SD chain length', 'Max chain length', 
+        'Degree of omnivory', 'Generality', 'Vulnerability', 
+        'SD standardised generality', 'SD standardised vulnerability')
+    return (res)
+}

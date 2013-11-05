@@ -811,6 +811,12 @@ three matrices that it returns to reconstruct the important figures and
 tables from \cite{CohenEtAl2009PNAS}. 
 
 \newpage
+\section{Quantitative descriptors}
+TODO description of \cite{BersierEtAl2002Ecology} descriptors. 
+The examples in Section \ref{sec:quantitative_descriptors_examples} show how to 
+use these functions.
+
+\newpage
 \section{Examples through recreating figures and tables from published articles}
 The following sections show how to use Cheddar to recreate some published 
 figures.
@@ -1147,6 +1153,23 @@ title(main='Cohen et al. (2009) PNAS, Fig. 1 (p 22336)', outer=TRUE)
 @
 \end{center}
 
+\newpage
+\subsection{\cite{BersierEtAl2002Ecology}}
+\label{sec:quantitative_descriptors_examples}
+\subsubsection{\cite{BersierEtAl2002Ecology}, Table 1 (p 2401)}
+Only the first 6 rows of the table are shown here
+<<>>=
+data(ChesapeakeBay)
+res <- NodeQuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
+print(round(res[1:6,],2))
+@
+
+\subsubsection{\cite{BersierEtAl2002Ecology}, Table 2 (p 2402)}
+<<>>=
+data(ChesapeakeBay)
+res <- QuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
+print(round(res,3))
+@
 
 \bibliographystyle{plainnat}
 \bibliography{cheddar} 
