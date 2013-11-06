@@ -91,23 +91,16 @@ FormatLM <- function(model, slope.95.ci=FALSE, ci.plus.minus.style=FALSE,
     return (res)
 }
 
-PredationMatrixToLinks <- function(pm)
+PredationMatrixToLinks <- function(pm, link.property=NULL)
 {
     # Returns a data.frame containing columns resource and consumer. 
-    # pm should be a matrix or data.frame containing 0 or 1. 
-    # 1 indicates a trophic link between a consumer (column) and a resource 
-    # (row). 
+    # pm should be a matrix or data.frame containing. Non-zero values indicate 
+    # a trophic link between a consumer (column) and a resource (row).
+    # If property is non-NULL then 
 
-    # The same names must appear in both rows and cols but need not be sorted 
-    # the same, i.e. all(sort(colnames) == sort(rownames)) should be TRUE.
     if(2!=length(dim(pm)))
     {
         stop('pm is not a matrix')
-    }
-
-    if(any(is.na(pm) | (pm!=0 & pm!=1)))
-    {
-        stop('pm contains some values that are not 0 or 1')
     }
 
     # Check names
@@ -116,20 +109,24 @@ PredationMatrixToLinks <- function(pm)
         stop('pm is missing either rownames or colnames')
     }
 
-    resource <- which(pm>0) %% nrow(pm)
-    consumer <- 1+(which(pm>0) %/% nrow(pm))
+    resource <- which(pm!=0 & !is.na(pm)) %% nrow(pm)
+    consumer <- 1+(which(pm!=0 & !is.na(pm)) %/% nrow(pm))
 
     # Fix the last row
     last.row <- which(resource==0)
     consumer[last.row] <- consumer[last.row]-1
     resource[last.row] <- nrow(pm)
 
-    names(resource) <- NULL
-    names(consumer) <- NULL
+    df <- data.frame(resource=rownames(pm)[resource], 
+                     consumer=colnames(pm)[consumer], 
+                     stringsAsFactors=FALSE)
 
-    return (data.frame(resource=rownames(pm)[resource], 
-                       consumer=colnames(pm)[consumer], 
-                       stringsAsFactors=FALSE))
+    if(!is.null(link.property))
+    {
+        df <- cbind(df, pm[pm!=0 & !is.na(pm)])
+        colnames(df) <- c('resource', 'consumer', link.property)
+    }
+    return (df)
 }
 
 .CallAssemblePropertiesFunction <- function(f, expected.size, args, 
