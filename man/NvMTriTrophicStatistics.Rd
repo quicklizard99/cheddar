@@ -8,7 +8,7 @@
   \item{community}{an object of class \code{Community}.}
 }
 
-\details{Tri-trophic statistics as described by Cohen et al 2009 PNAS. 
+\details{Tri-trophic statistics as described by Cohen et al 2009 PNAS.
 }
 
 \value{A \code{list} containing

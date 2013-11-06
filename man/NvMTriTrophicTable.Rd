@@ -1,7 +1,7 @@
 \name{NvMTriTrophicTable}
 \alias{NvMTriTrophicTable}
 \title{N-versus-M tri-trophic statistics}
-\description{Tri-trophic statistics..}
+\description{Tri-trophic statistics.}
 \usage{NvMTriTrophicTable(collection)}
 
 \arguments{
@@ -10,9 +10,9 @@
 
 \details{Returns a \code{data.frame} that contains the same statistics 
   presented in Table 1 on Cohen et al 2009 PNAS. The function removes 
-  nodes lacking $M$ and/or $N$, cannibalistic links and isolated nodes from 
-  each community. The last eight rows of the table contain four network 
-  statistics both with and without these removals.
+  nodes lacking body mass (M) and/or numerical abundance (N), cannibalistic 
+  links and isolated nodes from each community. The last eight rows of the 
+  table contain four network statistics both with and without these removals.
 }
 
 \references{Cohen, J.E. and Schittler, D.N. and Raffaelli, D.G. and Reuman, 
