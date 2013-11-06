@@ -810,9 +810,40 @@ NumberOfNodes(TL84.r)
 NumberOfTrophicLinks(TL84.r)
 
 # Remove species by name
-TL84.r <- RemoveNodes(TL84, c("Phoxinus eos","Phoxinus neogaeus","Umbra limi"))
+to.remove <- c("Cryptomonas sp. 1", "Chroococcus dispersus", 
+               "Unclassified flagellates", "Chromulina sp.", 
+               "Selenastrum minutum", "Trachelomonas sp.")
+TL84.r <- RemoveNodes(TL84, to.remove)
 NumberOfNodes(TL84.r)
 NumberOfTrophicLinks(TL84.r)
+
+# Three different ways of removing node 56 (Umbra limi)
+TL84.ra <- RemoveNodes(TL84, 56)
+TL84.rb <- RemoveNodes(TL84, 'Umbra limi')
+TL84.rc <- RemoveNodes(TL84, c(rep(FALSE,55), TRUE))
+
+identical(TL84.ra, TL84.rb)  # TRUE
+identical(TL84.ra, TL84.rc)  # TRUE
+@
+The \code{RemoveNodes} function takes an argument called `method', which 
+indicates how removals should be propogated through the food web. 
+If `method' is `direct' (the default), only the nodes in \code{remove} are 
+removed. If `method' is `secondary', secondarily extinct nodes - those that 
+directly consume one or more nodes in `remove' and that no longer have any 
+resources (except themselves) after the removal - are also removed. 
+If `method' is `cascade', a multistep version of `secondary' is applied. This 
+has the effect of propogating extinctions though the community - all consumers 
+that are ultimately dependent upon all species in `remove', and upon no other 
+nodes (except themselves), will be removed.
+<<>>=
+# The behaviours of the different methods
+NumberOfNodes(TL84)         # 56 nodes in total
+length(BasalNodes(TL84))    # 25 basal nodes
+length(IsolatedNodes(TL84)) #  6 isolated nodes
+
+RemoveNodes(TL84, BasalNodes(TL84)) # 56 - 25 = 31 nodes remain
+RemoveNodes(TL84, BasalNodes(TL84), method='secondary') # 14 nodes remain
+RemoveNodes(TL84, BasalNodes(TL84), method='cascade')   # The 6 isolated nodes remain
 @
 
 \subsection{Removing cannibalistic links}

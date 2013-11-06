@@ -759,20 +759,19 @@ NumberOfNodes <- function(community)
     return (nrow(NPS(community)))
 }
 
-RemoveNodes <- function(community, remove, title=NULL)
+RemoveNodes <- function(community, remove, title=NULL, 
+                        method=c('direct','secondary','cascade'))
 {
     # Returns a new community which is community with the given nodes removed.
+    # If method is 'direct', only the nodes in remove are removed.
+    # If method is 'secondary', secondarily extinct nodes are removed.
+    # If method is 'cascade', extinctions are propogated upwards.
     if(!is.Community(community)) stop('Not a Community')
     if(is.null(remove) || 0==length(remove))
     {
         return (community)
     }
-
-    if(is.null(title))
-    {
-        title <- paste(CP(community, 'title'),  ' (', 
-                       paste(remove, collapse=', '), ' removed)', sep='')
-    }
+    method <- match.arg(method)
 
     np <- NPS(community)
 
@@ -789,6 +788,21 @@ RemoveNodes <- function(community, remove, title=NULL)
     if(length(remove)==NumberOfNodes(community))
     {
         stop("Removing these nodes would result in an empty community")
+    }
+
+    if(is.null(title))
+    {
+        if(length(remove)>4)
+        {
+            remove.string <- paste(length(remove), 'nodes')
+        }
+        else
+        {
+            remove.string <- paste(remove, collapse=', ')
+        }
+
+        title <- paste(CP(community, 'title'),  ' (', remove.string, 
+                       ' directly removed)', sep='')
     }
 
     new.nodes <- np[-NodeNameIndices(community, remove),,drop=FALSE]
@@ -810,8 +824,39 @@ RemoveNodes <- function(community, remove, title=NULL)
     new.properties <- CPS(community)
     new.properties$title <- title
 
-    return (Community(nodes=new.nodes, trophic.links=new.trophic.links, 
-                      properties=new.properties))
+    new.community <- Community(nodes=new.nodes, trophic.links=new.trophic.links,
+                               properties=new.properties)
+    if('cascade'==method)
+    {
+        # Remove consumers of 'remove' that are now basal, isolated or consume 
+        # only other consumers of 'remove'
+        consider <- unlist(ConsumersOfNodes(community, remove))
+        consider <- unname(intersect(consider, NP(new.community, 'node')))
+        cyclic <- sapply(ResourcesOfNodes(new.community, consider), 
+        function(resources)
+        {
+            return (length(resources)>0 && all(resources %in% consider))
+        })
+        if(length(cyclic)>0)      cyclic <- sort(names(which(cyclic)))
+        else                      cyclic <- NULL
+        new.remove <- intersect(consider, 
+                                unlist(c(cyclic, BasalNodes(new.community),
+                                         IsolatedNodes(new.community))))
+        return (RemoveNodes(new.community, new.remove, title=title, method='cascade'))
+    }
+    else if('secondary'==method)
+    {
+        # Remove consumers of 'remove' that are now basal or isolated
+        consider <- unlist(ConsumersOfNodes(community, remove))
+        consider <- unname(intersect(consider, NP(new.community, 'node')))
+        new.remove <- intersect(consider, c(BasalNodes(new.community),
+                                            IsolatedNodes(new.community)))
+        return (RemoveNodes(new.community, new.remove, title=title, method='direct'))
+    }
+    else
+    {
+        return (new.community)
+    }
 }
 
 RemoveIsolatedNodes <- function(community, title=NULL)
