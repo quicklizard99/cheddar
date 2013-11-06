@@ -607,6 +607,7 @@ TestRemoveNodes <- function()
 
     # Test secondary and cascade
     AssertRaises(RemoveNodes(c3, 'R', method='secondary'))
+    AssertRaises(RemoveNodes(c3, 'R', method='cascade'))
     AssertEqual(c(P='P'), NP(RemoveNodes(c4, 'R', method='secondary'), 'node'))
     AssertRaises(RemoveNodes(c4, 'R', method='cascade'))
     AssertEqual(c(O='O'), NP(RemoveNodes(c5, 'R', method='secondary'), 'node'))
@@ -627,9 +628,8 @@ TestRemoveNodes <- function()
                 NP(RemoveNodes(c7, 'E', method='secondary'), 'node'))
 
     # 56 - 25 = 31 nodes remain
-    AssertEqual(56, NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84))))
-    AssertEqual(13, 
-        NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84), method='secondary')))
+    AssertEqual(31, NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84))))
+    AssertEqual(14, NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84), method='secondary')))
     cascaded <- NumberOfNodes(RemoveNodes(TL84, BasalNodes(TL84), method='cascade'))
     AssertEqual(6, cascaded)
     isolated <- c('Asterionella formosa','Chrysosphaerella longispina',

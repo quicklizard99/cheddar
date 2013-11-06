@@ -842,7 +842,7 @@ length(BasalNodes(TL84))    # 25 basal nodes
 length(IsolatedNodes(TL84)) #  6 isolated nodes
 
 RemoveNodes(TL84, BasalNodes(TL84)) # 56 - 25 = 31 nodes remain
-RemoveNodes(TL84, BasalNodes(TL84), method='secondary') # 13 nodes remain
+RemoveNodes(TL84, BasalNodes(TL84), method='secondary') # 14 nodes remain
 RemoveNodes(TL84, BasalNodes(TL84), method='cascade')   # The 6 isolated nodes remain
 @
 

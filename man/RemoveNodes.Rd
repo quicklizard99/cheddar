@@ -7,8 +7,8 @@
 
 \arguments{
   \item{community}{an object of class \code{Community}.}
-  \item{remove}{a vector of either names or integer indices (but not both) of 
-    nodes to be removed.}
+  \item{remove}{a vector of either names, integer indices or logicals 
+    indicating nodes to be removed.}
   \item{title}{a title for the new community.}
   \item{method}{how species removals are propogated through the food web.}
 }
@@ -50,8 +50,8 @@ length(BasalNodes(TL84))    # 25 basal nodes
 length(IsolatedNodes(TL84)) #  6 isolated nodes
 
 RemoveNodes(TL84, BasalNodes(TL84)) # 56 - 25 = 31 nodes remain
-RemoveNodes(TL84, BasalNodes(TL84), method='secondary') # 13 nodes remain
-RemoveNodes(TL84, BasalNodes(TL84), method='cascade')   # The 6 isolated nodes remain
+RemoveNodes(TL84, BasalNodes(TL84), method='secondary') # 14 nodes remain
+RemoveNodes(TL84, BasalNodes(TL84), method='cascade')   # 6 isolated nodes remain
 
 # Results in an error
 \dontrun{RemoveNodes(TL84, 1:NumberOfNodes(TL84))}

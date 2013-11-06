@@ -826,24 +826,32 @@ RemoveNodes <- function(community, remove, title=NULL,
 
     new.community <- Community(nodes=new.nodes, trophic.links=new.trophic.links,
                                properties=new.properties)
-    if(method %in% c('secondary', 'cascade'))
+    if('cascade'==method)
     {
         # Remove consumers of 'remove' that are now basal, isolated or consume 
         # only other consumers of 'remove'
         consider <- unlist(ConsumersOfNodes(community, remove))
-        consider <- unique(unname(intersect(consider, NP(new.community, 'node'))))
-        cyclic <- sapply(ResourcesOfNodes(new.community, consider), function(resources)
+        consider <- unname(intersect(consider, NP(new.community, 'node')))
+        cyclic <- sapply(ResourcesOfNodes(new.community, consider), 
+        function(resources)
         {
             return (length(resources)>0 && all(resources %in% consider))
         })
-        if(length(cyclic))      cyclic <- sort(names(which(cyclic)))
-        else                    cyclic <- NULL
-        s <- intersect(consider, unique(c(cyclic, BasalNodes(new.community),
-                                          IsolatedNodes(new.community))))
-
-        s <- sort(s)
-        return (RemoveNodes(new.community, s, title=title, 
-                         method=ifelse('cascade'==method, 'cascade', 'direct')))
+        if(length(cyclic)>0)      cyclic <- sort(names(which(cyclic)))
+        else                      cyclic <- NULL
+        new.remove <- intersect(consider, 
+                                unlist(c(cyclic, BasalNodes(new.community),
+                                         IsolatedNodes(new.community))))
+        return (RemoveNodes(new.community, new.remove, title=title, method='cascade'))
+    }
+    else if('secondary'==method)
+    {
+        # Remove consumers of 'remove' that are now basal or isolated
+        consider <- unlist(ConsumersOfNodes(community, remove))
+        consider <- unname(intersect(consider, NP(new.community, 'node')))
+        new.remove <- intersect(consider, c(BasalNodes(new.community),
+                                            IsolatedNodes(new.community)))
+        return (RemoveNodes(new.community, new.remove, title=title, method='direct'))
     }
     else
     {
