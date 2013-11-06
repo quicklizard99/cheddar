@@ -128,23 +128,13 @@ RunTests <- function(tests)
 }
 
 # Source all files in this dir except this one
-print(1)
 files <- list.files(getwd(), pattern='*R$')
-print(2)
-print(files)
 files <- setdiff(files, 'run.R')
-print(3)
-print(files)
 junk <- sapply(file.path(getwd(), files), source)
-print(4)
 tests <- commandArgs(trailingOnly=TRUE)
-print(5)
-print(tests)
 if(0==length(tests))
 {
     tests <- ls(pattern=glob2rx('^Test*'))
 }
-print(6)
-print(tests)
 
 RunTests(tests)
