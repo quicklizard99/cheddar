@@ -805,7 +805,9 @@ community's food web. The \code{NvMTriTrophicStatistics} function provides this
 analysis. It takes a single community as its only parameter. Cannibalistic 
 links and all nodes with an $N$ or $M$ of \code{NA} are removed before 
 statistics are computed. It returns a list containing three matrices: `links', 
-`three.node.chains' and `trophic.chains'. The examples in Section 
+`three.node.chains' and `trophic.chains'. 
+The \code{NvMTriTrophicTable} function returns a table of statistics for a 
+collection of communities. The examples in Section 
 \ref{sec:tri_trophic_examples} show how to use this function and the 
 three matrices that it returns to reconstruct the important figures and 
 tables from \cite{CohenEtAl2009PNAS}. 
@@ -1037,66 +1039,18 @@ title(main='Woodward et al. (2005) AER, Fig. 4 (p 108)', outer=TRUE)
 \subsection{\cite{CohenEtAl2009PNAS}}
 \label{sec:tri_trophic_examples}
 \subsubsection{\cite{CohenEtAl2009PNAS}, Table 1 (p 22338)}
-This code removes isolated nodes from communities for consistency with the 
-paper. \code{NvMTriTrophicStatistics} does this for us anyway so the 
-$M$ - $N$ tritrophic statistics are not affected but the network statistics in 
-the last four rows of the table would be different to those in the paper. 
+The \code{NvMTriTrophicStatistics} function computes the tri-trophic statistics 
+for a single community. The \code{NvMTriTrophicTable} function takes a 
+collection of communities and assembles a summary table from the values 
+returned by \code{NvMTriTrophicStatistics}. The function removes nodes 
+lacking $M$ and/or $N$, cannibalistic links and isolated nodes from each 
+community. The \code{data.frame} that it returns includes two sets of four 
+network statistics - both with and without these removals. 
 <<>>=
 data(TL84, TL86, YthanEstuary)
-res <- lapply(list(TL84, TL86, YthanEstuary), function(community)
-{
-    community <- RemoveNodes(community, remove=with(NPS(community), node[is.na(M) | is.na(N)]))
-    community <- RemoveCannibalisticLinks(community)
-    community <- RemoveIsolatedNodes(community)
-
-    tts<-NvMTriTrophicStatistics(community)
-    lp <- tts[['links']]
-    tncp <- tts[['three.node.chains']]
-    tcp <- tts[['trophic.chains']]
-
-    community.span <- diff(range(Log10M(community))) +
-                      diff(range(Log10N(community)))
-                      
-    wiggling <- mean(tcp$sum.chain.length) / mean(tcp$chain.span)
-
-    UnsafeMean <- function(x)
-    {
-        ifelse(is.null(x), NA, mean(x))
-    }
-
-    return (c(
-     'Mean link length'=mean(lp$length),
-     'Mean L upper'=UnsafeMean(tncp$Lupper),
-     'Mean L lower'=UnsafeMean(tncp$Llower),
-     '2 x mean link length'=2*mean(lp$length),
-     'Mean 2-span'=UnsafeMean(tncp$two.span),
-     'Mean L upper + L lower'=UnsafeMean(tncp$Lupper + tncp$Llower),
-     '2 x mean link length / mean 2-span'=
-            2 * mean(lp$length) / UnsafeMean(tncp$two.span),
-     'Mean L upper + L lower/ mean 2-span'=
-            UnsafeMean(tncp$Lupper + tncp$Llower) / UnsafeMean(tncp$two.span),
-     'Mean count chain length'=mean(tcp$count.chain.length),
-     'Mean count chain length x mean link length'=
-            mean(tcp$count.chain.length)*mean(lp$length),
-     'Community span'=community.span,
-     'Mean count chain length x mean link length / community span'=
-            mean(tcp$count.chain.length) * mean(lp$length)/community.span,
-     'Mean sum chain lengths'=mean(tcp$sum.chain.length),
-     'Mean chain span'=mean(tcp$chain.span),
-     'Mean chain span / community span'=mean(tcp$chain.span) / community.span,
-     'Mean sum chain lengths / mean chain span'=
-            mean(tcp$sum.chain.length) / mean(tcp$chain.span),
-     'Mean sum chain lengths / community span'=
-            mean(tcp$sum.chain.length) / community.span,
-     'L'=NumberOfTrophicLinks(community),
-     'S^2'=NumberOfNodes(community)^2,
-     'L/S^2'=DirectedConnectance(community),
-     'L/S'=LinkageDensity(community)))
-})
-res <- do.call('cbind', res)
-
-colnames(res) <- c('TL84', 'TL86', 'Ythan Estuary')
-print(round(res,2))
+collection <- CommunityCollection(list(TL84, TL86, YthanEstuary))
+table <- NvMTriTrophicTable(collection)
+print(round(table,2))
 @
 
 \subsubsection{\cite{CohenEtAl2009PNAS}, Table S3 (p 8)}

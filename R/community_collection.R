@@ -513,6 +513,68 @@ SiteBySpeciesMatrix <- function(collection, abundance=NULL, na.missing=FALSE)
                length(nodes)*(decode.site[cps$community]-1)
     if(is.null(abundance)) res[indices] <- 1
     else                   res[indices] <- cps[,abundance]
+    return (res)
+}
 
+NvMTriTrophicTable <- function(collection)
+{
+    # Cohen et al 2009 PNAS Table 1
+    if(!is.CommunityCollection(collection)) stop('Not a CommunityCollection')
+
+    UnsafeMean <- function(x)
+    {
+        ifelse(is.null(x), NA, mean(x))
+    }
+
+    res <- lapply(collection, function(community)
+    {
+        # NvMTriTrophicStatistics() removes both nodes lacking M and/or N and 
+        # cannibalistic links. Remove these here too so that the network statistics 
+        # (L, S^2, L/S^2 and L/S) are consistent with the rest of the values in the 
+        # table.
+        unadjusted <- community
+        community <- RemoveNodes(community, remove=with(NPS(community), node[is.na(M) | is.na(N)]))
+        community <- RemoveCannibalisticLinks(community)
+        community <- RemoveIsolatedNodes(community)
+
+        tts <- NvMTriTrophicStatistics(community)
+        lp <- tts[['links']]
+        tncp <- tts[['three.node.chains']]
+        tcp <- tts[['trophic.chains']]
+        
+        community.span <- diff(range(Log10M(community))) +
+                          diff(range(Log10N(community)))
+                          
+        wiggling <- mean(tcp$sum.chain.length) / mean(tcp$chain.span)
+
+        return (c(
+         'Mean link length'=mean(lp$length),
+         'Mean L upper'=UnsafeMean(tncp$Lupper),
+         'Mean L lower'=UnsafeMean(tncp$Llower),
+         '2 x mean link length'=2*mean(lp$length),
+         'Mean 2-span'=UnsafeMean(tncp$two.span),
+         'Mean L upper + L lower'=UnsafeMean(tncp$Lupper + tncp$Llower),
+         '2 x mean link length / mean 2-span'=2 * mean(lp$length) / UnsafeMean(tncp$two.span),
+         'Mean L upper + L lower/ mean 2-span'=UnsafeMean(tncp$Lupper + tncp$Llower) / UnsafeMean(tncp$two.span),
+         'Mean count chain length'=mean(tcp$count.chain.length),
+         'Mean count chain length x mean link length'=mean(tcp$count.chain.length)*mean(lp$length),
+         'Community span'=community.span,
+         'Mean count chain length x mean link length / community span'=mean(tcp$count.chain.length)*mean(lp$length)/community.span,
+         'Mean sum chain lengths'=mean(tcp$sum.chain.length),
+         'Mean chain span'=mean(tcp$chain.span),
+         'Mean chain span / community span'=mean(tcp$chain.span) / community.span,
+         'Mean sum chain lengths / mean chain span'=mean(tcp$sum.chain.length) / mean(tcp$chain.span),
+         'Mean sum chain lengths / community span'=mean(tcp$sum.chain.length) / community.span,
+         'L'=NumberOfTrophicLinks(community),
+         'S^2'=NumberOfNodes(community)^2,
+         'L/S^2'=DirectedConnectance(community),
+         'L/S'=LinkageDensity(community), 
+         'L'=NumberOfTrophicLinks(unadjusted),
+         'S^2'=NumberOfNodes(unadjusted)^2,
+         'L/S^2'=DirectedConnectance(unadjusted),
+         'L/S'=LinkageDensity(unadjusted)))
+    })
+    res <- do.call('cbind', res)
+    colnames(res) <- names(collection)
     return (res)
 }

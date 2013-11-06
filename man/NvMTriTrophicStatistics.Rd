@@ -8,6 +8,9 @@
   \item{community}{an object of class \code{Community}.}
 }
 
+\details{Tri-trophic statistics as described by Cohen et al 2009 PNAS.
+}
+
 \value{A \code{list} containing
 \item{links}{a \code{data.frame}.}
 \item{three.node.chains}{a \code{data.frame}.}
@@ -24,7 +27,9 @@ Proceedings of the National Academy of Sciences of the United States of America
 \seealso{\code{\link{TLPS}}, 
          \code{\link{ThreeNodeChains}}, 
          \code{\link{TrophicChains}}, 
-         \code{\link{Chains}}}
+         \code{\link{Chains}}, 
+         \code{\link{PlotAuppervAlower}},
+         \code{\link{NvMTriTrophicTable}}}
 
 \examples{
 data(TL84)
