@@ -1,10 +1,10 @@
 Package: cheddar
 Type: Package
 Title: Analysis and visualisation of ecological communities
-Version: 0.1-622
-Date: 2013-03-19
+Version: 0.1-623
+Date: 2013-10-07
 Author: Lawrence Hudson with contributions from Dan Reuman and Rob Emerson
-Maintainer: Lawrence Hudson <lawrence.hudson08@imperial.ac.uk>
+Maintainer: Lawrence Hudson <l.hudson@nhm.ac.uk>
 Description: Cheddar provides a flexible, extendable representation of an ecological community and a range of functions for analysis and visualisation, focusing on food web, body mass and numerical abundance data. It also allows inter-web comparisons such as examining changes in community structure over environmental, temporal or spatial gradients.
 License: BSD
 LazyLoad: yes

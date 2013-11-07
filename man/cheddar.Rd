@@ -1,4 +1,5 @@
-\name{cheddar-package}
+\name{cheddar}
+\alias{cheddar}
 \alias{cheddar-package}
 \alias{cheddar}
 \docType{package}
@@ -19,8 +20,8 @@ release history:
     \tabular{ll}{
     Package: \tab cheddar\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-622\cr
-    Date: \tab 2013-03-19\cr
+    Version: \tab 0.1-623\cr
+    Date: \tab 2013-11-07\cr
     License: \tab BSD\cr
     }
 }
