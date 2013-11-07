@@ -1,5 +1,18 @@
 #  Cheddar release history
 
+## 0.1-623 Released 2013-11-07
+#### Improvements
+* [Issue 22](https://github.com/quicklizard99/cheddar/issues/22)
+  Shortcut to produce table of N versus M tri-trophic statistics
+* [Issue 23](https://github.com/quicklizard99/cheddar/issues/23)
+  RemoveNodes is not able to propagate extinctions
+* [Issue 24](https://github.com/quicklizard99/cheddar/issues/24)
+  Function to produce a site by species matrix from a collection
+* [Issue 27](https://github.com/quicklizard99/cheddar/issues/27)
+  PredationMatrixToLinks should be able to extract a link property 
+* [Issue 28](https://github.com/quicklizard99/cheddar/issues/28)
+  Quantified web stats a la Bersier et al 2002 Ecology
+
 ## 0.1-622 Released 2013-03-19
 **Available on CRAN**
 
