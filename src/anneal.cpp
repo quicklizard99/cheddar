@@ -200,9 +200,8 @@ class Random
   // A pool of uniformly drawn random numbers
   public:
     Random(DoubleVec::size_type pool_size=1e5) : pool_size_(pool_size), 
-                                                 current_(0)
+                                                 current_(pool_.end())
     {
-      populate();
     }
 
     double fetch_rand() const
