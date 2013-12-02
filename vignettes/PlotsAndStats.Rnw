@@ -814,7 +814,8 @@ tables from \cite{CohenEtAl2009PNAS}.
 
 \newpage
 \section{Quantitative descriptors}
-TODO description of \cite{BersierEtAl2002Ecology} descriptors. 
+\cite{BersierEtAl2002Ecology} described food-web descriptors based upon the 
+magnitude of the trophic interactions between taxa. 
 The examples in Section \ref{sec:quantitative_descriptors_examples} show how to 
 use these functions.
 

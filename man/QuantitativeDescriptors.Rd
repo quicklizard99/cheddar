@@ -19,8 +19,8 @@ QuantitativeDescriptors(community, weight, top.level.threshold=0.99)
   \item{top.level.threshold}{TODO}
 }
 
-\details{TODO Overview of the descriptors and why they are useful.
-Warning about performance. 
+\details{Quantitative food-web descriptors as described by Bersier et al 2002 
+Ecology.
 
 NodeQuantitativeDescriptors computes a table of node-level quantitative 
 descripttors, as presented in Bersier et al 2002, Table 1. It returns a 
@@ -36,9 +36,6 @@ Fraction links intermediate:intermediate, Fraction links intermediate:basal,
 Mean chain length, Median chain length, SD chain length, Max chain length, 
 Degree of omnivory, Generality, Vulnerability, SD standardised generality, 
 SD standardised vulnerability.
-
-TODO Warn that QuantitativeDescriptors not suitable for use with CollectionNPS. 
-Have an example that computes QuantitativeDescriptors for several communities
 }
 
 \value{A \code{matrix}.
