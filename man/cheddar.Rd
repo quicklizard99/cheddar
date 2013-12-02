@@ -20,13 +20,13 @@ release history:
     \tabular{ll}{
     Package: \tab cheddar\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-623\cr
-    Date: \tab 2013-11-07\cr
+    Version: \tab 0.1-624\cr
+    Date: \tab 2013-12-02\cr
     License: \tab BSD\cr
     }
 }
 
-\author{Maintainer: Lawrence Hudson <lawrence.hudson08@imperial.ac.uk>}
+\author{Maintainer: Lawrence Hudson <l.hudson@nhm.ac.uk}
 
 %\references{}
 
