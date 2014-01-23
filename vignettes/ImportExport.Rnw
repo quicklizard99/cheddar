@@ -72,7 +72,7 @@ different aspect of the community (Table \ref{tab:community_files}).
       \toprule
         Aspect          & File                     & Description                                      \\
       \midrule
-        Whole-community & \code{properties.csv}    & Contains properties appplicable to the community \\
+        Whole-community & \code{properties.csv}    & Contains properties applicable to the community  \\
         Nodes           & \code{nodes.csv}         & Defines species and associated properties        \\
         Trophic Links   & \code{trophic.links.csv} & Optional file that defines the food web          \\
       \bottomrule 
