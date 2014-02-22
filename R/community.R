@@ -603,7 +603,10 @@ plot.Community <- function(x, ...)
 print.Community <- function(x, ...)
 {
     if(!is.Community(x)) stop('Not a Community')
-    cat(paste(CPS(x)$title, 'containing', NumberOfNodes(x), 'nodes.\n'))
+    n <- paste(CPS(x)$title, 'containing', NumberOfNodes(x), 'nodes')
+    ntl <- NumberOfTrophicLinks(x)
+    if(ntl>0)    n <- paste(n, 'and', ntl, 'trophic links')
+    cat(n, '\n')
     invisible(x)
 }
 
