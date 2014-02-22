@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 print("Sum diet gaps")
 library(cheddar)
 data(Benguela, BroadstoneStream, TL84, TL86, SkipwithPond, YthanEstuary)
