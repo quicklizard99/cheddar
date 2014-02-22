@@ -639,7 +639,8 @@ TestTrophicChainsStatsOverflow <- function()
               as.integer(length(alist)), 
               as.integer(is.basal), 
               as.integer(nrow(alist)), 
-              as.integer(1),
+              as.integer(1), # test_overflow
+              as.integer(0), # max_queue
               n.chains=n.chains,
               longest=longest,
               status=status, 

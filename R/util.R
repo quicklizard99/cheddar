@@ -314,3 +314,29 @@ PredationMatrixToLinks <- function(pm, link.property=NULL)
     return ('<unnamed>')
 }
 
+.WriteForRob <- function(community, path)
+{
+    # Writes community in a format required by Rob's code that computes chains
+    if(!is.Community(community)) stop('Not a Community')
+
+    x <- .CAdjacencyList(community, ConsumersByNode(community))
+    # First col is the number of consumers. Rob's code requires 1-indexed node numbers.
+    x[,1] <- 1:nrow(x)
+
+    # Other columns are 0-indexed node number. Rob's code requires 1-indexed node numbers.
+    x[,2:ncol(x)] <- x[,2:ncol(x)]+1
+
+    if(missing(path))
+    {
+        path <- paste(gsub('[ \\.]', '_', CPS(community)$title), '_input.txt', sep='')
+    }
+
+    write.table(x, file=path, na='', row.names=FALSE, col.names=FALSE, sep=' ', 
+                quote=FALSE)
+}
+
+.maxQueueOption <- function()
+{
+    return (getOption('cheddar.max_queue', 1e7))
+}
+

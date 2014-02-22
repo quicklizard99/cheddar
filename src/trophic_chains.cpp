@@ -1,4 +1,4 @@
-// visit unique chains in food webs. 
+// visit unique chains in food webs.
 
 #include <R.h>
 
@@ -11,13 +11,31 @@
 
 typedef std::vector<int> IntVector;
 
-// #define DEBUG_TC
+// Define DEBUG_TC to get lots of debug output
+//#define DEBUG_TC
 
 #ifdef DEBUG_TC
 #define DEBUG(X) { X; }
 #else
 #define DEBUG(X)
 #endif
+
+std::vector<IntVector> Adjacency(const int *adjacency, int node_count)
+{
+  // Returns a C++ representation of the adjacency list in R matrix form
+  std::vector<IntVector> adj;
+  for(int node=0; node<node_count; ++node)
+  {
+    IntVector l;
+    const int len = adjacency[node];
+    for(int v=1; v<=len; ++v)
+    {
+      l.push_back(adjacency[node + v*node_count]);
+    }
+    adj.push_back(l);
+  }
+  return (adj);
+}
 
 template <typename Visitor> class TrophicChains
 {
@@ -28,23 +46,26 @@ template <typename Visitor> class TrophicChains
 
   // Algorithm and first implemention by Rob Emerson. 
   // Converted to use C++ and integrated into R by Lawrence Hudson. 
+
+  // TODO Stop when queue larger than a threshold
+  // TODO Respect CTRL+C
+
 private:
-  const IntVector &adjacency_; 
+  const std::vector<IntVector> &adjacency_; 
   const IntVector &is_basal_;
-  int nodes_;
 
   typedef std::queue<IntVector> Queue;
-  Queue queue_;
+  Queue::size_type max_queue_;
 
 private:
 #ifdef DEBUG_TC
   void print_adjacency() const
   {
-    for(int i=0; i<nodes_; ++i)
+    for(int i=0; i<adjacency_.size(); ++i)
     {
-      Rprintf("[%d] has [%d] consumers ->", i, adjacency_[i]);
-      for(int j = 1; j <= adjacency_[i]; ++j)
-        Rprintf(" %d", adjacency_[i + nodes_*j]);
+      Rprintf("[%d] has [%d] consumers ->", i, adjacency_[i].size());
+      for(int j=0; j<adjacency_[i].size(); ++j)
+        Rprintf(" %d", adjacency_[i][j]);
       Rprintf("\n");
     }
   }
@@ -59,12 +80,12 @@ private:
 #endif
 
 public:
-  TrophicChains(const IntVector &adjacency, 
-                  const IntVector &is_basal, 
-                  int nodes) : 
+  TrophicChains(const std::vector<IntVector> &adjacency, 
+                const IntVector &is_basal, 
+                Queue::size_type max_queue) :
          adjacency_(adjacency), 
-				 is_basal_(is_basal),
-				 nodes_(nodes)
+         is_basal_(is_basal), 
+         max_queue_(max_queue)
   {
   }
 
@@ -74,23 +95,18 @@ public:
     DEBUG(Rprintf("DUMP GRAPH\n"));
     DEBUG(print_adjacency());
 
-    Queue queue;
-    IntVector path;
-    path.reserve(nodes_);    // Will have at most this length
-
-    for(int n = 0; n < nodes_; ++n)
+    bool queue_warning = false;
+    for(int n = 0; n < adjacency_.size(); ++n)
     {
-      if(adjacency_[n] == 0) continue; // Node n has no out-edges, it cannot 
-                                       // start a chain
+      if(adjacency_[n].size() == 0) continue; // Node n has no out-edges, it 
+                                              // cannot start a chain
       if(is_basal_[n] == 0) continue;  // Node n has in-edges, so it cannot 
                                        // start a chain
-      path.erase(path.begin(),path.end());
-      path.push_back(n);
 
-      queue = Queue();
-
+      IntVector path(1, n);
       DEBUG(print_path("INITIAL PATH", path));
 
+      Queue queue;
       queue.push(path);
 
       while(!queue.empty())
@@ -98,39 +114,50 @@ public:
         path = queue.front();
         queue.pop();
 
-        IntVector::const_reference m = path.back();
+        R_ProcessEvents();
+        if(max_queue_>0 && !queue_warning && queue.size()>max_queue_/2)
+        {
+          REprintf("This network has a lot of paths, possibly too many to compute\n");
+          queue_warning = true;
+        }
+        else if(max_queue_>0 && queue.size()>max_queue_)
+        {
+          throw CheddarException("Unable to compute paths - see the help for TrophicChains for more information.");
+        }
+
+        int m = path.back();
 
         DEBUG(Rprintf("AT NODE [%d]\n", m));
 
-        if(adjacency_[m] == 0)
+        if(adjacency_[m].size() == 0)
         {
           DEBUG(print_path("", path));
           visitor.chain(path);
         }
         else
         {
-          int cycle = 1;
+          bool cycle = true;
 
-          for(int j = 1; j <= adjacency_[m]; ++j)
+          for(int j=0; j<adjacency_[m].size(); ++j)
           {
-            int found = 0;
+            bool found = false;
             for(IntVector::const_iterator k=path.begin(); k!=path.end(); ++k)
             {
-              if(*k == adjacency_[m + nodes_*j])
+              if(*k == adjacency_[m][j])
               {
-                found = 1;
+                found = true;
                 break;
               }
             }
 
             if(!found)
             {
-              path.push_back(adjacency_[m + nodes_*j]);
+              path.push_back(adjacency_[m][j]);
               DEBUG(print_path("EXTEND PATH", path));
               queue.push(path);
-
               path.pop_back();
-              cycle = 0;
+
+              cycle = false;
             }
           }
 
@@ -139,15 +166,15 @@ public:
             DEBUG(print_path("", path));
             visitor.chain(path);
           }
+        }
       }
     }
   }
-}
 };
 
 class CollectChainsVisitor
 {
-  // A visitor that collects chains.
+  // Collects chains
 
 private:
     int *chains_;     // An array of ncols_ * nrows_
@@ -176,12 +203,28 @@ public:
     }
     else
     {
-      DEBUG(Rprintf("Chains storage space exceeded\n"))
+      DEBUG(Rprintf("Chains storage space exceeded\n"));
       DEBUG(Rprintf("nrows [%d] ncols [%d]\n", nrows_, ncols_));
       DEBUG(Rprintf("n_chains_found_ [%d]\n", n_chains_found_));
       DEBUG(Rprintf("path length [%d]\n", path.size()));
       throw CheddarException("Chains storage space exceeded");
     }
+  }
+};
+
+class PrintChainsVisitor
+{
+  // Prints chains to stdout in the same format as Rob's solution8
+public:
+  void chain(const IntVector &path)
+  {
+    // Rprintf is an order of magnitude slower that printf (on my Mac, at 
+    // least) and isn't relevant in this case but we have no choice but to use 
+    // it because of R CMD check 
+    Rprintf(":");
+    for(IntVector::size_type j=0; j<path.size(); ++j)
+      Rprintf(" %d", 1+path[j]);
+    Rprintf("\n");
   }
 };
 
@@ -272,6 +315,7 @@ void trophic_chains_size(const int *adjacency,
                          const int *is_basal, 
                          const int *node_count,  
                          const int *test_overflow,
+                         const int *max_queue,
                          int *n_chains, 
                          int *longest, 
                          int *status)
@@ -296,6 +340,9 @@ adjacency_length: the number of ints in adjacency
 
  test_overflow:   if non-zero then check the overflow case for counting chains.
 
+     max_queue:   the maximum alowabe size of the queue used to compute chains. 
+                  0 indicates no limit.
+
     Out params:
       n_chains:   the number of unique chains found.
 
@@ -309,6 +356,7 @@ adjacency_length: the number of ints in adjacency
   /* Quick and dirty parameter checks */
   if(0==adjacency || 0==adjacency_length || *adjacency_length<1 || 
      0==is_basal || 0==node_count || *node_count<1 || 0==test_overflow || 
+     0==max_queue || *max_queue<0 || 
      0==n_chains || 0==longest || 0==status)
   {
     if(0!=status)
@@ -323,9 +371,9 @@ adjacency_length: the number of ints in adjacency
 
   try
   {
-    IntVector adj(adjacency, adjacency + *adjacency_length);
+    std::vector<IntVector> adj = Adjacency(adjacency, *node_count);
     IntVector basal(is_basal, is_basal + *node_count);
-    TrophicChains<CollectChainLengthsVisitor> worker(adj, basal, *node_count);
+    TrophicChains<CollectChainLengthsVisitor> worker(adj, basal, *max_queue);
     CollectChainLengthsVisitor visitor(0!=*test_overflow);
     worker.visit(visitor);
 
@@ -345,12 +393,87 @@ adjacency_length: the number of ints in adjacency
   }
 }
 
+void print_chains(const int *adjacency, 
+                  const int *adjacency_length,
+                  const int *is_basal, 
+                  const int *node_count,  
+                  const int *max_queue,
+                  int *status)
+{
+  /* WARNING: Nested returns */
+
+  /* Enumerates every unique trophic path in a directed graph. Output is 
+     written to chains. 
+
+     In params:
+     adjacency:   a matrix of node_count rows. First column is the number of 
+                  consumers of that row. Subsequent columns are ids of 
+                  consumers.
+
+adjacency_length: the number of ints in adjacency
+
+      is_basal:   an array of length node_count. 1 for nodes that have no 
+                  resources, 0 otherwise. Chains start only with nodes which 
+                  have a 1 in is_basal.
+
+    node_count:   the number of nodes in the network.
+
+         ncols:   the number of columns in chains.
+
+         nrows:   the number of rows in chains.
+
+     max_queue:   the maximum alowabe size of the queue used to compute chains. 
+                  0 indicates no limit.
+
+     Out params:
+        status: -1 - unexpected error.
+                 0 - normal exit.
+                 1 - problem with one of the parameters.
+  */
+
+  /* Quick and dirty parameter checks */
+  if(0==adjacency || 0==adjacency_length || *adjacency_length<1 || 
+     0==is_basal || 0==node_count || 0==max_queue || *max_queue<0 || 
+     0==status)
+  {
+    if(0!=status)
+    {
+      *status = 1;
+    }
+    /* WARNING: Nested return */
+    return;
+  }
+
+  *status = -1;    // Default to an error status code
+
+  try
+  {
+    std::vector<IntVector> adj = Adjacency(adjacency, *node_count);
+    IntVector basal(is_basal, is_basal + *node_count);
+    TrophicChains<PrintChainsVisitor> worker(adj, basal, *max_queue);
+    PrintChainsVisitor visitor;
+    worker.visit(visitor);
+
+    // Normal exit
+    *status = 0;
+  }
+  catch(const std::exception &e)
+  {
+    REprintf("Unexpected error in print_chains[%s]\n", e.what());
+  }
+  catch(...)
+  {
+    REprintf("Unexpected error in print_chains\n");
+  }
+}
+
 void trophic_chains(const int *adjacency, 
                     const int *adjacency_length,
                     const int *is_basal, 
                     const int *node_count,  
                     const int *ncols, 
                     const int *nrows, 
+                    const int *max_queue,
                     int *chains, 
                     int *status)
 {
@@ -376,6 +499,9 @@ adjacency_length: the number of ints in adjacency
 
          nrows:   the number of rows in chains.
 
+     max_queue:   the maximum alowabe size of the queue used to compute chains. 
+                  0 indicates no limit.
+
     Out params:
         chains:   a matrix of node_count rows and max_chains columns. Each 
                   unique chain will be written to this matrix.
@@ -388,6 +514,7 @@ adjacency_length: the number of ints in adjacency
   /* Quick and dirty parameter checks */
   if(0==adjacency || 0==adjacency_length || *adjacency_length<1 || 
      0==is_basal || 0==node_count || *node_count<1 || 
+     0==max_queue || *max_queue<0 || 
      0==chains || 0==ncols || *ncols<1 || 
      0==nrows || *nrows<1 || 0==status)
   {
@@ -403,9 +530,9 @@ adjacency_length: the number of ints in adjacency
 
   try
   {
-    IntVector adj(adjacency, adjacency + *adjacency_length);
+    std::vector<IntVector> adj = Adjacency(adjacency, *node_count);
     IntVector basal(is_basal, is_basal + *node_count);
-    TrophicChains<CollectChainsVisitor> worker(adj, basal, *node_count);
+    TrophicChains<CollectChainsVisitor> worker(adj, basal, *max_queue);
     CollectChainsVisitor visitor(chains, *ncols, *nrows);
     worker.visit(visitor);
 
@@ -428,6 +555,7 @@ void trophic_chains_stats(const int *adjacency,
                           const int *node_count, 
                           const int *n_chains, 
                           const int *longest, 
+                          const int *max_queue,
                           int *node_pos_counts,
                           int *chain_lengths,
                           int *status)
@@ -454,6 +582,9 @@ adjacency_length: the number of ints in adjacency
 
        longest:   the number of nodes in the longest chain.
 
+     max_queue:   the maximum alowabe size of the queue used to compute chains. 
+                  0 indicates no limit.
+
     Out params:
 node_pos_counts:  an array of n_chains * longest integers. Will contain 
                   counts of the number of times each node appears at a given 
@@ -471,6 +602,7 @@ node_pos_counts:  an array of n_chains * longest integers. Will contain
   if(0==adjacency || 0==adjacency_length || *adjacency_length<1 || 
      0==is_basal || 0==node_count || *node_count<1 || 
      0==n_chains || *n_chains<1 || 0==longest || *longest<1 || 
+     0==max_queue || *max_queue<0 || 
      0==node_pos_counts || 0==chain_lengths || 0==status)
   {
     if(0!=status)
@@ -485,9 +617,9 @@ node_pos_counts:  an array of n_chains * longest integers. Will contain
 
   try
   {
-    IntVector adj(adjacency, adjacency + *adjacency_length);
+    std::vector<IntVector> adj = Adjacency(adjacency, *node_count);
     IntVector basal(is_basal, is_basal + *node_count);
-    TrophicChains<ChainStatsVisitor> worker(adj, basal, *node_count);
+    TrophicChains<ChainStatsVisitor> worker(adj, basal, *max_queue);
     ChainStatsVisitor visitor(*node_count, *longest);
     worker.visit(visitor);
 
