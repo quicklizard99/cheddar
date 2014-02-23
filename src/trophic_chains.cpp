@@ -117,12 +117,14 @@ public:
         R_ProcessEvents();
         if(max_queue_>0 && !queue_warning && queue.size()>max_queue_/2)
         {
-          REprintf("This network has a lot of paths, possibly too many to compute\n");
+          REprintf("This network has a lot of paths, possibly too many to " 
+                   "compute\n");
           queue_warning = true;
         }
         else if(max_queue_>0 && queue.size()>max_queue_)
         {
-          throw CheddarException("Unable to compute paths - see the help for TrophicChains for more information.");
+          throw CheddarException("Unable to compute paths - see the help for "
+                                 "TrophicChains for more information.");
         }
 
         int m = path.back();

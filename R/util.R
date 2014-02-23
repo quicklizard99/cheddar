@@ -308,12 +308,6 @@ PredationMatrixToLinks <- function(pm, link.property=NULL)
     return (starts.with==substr(string, 1, nchar(starts.with)))
 }
 
-.UnnamedString <- function()
-{
-    # A string for unnamed objects
-    return ('<unnamed>')
-}
-
 .WriteForRob <- function(community, path)
 {
     # Writes community in a format required by Rob's code that computes chains
@@ -334,9 +328,3 @@ PredationMatrixToLinks <- function(pm, link.property=NULL)
     write.table(x, file=path, na='', row.names=FALSE, col.names=FALSE, sep=' ', 
                 quote=FALSE)
 }
-
-.maxQueueOption <- function()
-{
-    return (getOption('cheddar.max_queue', 1e7))
-}
-

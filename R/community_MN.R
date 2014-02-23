@@ -277,7 +277,7 @@ NvMTriTrophicStatistics <- function(community)
     # defined by Cohen et al 2010 PNAS, Fig 2 B/C and p 22336-22337
     # Cohen et al 2010 PNAS, Fig 2 B/C and p 22336 - 22337
 
-    # chains should be a data.frame containing columns 'resource' and 'consumer'
+    # chains should be a data.frame as computed by ThreeNodeChains
  
     # B -> I -> T
 
@@ -331,16 +331,20 @@ NvMTriTrophicStatistics <- function(community)
     # Properties by Cohen et al 2010 PNAS, p 22337, of all the trophic chains 
     # through the food web
 
-    # chains should be a data.frame containing columns 'resource' and 'consumer'
+    # chains should be a data.frame as computed by TrophicChains
 
     log10M <- Log10M(community)
     log10N <- Log10N(community)
 
-    rchains <- .ReverseChains(chains)
-    chain.span <- abs(log10N[chains[,1]] - log10N[rchains[,1]]) +
-                  abs(log10M[chains[,1]] - log10M[rchains[,1]])
+    # Name of the last node in each chain
+    chains <- as.matrix(chains)
+    count.chain.length <- apply(chains, 1, function(row) max(which(""!=row)))
+    last.in.chain <- sapply(1:length(count.chain.length), 
+                            function(l) chains[l, count.chain.length[l]])
+    count.chain.length <- count.chain.length-1
 
-    count.chain.length <- ChainLength(chains)
+    chain.span <- abs(log10N[chains[,1]] - log10N[last.in.chain]) +
+                  abs(log10M[chains[,1]] - log10M[last.in.chain])
 
     # Link lengths
     chains.log10M <- sapply(chains, function(col) log10M[col])

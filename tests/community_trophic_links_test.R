@@ -696,17 +696,17 @@ TestTrophicChains <- function()
 
     to.test <- list(list(c1,NULL), 
       list(c2,NULL), 
-      list(c3,cheddar:::.Chains(data.frame(Node.1='R',Node.2='C'))), 
-      list(c4,cheddar:::.Chains(data.frame(Node.1='R',Node.2='C',Node.3='P'))), 
-      list(c5,cheddar:::.Chains(data.frame(Node.1=c('R','R'), 
-                                           Node.2=c('O','C'), 
-                                           Node.3=c('', 'O')))), 
-      list(c6,cheddar:::.Chains(data.frame(Node.1='R',Node.2='C',Node.3='P'))), 
-      list(c7,cheddar:::.Chains(data.frame(Node.1='A',Node.2='B',Node.3='C'))),
-      list(test1,cheddar:::.Chains(data.frame(Node.1='A',Node.2='B',Node.3='C'))), 
-      list(test2,cheddar:::.Chains(data.frame(Node.1=c('A','A'),
-                                              Node.2=c('C','B'), 
-                                              Node.3=c('','C')))))
+      list(c3,data.frame(Node.1='R',Node.2='C')), 
+      list(c4,data.frame(Node.1='R',Node.2='C',Node.3='P')), 
+      list(c5,data.frame(Node.1=c('R','R'), 
+                         Node.2=c('O','C'), 
+                         Node.3=c('', 'O'))), 
+      list(c6,data.frame(Node.1='R',Node.2='C',Node.3='P')), 
+      list(c7,data.frame(Node.1='A',Node.2='B',Node.3='C')),
+      list(test1,data.frame(Node.1='A',Node.2='B',Node.3='C')), 
+      list(test2,data.frame(Node.1=c('A','A'),
+                            Node.2=c('C','B'), 
+                            Node.3=c('','C'))))
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -789,10 +789,10 @@ TestThreeNodeChains <- function()
       list(c1, NULL), 
       list(c2, NULL), 
       list(c3, NULL), 
-      list(c4, cheddar:::.Chains(data.frame(bottom='R',intermediate='C',top='P'))), 
-      list(c5, cheddar:::.Chains(data.frame(bottom='R',intermediate='C',top='O'))), 
-      list(c6, cheddar:::.Chains(data.frame(bottom='R',intermediate='C',top='P'))),
-      list(c7, cheddar:::.Chains(data.frame(bottom='A',intermediate='B',top='C'))))
+      list(c4, data.frame(bottom='R',intermediate='C',top='P')), 
+      list(c5, data.frame(bottom='R',intermediate='C',top='O')), 
+      list(c6, data.frame(bottom='R',intermediate='C',top='P')),
+      list(c7, data.frame(bottom='A',intermediate='B',top='C')))
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -834,23 +834,6 @@ TestThreeNodeChains <- function()
         AssertEqual(expected.rows.no.loops, nrow(chains))
         CheckChains(community, chains)
     }
-}
-
-TestChainLength <- function(chains)
-{
-    AssertEqual(NULL, ChainLength(TrophicChains(c1)))
-    AssertEqual(NULL, ChainLength(TrophicChains(c2)))
-    AssertEqual(1, ChainLength(TrophicChains(c3)))
-    AssertEqual(2, ChainLength(TrophicChains(c4)))
-    AssertEqual(c(1,2), ChainLength(TrophicChains(c5)))
-    AssertEqual(2, ChainLength(TrophicChains(c6)))
-    AssertEqual(4.83500334001336007361, 
-                        mean(ChainLength(TrophicChains(TL84))))
-
-    AssertEqual(2, ChainLength(ThreeNodeChains(c4)))
-    AssertEqual(2, ChainLength(ThreeNodeChains(c5)))
-    AssertEqual(2, ChainLength(ThreeNodeChains(c6)))
-    AssertEqual(rep(2, 1044), ChainLength(ThreeNodeChains(TL84)))
 }
 
 TestTrophicHeight <- function()

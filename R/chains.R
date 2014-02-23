@@ -1,59 +1,3 @@
-# Trophic chains.
-is.Chains <- function(x)
-{
-    return ('Chains' %in% class(x))
-}
-
-.Chains <- function(chains, community, node.properties=NULL, 
-                    chain.properties=NULL)
-{
-    # Derives from data.frame. 
-    # Could be a full-blown class with rbind, '[' etc but I've not 
-    # had time to think about this. 
-
-    # An attribute 'link.cols' holds column names that are links in chains.
-
-    # Other columns are properties either of nodes in the chain or of the 
-    # entire chain.
-    stopifnot(is.data.frame(chains))
-    self <- chains
-
-    # Functions in chain.properties should be passed a Chains object
-    class(self) <- c('Chains', class(self))
-    attr(self, 'link.cols') <- colnames(chains)
-
-    cp <- NULL
-    if(!is.null(chain.properties))
-    {
-        cp <- lapply(chain.properties, function(p) 
-              {
-                  do.call(p, args=list(community=community, chains=self))
-              })
-
-        names(cp) <- chain.properties
-        cp <- do.call('cbind', cp)
-        self <- cbind(self, cp)
-    }
-
-    # Add node properties
-    np <- .NodePropertiesOfChains(community, chains=chains, 
-                                  node.properties=node.properties)
-    if(!is.null(np))
-    {
-        self <- cbind(self, np)
-    }
-
-    class(self) <- c('Chains', class(self))
-    attr(self, 'link.cols') <- colnames(chains)
-    return (self)
-}
-
-.ChainsLinkColumns <- function(chains)
-{
-    stopifnot(is.Chains(chains))
-    return (chains[,attr(chains, 'link.cols')])
-}
-
 .TrophicChainsSize <- function(community)
 {
     # Returns two integers: n.chains, longest
@@ -61,6 +5,7 @@ is.Chains <- function(x)
     if(!is.Community(community)) stop('Not a Community')
 
     max.queue <- .maxQueueOption()
+    stopifnot(max.queue>=0)
 
     # Get the food web as an adjancency list
     alist <- .CAdjacencyList(community, ConsumersByNode(community))
@@ -152,6 +97,7 @@ TrophicChainsStats <- function(community)
     if(!is.Community(community)) stop('Not a Community')
 
     max.queue <- .maxQueueOption()
+    stopifnot(max.queue>=0)
 
     # Get the food web as an adjancency list
     alist <- .CAdjacencyList(community, ConsumersByNode(community))
@@ -223,6 +169,7 @@ TrophicChains <- function(community, node.properties=NULL,
     # Isolated nodes are excluded so all chains are of length 2 or greater.
 
     max.queue <- .maxQueueOption()
+    stopifnot(max.queue>=0)
 
     trace <- cat
     trace <- function(...) {}
@@ -348,7 +295,8 @@ TrophicChains <- function(community, node.properties=NULL,
         res$chains <- as.data.frame(res$chains, stringsAsFactors=FALSE)
 
         trace('Before .Chains', as.double(Sys.time()-start), '\n')
-        res <- .Chains(res$chains, community, node.properties, chain.properties)
+        res <- .ChainsWithProperties(res$chains, community, node.properties, 
+                                     chain.properties)
         trace('After .Chains', as.double(Sys.time()-start), '\n')
         return (res)
     }
@@ -364,39 +312,6 @@ TrophicChains <- function(community, node.properties=NULL,
     {
         stop(paste('Unknown status [', res$status, ']', sep=''))
     }
-}
-
-ChainLength <- function(chains)
-{
-    # Vector of length nrow(chains).
-    if(is.null(chains))
-    {
-        return (NULL)
-    }
-    else
-    {
-        stopifnot(is.Chains(chains))
-        return (apply(.ChainsLinkColumns(chains), 1, 
-                       function(r) length(which(''!=r))-1))
-    }
-}
-
-.ReverseChains <- function(chains)
-{
-    # Reverses chains. Chain properties discarded.
-    stopifnot(is.Chains(chains))
-
-    chains <- .ChainsLinkColumns(chains)
-    rchains <- matrix('', nrow=nrow(chains), ncol=ncol(chains))
-    colnames(rchains) <- rev(colnames(chains))
-    chains <- as.matrix(chains)
-    for(row in 1:nrow(chains))
-    {
-        cols <- max(which(''!=chains[row,]))
-        rchains[row, 1:cols] <- chains[row,cols:1]
-    }
-    return (.Chains(as.data.frame(rchains, stringsAsFactors=FALSE), 
-                    attr(chains, 'community')))
 }
 
 ThreeNodeChains <- function(community, exclude.loops=FALSE, 
@@ -457,49 +372,57 @@ ThreeNodeChains <- function(community, exclude.loops=FALSE,
         }
 
         chains <- as.data.frame(chains, stringsAsFactors=FALSE)
-        return (.Chains(chains, community, node.properties, chain.properties))
+        return (.ChainsWithProperties(chains, community, node.properties, 
+                                      chain.properties))
     }
 }
 
-.NodePropertiesOfChains <- function(community, chains, node.properties=NULL, 
-                                    chain.columns=colnames(chains))
+.ChainsWithProperties <- function(chains, community, node.properties, 
+                                  chain.properties)
 {
-    # Adds properties
+    # Make a note of these columns before adding columns containing node 
+    # properties
+    chain.columns <- colnames(chains)
+
+    if(!is.null(chain.properties))
+    {
+        cp <- lapply(chain.properties, function(p) 
+        {
+            do.call(p, args=list(community=community, chains=chains))
+        })
+
+        names(cp) <- chain.properties
+        chains <- cbind(chains, do.call('cbind', cp))
+    }
+
+    chains <- .AddNodePropertiesToChains(community, chains=chains, 
+                                         node.properties=node.properties, 
+                                         chain.columns=chain.columns)
+
+    return (chains)
+}
+
+.AddNodePropertiesToChains <- function(community, chains, node.properties, 
+                                       chain.columns=colnames(chains))
+{
     # chains - a data.frame
-    # node.properties
+    # node.properties - names of functions that will be passed community and 
     # chain.columns - 
-
-    res <- NULL
-
     if(!is.null(node.properties))
     {
-        bad <- !chain.columns %in% colnames(chains)
-        if(any(bad))
-        {
-            stop(paste('The names [', paste(chain.columns[bad], collapse=','), 
-                       '] are not columns of chains', sep=''))
-        }
+        stopifnot(!is.null(colnames(chains)))
+        stopifnot(all(chain.columns %in% colnames(chains)))
 
         np <- NPS(community, node.properties)
 
-        if(is.null(colnames(chains)))
-        {
-            chain.columns <- 1:ncol(chains)
-        }
-    
         for(column in chain.columns)
         {
             v <- lapply(colnames(np), 
                         function(p) np[chains[,column], p, drop=FALSE])
             v <- data.frame(v, stringsAsFactors=FALSE)
             colnames(v) <- paste(column, colnames(v), sep='.')
-            if(is.null(res))    res <- v
-            else                res <- cbind(res, v)
+            chains <- cbind(chains, v)
         }
-
-        rownames(res) <- NULL
     }
-
-    return (res)
+    return (chains)
 }
-

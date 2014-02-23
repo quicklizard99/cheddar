@@ -23,13 +23,12 @@ for communities that contain a large number of trophic chains, such as the
 \code{SkipwithPond} dataset, which has more than $10^5$ unique chains.
 }
 
-\value{An object of class \code{Chains}.}
+\value{A \code{data.frame}.}
 
 \author{Lawrence Hudson}
 
 \seealso{\code{\link{TLPS}}, \code{\link{ThreeNodeChains}}, 
-         \code{\link{Chains}}, \code{\link{TrophicChainsStats}}, 
-         \code{\link{SkipwithPond}}}
+         \code{\link{TrophicChainsStats}}, \code{\link{SkipwithPond}}}
 
 \examples{
 data(TL84)

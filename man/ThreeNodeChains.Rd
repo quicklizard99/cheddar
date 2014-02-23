@@ -19,12 +19,11 @@ ThreeNodeChains(community, exclude.loops=FALSE, node.properties=NULL,
 \code{Chains} object containing the columns bottom, intermediate and 
 top and any requested node and trophic-link columns.}
 
-\value{An object of class \code{Chains}.}
+\value{A \code{data.frame}.}
 
 \author{Lawrence Hudson}
 
-\seealso{\code{\link{TLPS}}, \code{\link{TrophicChains}}, 
-         \code{\link{Chains}}}
+\seealso{\code{\link{TLPS}}, \code{\link{TrophicChains}}}
 
 \examples{
 data(TL84)

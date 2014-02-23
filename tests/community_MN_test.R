@@ -250,8 +250,6 @@ TestNvMTriTrophic3 <- function()
                         count.chain.length=1,
                         sum.chain.length=3,
                         stringsAsFactors=FALSE)
-    attr(check, 'link.cols') <- c('Node.1', 'Node.2')
-    class(check) <- c('Chains', 'data.frame')
     AssertEqual(check, tts$trophic.chains)
 
     # Tri-trophic chain
@@ -275,8 +273,6 @@ TestNvMTriTrophic3 <- function()
                         Aupper=-11.28584933963889191944,
                         Abetween=64.06271356630675484212,
                         stringsAsFactors=FALSE)
-    attr(check, 'link.cols') <- c('bottom', 'intermediate', 'top')
-    class(check) <- c('Chains', 'data.frame')
     AssertEqual(check, tts$three.node.chains)
 
     check <- data.frame(Node.1='R',
@@ -286,8 +282,6 @@ TestNvMTriTrophic3 <- function()
                         count.chain.length=2.00000000000000000000,
                         sum.chain.length=4.08354605145007454325,
                         stringsAsFactors=FALSE)
-    attr(check, 'link.cols') <- c('Node.1', 'Node.2', 'Node.3')
-    class(check) <- c('Chains', 'data.frame')
     AssertEqual(check, tts$trophic.chains)
 }
 

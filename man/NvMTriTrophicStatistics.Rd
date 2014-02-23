@@ -27,7 +27,6 @@ Proceedings of the National Academy of Sciences of the United States of America
 \seealso{\code{\link{TLPS}}, 
          \code{\link{ThreeNodeChains}}, 
          \code{\link{TrophicChains}}, 
-         \code{\link{Chains}}, 
          \code{\link{PlotAuppervAlower}},
          \code{\link{NvMTriTrophicTable}}}
 

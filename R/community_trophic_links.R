@@ -1247,6 +1247,7 @@ NodeQuantitativeDescriptors <- function(community, weight)
         n <- table(t[r])  # The number of resources at each trophic level
         return (-sum(vlog2v(n/sum(n))))
     })
+
     o <- -1 + 2^sapply(1:NumberOfNodes(community), function(k)
     {
         r <- res[[k]]     # Resources of k
