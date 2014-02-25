@@ -667,6 +667,13 @@ TestTrophicChains <- function()
         # Each chain should start with a basal node
         AssertEqual(TRUE, all(chains[,1] %in% BasalNodes(community)))
 
+        if(any(IsTopLevelNode(community)))
+        {
+            # Each chain should end with a top-level node
+            last <- apply(chains, 1, function(row) row[max(which(""!=row))])
+            AssertEqual(TRUE, all(last %in% TopLevelNodes(community)))
+        }
+
         # Make sure that every link in every chain appears in the predation 
         # matrix
         pm <- PredationMatrix(community)
@@ -686,9 +693,14 @@ TestTrophicChains <- function()
     test1 <- Community(nodes=data.frame(node=c('A', 'B', 'C')), 
                        trophic.links=cbind(resource=c('A', 'B', 'C'), 
                                            consumer=c('B', 'C', 'B')), 
-                      properties=list(title='test1'))
+                       properties=list(title='test1'))
 
     test2 <- Community(nodes=data.frame(node=c('A', 'B', 'C')), 
+                       trophic.links=cbind(resource=c('A', 'B', 'A', 'C'), 
+                                           consumer=c('B', 'C', 'C', 'B')), 
+                       properties=list(title='test2'))
+
+    test3 <- Community(nodes=data.frame(node=c('A', 'B', 'C')), 
                        trophic.links=cbind(resource=c('A', 'B', 'A'), 
                                            consumer=c('B', 'C', 'C')), 
                        properties=list(title='test2'))
@@ -696,17 +708,20 @@ TestTrophicChains <- function()
 
     to.test <- list(list(c1,NULL), 
       list(c2,NULL), 
-      list(c3,data.frame(Node.1='R',Node.2='C')), 
-      list(c4,data.frame(Node.1='R',Node.2='C',Node.3='P')), 
+      list(c3,data.frame(Node.1='R',Node.2='C', stringsAsFactors=FALSE)), 
+      list(c4,data.frame(Node.1='R',Node.2='C',Node.3='P', stringsAsFactors=FALSE)), 
       list(c5,data.frame(Node.1=c('R','R'), 
                          Node.2=c('O','C'), 
-                         Node.3=c('', 'O'))), 
-      list(c6,data.frame(Node.1='R',Node.2='C',Node.3='P')), 
-      list(c7,data.frame(Node.1='A',Node.2='B',Node.3='C')),
-      list(test1,data.frame(Node.1='A',Node.2='B',Node.3='C')), 
+                         Node.3=c('', 'O'), stringsAsFactors=FALSE)), 
+      list(c6,data.frame(Node.1='R',Node.2='C',Node.3='P', stringsAsFactors=FALSE)), 
+      list(c7,data.frame(Node.1='A',Node.2='B',Node.3='C', stringsAsFactors=FALSE)),
+      list(test1,data.frame(Node.1='A',Node.2='B',Node.3='C', stringsAsFactors=FALSE)), 
       list(test2,data.frame(Node.1=c('A','A'),
+                            Node.2=c('B','C'), 
+                            Node.3=c('C','B'), stringsAsFactors=FALSE)),
+      list(test3,data.frame(Node.1=c('A','A'),
                             Node.2=c('C','B'), 
-                            Node.3=c('','C'))))
+                            Node.3=c( '','C'), stringsAsFactors=FALSE)))
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -731,7 +746,11 @@ TestTrophicChains <- function()
       list(YthanEstuary, c(7621, 10), list('Diatoms','Crangon crangon',
                                            'Somateria mollissima')),
       list(BroadstoneStream, c(5398, 10), list('Potamophylax cingulatus', 
-                                               'Cordulegaster boltonii')))
+                                               'Cordulegaster boltonii')), 
+      list(Benguela, c(15430, 14), list('Phytoplankton', 'Anchovy', 'Seals', 
+                                        'Sharks')))
+    to.test <- head(to.test, -1)
+
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -744,19 +763,6 @@ TestTrophicChains <- function()
         AssertEqual(expected.first.chain, 
                     unname(chains[1,1:length(expected.first.chain),drop=TRUE]))
         CheckChains(community, chains)
-    }
-
-    # Skipwith Pond has over 2.5 million chains - this kills my 32-bit 
-    # Windows machine.
-    if(FALSE)
-    {
-        # Don't run all checks
-        chains <- TrophicChains(SkipwithPond)
-        AssertEqual(dim(chains), c(2538120,17))
-        AssertEqual(chains[1,1:3], 
-                    c('Detritus',
-                      'Small oligochaetes (principally Enchytraeidae)',
-                      'Polycelis tenuis'))
     }
 }
 

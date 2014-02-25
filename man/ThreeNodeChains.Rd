@@ -16,7 +16,7 @@ ThreeNodeChains(community, exclude.loops=FALSE, node.properties=NULL,
 }
 
 \details{Enumerates every three-node chain in the food-web and returns a 
-\code{Chains} object containing the columns bottom, intermediate and 
+\code{data.frame} containing the columns bottom, intermediate and 
 top and any requested node and trophic-link columns.}
 
 \value{A \code{data.frame}.}

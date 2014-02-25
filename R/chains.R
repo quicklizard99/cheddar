@@ -96,6 +96,13 @@ TrophicChainsStats <- function(community)
 {
     if(!is.Community(community)) stop('Not a Community')
 
+    # Small performance increase by removing cannibalistic links
+    community <- RemoveCannibalisticLinks(community)
+    if(0==NumberOfTrophicLinks(community))
+    {
+        return (NULL)
+    }
+
     max.queue <- .maxQueueOption()
     stopifnot(max.queue>=0)
 
@@ -161,7 +168,7 @@ TrophicChainsStats <- function(community)
 TrophicChains <- function(community, node.properties=NULL, 
                           chain.properties=NULL)
 {
-    # Returns an object of class Chains. 
+    # Returns a data.frame
     # One row per unique trophic chain in the food web. 
     # Shorter chains are suffixed with ''. 
     # Cannibalism and loops are ignored, i.e. each node appears no more 
@@ -178,6 +185,7 @@ TrophicChains <- function(community, node.properties=NULL,
 
     if(!is.Community(community)) stop('Not a Community')
 
+    # Small performance increase by removing cannibalistic links
     community <- RemoveCannibalisticLinks(community)
     if(0==NumberOfTrophicLinks(community))
     {
