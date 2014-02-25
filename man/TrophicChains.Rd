@@ -51,14 +51,13 @@ tc <- TrophicChains(TL84)
 
 # Every chain starts with a basal node
 BasalNodes(TL84)
-# The first node in each chain
 first <- tc[,1]
-all(unique(first) %in% BasalNodes(TL84))  # TRUE
+all(IsBasalNode(TL84)[unique(first)])
 
 # TL84 has a single top-level consumer - every trophic chain ends with this 
 # consumer
 TopLevelNodes(TL84)
-# The last node in each chain
+# Get the last node in each chain
 last <- apply(tc, 1, function(row) row[max(which(""!=row))])
 unique(last)
 

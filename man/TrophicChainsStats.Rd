@@ -50,11 +50,6 @@ chain.stats$node.pos.counts[c(IntermediateNodes(TL84),TopLevelNodes(TL84)),]
 
 # All counts are zero for isolated nodes IsolatedNodes.
 chain.stats$node.pos.counts[IsolatedNodes(TL84),]
-
-# Skipwith Pond has more than 10e5 unique chains. 
-data(SkipwithPond)
-chain.stats <- TrophicChainsStats(SkipwithPond)
-length(chain.stats$chain.lengths)
 }
 \keyword{utilities}
 
