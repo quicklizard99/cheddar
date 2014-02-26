@@ -661,9 +661,10 @@ n <- 20
 cbind(n.consumers=1:n, longest.chain=1:n, factorial.n=factorial(1:n))
 @
 The number of trophic chains quickly becomes too large to compute within 
-practical time and within available memory. When computing chains, 
-cheddar allocates memory as required, with a safety limit to prevent too much 
-of the system's memory from being consumed. 
+practical time and within available memory, and this for communities with just 
+a single producer.
+When computing chains, cheddar allocates memory as required, with a safety 
+limit to prevent too much of the system's memory from being consumed. 
 If you see an error message `Unable to compute paths' then this safety 
 limit has been reached. 
 The limit can be altered by setting the `cheddarMaxQueue' option.
