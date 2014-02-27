@@ -1,9 +1,14 @@
 #  Cheddar release history
 
 ## 0.1-625 Released 2014-02-25
+**Available on CRAN**
 #### Bugs fixed
 * [Issue 31](https://github.com/quicklizard99/cheddar/issues/31)
   Missing Licence file
+
+#### Improvements
+* [Issue 30](https://github.com/quicklizard99/cheddar/issues/30)
+  Indicate that there are too many trophic chains to compute
 
 ## 0.1-624 Released 2013-12-02
 **Available on CRAN**
