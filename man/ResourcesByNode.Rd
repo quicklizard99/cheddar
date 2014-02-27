@@ -3,6 +3,7 @@
 \alias{ConsumersByNode}
 \alias{ResourcesOfNodes}
 \alias{ConsumersOfNodes}
+\alias{ResourcesAndConsumersByNode}
 \alias{TrophicLinksForNodes}
 \title{Resources and consumers of nodes}
 \description{Functions that return the resources and consumers of nodes.}
@@ -10,6 +11,7 @@
 \usage{
 ResourcesByNode(community) 
 ConsumersByNode(community) 
+ResourcesAndConsumersByNode(community)
 
 ResourcesOfNodes(community, nodes) 
 ConsumersOfNodes(community, nodes) 
@@ -25,9 +27,10 @@ TrophicLinksForNodes(community, nodes, node.properties=NULL,
   \item{link.properties}{passed to \code{TLPS}.}
 }
 
-\details{\code{ResourcesByNode} and \code{ConsumersByNode} return a list of 
-length \code{NumberOfNodes}; values are vectors containing the names of 
-resources/consumers. 
+\details{\code{ResourcesByNode}/\code{ConsumersByNode}/
+\code{ResourcesAndConsumersByNode} all return a list of length 
+\code{NumberOfNodes}; list elements are names of nodes that are 
+resources/consumers/resources and/or consumers.
 
 If \code{nodes} is of length one then \code{ResourcesOfNodes} and 
 \code{ConsumersOfNodes} return a vector of resources / consumers. If 

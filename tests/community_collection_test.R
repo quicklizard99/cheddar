@@ -540,3 +540,31 @@ TestPersistCollection <- function()
         unlink(path, recursive=TRUE)
     }
 }
+
+TestSiteBySpeciesMatrix <- function()
+{
+    res <- SiteBySpeciesMatrix(Millstream)
+    AssertEqual(c(67,2), dim(res))
+    AssertEqual(117, sum(res))
+    AssertTrue(all(res %in% 0:1))
+    AssertEqual('Valvata piscinalis', rownames(res)[67])
+    AssertEqual(c(c4=1, d4=1), res[1,])
+    AssertEqual(c(c4=1, d4=0), res[67,])
+
+    # Same data but missing species represented by NA
+    res <- SiteBySpeciesMatrix(Millstream, na.missing=TRUE)
+    AssertEqual(c(67,2), dim(res))
+    AssertEqual(117, sum(res, na.rm=TRUE))
+    AssertTrue(all(res %in% c(NA,1)))
+    AssertEqual('Valvata piscinalis', rownames(res)[67])
+    AssertEqual(c(c4=1, d4=1), res[1,])
+    AssertEqual(c(c4=1, d4=NA), res[67,])
+
+    # log10 biomass abundance
+    res <- SiteBySpeciesMatrix(Millstream, abundance='Log10Biomass', 
+                               na.missing=TRUE)
+    AssertEqual(c(67,2), dim(res))
+    AssertEqual('Valvata piscinalis', rownames(res)[67])
+    AssertEqual(c(c4=-5.0662, d4=-4.9292),res[1,])
+    AssertEqual(c(c4=2.629, d4=NA), res[67,])
+}

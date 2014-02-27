@@ -80,4 +80,3 @@ PredationMatrixToLinks(pm, link.property='diet.fraction')
 }
 
 \keyword{utilities}
-

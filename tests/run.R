@@ -4,8 +4,8 @@ options(warn=2)
 library(cheddar)
 
 # Data for test plans
-data(Benguela, BroadstoneStream, SkipwithPond, TL84, TL86, YthanEstuary, pHWebs,
-     Millstream)
+data(Benguela, BroadstoneStream, ChesapeakeBay, SkipwithPond, TL84, TL86, 
+     YthanEstuary, pHWebs, Millstream)
 
 # One species. No properties. No trophic links.
 c1 <- Community(nodes=data.frame(node='S'), properties=list(title='c1'))
@@ -50,7 +50,7 @@ c6 <- Community(nodes=data.frame(node=c('R','C','P'),
 # A community with three nodes:
 #   A is a cannibal with no resources other than itself
 #   B consumes A
-#   C is a cannibal that consumers B
+#   C is a cannibal that consumes B
 #   D is a cannibal and has no other resources or consumers
 #   E has no resources or consumers
 # This community is biologically silly but mathematically interesting for 
@@ -78,6 +78,21 @@ AssertEqual <- function(a, b, ...)
     }
 }
 
+AssertTrue <- function(v)
+{
+    AssertEqual(TRUE, v)
+}
+
+AssertFalse <- function(v)
+{
+    AssertEqual(FALSE, v)
+}
+
+AssertNull <- function(v)
+{
+    AssertEqual(NULL, v)
+}
+
 AssertRaises <- function(ex)
 {
     # A function that expects an exception to be raise when ex is evalutated
@@ -91,7 +106,11 @@ AssertRaises <- function(ex)
 RunTests <- function(tests)
 {
     # tests should be a vector of function names
-    options(error=function() traceback(3), 
+    options(error=function()
+            {
+                traceback(3)
+                stop()
+            }, 
             stringsAsFactors=FALSE)
 
     if(0==length(tests))

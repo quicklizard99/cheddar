@@ -12,14 +12,13 @@ TrophicChainsStats(community)
 }
 
 \details{Enumerates every trophic chain in the food-web and returns a 
-\code{list} object containing some simple statistics.
-
+\code{list} object containing some simple statistics. 
 If your analysis requires only simple statistics about trophic chains then 
 this function is more suitable than \code{TrophicChains} 
-because it is much faster and requires less memory.
+because it is faster and requires less memory.
 }
 
-\value{An list containing:
+\value{A list containing:
 \item{chain.lengths}{The number of nodes in each trophic chain.}
 \item{node.pos.counts}{A \code{matrix} of \code{NumberOfNodes} rows and 
   \code{1+max(chain.lengths)} columns. Elements are the number of chains in 
@@ -51,11 +50,6 @@ chain.stats$node.pos.counts[c(IntermediateNodes(TL84),TopLevelNodes(TL84)),]
 
 # All counts are zero for isolated nodes IsolatedNodes.
 chain.stats$node.pos.counts[IsolatedNodes(TL84),]
-
-# Skipwith Pond has more than 10e5 unique chains. 
-data(SkipwithPond)
-chain.stats <- TrophicChainsStats(SkipwithPond)
-length(chain.stats$chain.lengths)
 }
 \keyword{utilities}
 

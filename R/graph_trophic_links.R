@@ -204,8 +204,13 @@ PlotPredationMatrix <- function(community,
 
     stopifnot(sort(resource.order)==sort(nodes))
     stopifnot(sort(consumer.order)==sort(nodes))
-    X <- sapply(tlp[,'consumer'], function(s) return (which(s==consumer.order)))
-    Y <- sapply(tlp[,'resource'], function(s) return (which(s==resource.order)))
+
+    decode <- 1:length(nodes)
+    names(decode) <- consumer.order
+    X <- decode[tlp[,'consumer']]
+
+    names(decode) <- resource.order
+    Y <- decode[tlp[,'resource']]
 
     # Plot y values inverted
     n <- length(nodes)

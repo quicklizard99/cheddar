@@ -8,18 +8,20 @@ TestPredationMatrixToLinks <- function()
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- 1
-    AssertEqual(data.frame(resource='S 1', consumer='S 1'), 
+    AssertEqual(data.frame(resource='S 1', consumer='S 1', stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- m[10,10] <- 1
-    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+    AssertEqual(data.frame(resource=c('S 1','S 10'),
+                           consumer=c('S 1','S 10'), stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- m[10,10] <- m[1,10] <- 1
     AssertEqual(data.frame(resource=c('S 1','S 1','S 10'), 
-                         consumer=c('S 1','S 10','S 10')), 
+                           consumer=c('S 1','S 10','S 10'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     t1 <- PredationMatrixToLinks(PredationMatrix(TL84))
@@ -29,19 +31,25 @@ TestPredationMatrixToLinks <- function()
     # Logical values
     m <- matrix(0, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- m[10,10] <- TRUE
-    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+    AssertEqual(data.frame(resource=c('S 1','S 10'),
+                           consumer=c('S 1','S 10'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     # NA
     m <- matrix(NA, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- m[10,10] <- TRUE
-    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+    AssertEqual(data.frame(resource=c('S 1','S 10'),
+                           consumer=c('S 1','S 10'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     # Values other than 1
     m <- matrix(NA, ncol=10, nrow=10, dimnames=list(n,n))
     m[1,1] <- m[10,10] <- -10
-    AssertEqual(data.frame(resource=c('S 1','S 10'),consumer=c('S 1','S 10')), 
+    AssertEqual(data.frame(resource=c('S 1','S 10'),
+                           consumer=c('S 1','S 10'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     # A non-square matrix
@@ -54,31 +62,36 @@ TestPredationMatrixToLinks <- function()
     m[1,3] <- 0.1
     m[2,3] <- 0.9
     AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
-                           consumer=c('a','a','b','c','c')), 
+                           consumer=c('a','a','b','c','c'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     # The same non-square matrix with the link property extracted
     AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
                            consumer=c('a','a','b','c','c'), 
-                           diet.fraction=c(0.3,0.7,1,0.1,0.9)), 
+                           diet.fraction=c(0.3,0.7,1,0.1,0.9), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m, link.property='diet.fraction'))
 
     # A data.frame as input
     m <- data.frame(a=c(1,1), b=c(1,0), c=c(1,1), row.names=c('d', 'e'))
     AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
-                           consumer=c('a','a','b','c','c')), 
+                           consumer=c('a','a','b','c','c'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     # A data.frame with a link property
     m <- data.frame(a=c(0.3,0.7), b=c(1,0), c=c(0.1,0.9), row.names=c('d', 'e'))
     AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
-                           consumer=c('a','a','b','c','c')), 
+                           consumer=c('a','a','b','c','c'), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m))
 
     # The same data.frame with the link property extracted
     AssertEqual(data.frame(resource=c('d','e','d','d','e'), 
                            consumer=c('a','a','b','c','c'), 
-                           diet.fraction=c(0.3,0.7,1,0.1,0.9)), 
+                           diet.fraction=c(0.3,0.7,1,0.1,0.9), 
+                           stringsAsFactors=FALSE), 
                 PredationMatrixToLinks(m, link.property='diet.fraction'))
 
     # Not a matrix

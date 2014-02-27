@@ -1,4 +1,5 @@
-\name{cheddar-package}
+\name{cheddar}
+\alias{cheddar}
 \alias{cheddar-package}
 \alias{cheddar}
 \docType{package}
@@ -19,13 +20,13 @@ release history:
     \tabular{ll}{
     Package: \tab cheddar\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-622\cr
-    Date: \tab 2013-03-19\cr
-    License: \tab BSD\cr
+    Version: \tab 0.1-626\cr
+    Date: \tab 2014-02-26\cr
+    License: \tab BSD 2 clause\cr
     }
 }
 
-\author{Maintainer: Lawrence Hudson <lawrence.hudson08@imperial.ac.uk>}
+\author{Maintainer: Lawrence Hudson <l.hudson@nhm.ac.uk}
 
 %\references{}
 

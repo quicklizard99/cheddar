@@ -55,7 +55,7 @@ Researchers typically use their own bespoke data formats. This means that there
 are probably as many data formats as there are researchers! It is therefore 
 extremely hard to write a generic 'import my data in to Cheddar' function. 
 Help is at hand! If you have community data that you would like to import in to 
-Cheddar, please contact me (lawrence.hudson08 (at) imperial.ac.uk) - I will 
+Cheddar, please contact me (l.hudson@nhm.ac.uk) - I will 
 either provide example data-import R code for you to modify or will write the 
 required R code for you.
 
@@ -72,7 +72,7 @@ different aspect of the community (Table \ref{tab:community_files}).
       \toprule
         Aspect          & File                     & Description                                      \\
       \midrule
-        Whole-community & \code{properties.csv}    & Contains properties appplicable to the community \\
+        Whole-community & \code{properties.csv}    & Contains properties applicable to the community  \\
         Nodes           & \code{nodes.csv}         & Defines species and associated properties        \\
         Trophic Links   & \code{trophic.links.csv} & Optional file that defines the food web          \\
       \bottomrule 

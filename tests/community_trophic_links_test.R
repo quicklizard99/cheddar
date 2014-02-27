@@ -473,6 +473,22 @@ TestConsumersOfNodes <- function()
     AssertRaises(ConsumersOfNodes(c1, 'x'))
 }
 
+TestResourcesAndConsumersByNode <- function()
+{
+    AssertEqual(list(S=vector('character')), ResourcesAndConsumersByNode(c1))
+    AssertEqual(list(S='S'), ResourcesAndConsumersByNode(c2))
+    AssertEqual(list(R='C', C='R'), ResourcesAndConsumersByNode(c3))
+    AssertEqual(list(R='C', C=c('R','P'), P='C'), 
+                ResourcesAndConsumersByNode(c4))
+    AssertEqual(list(R=c('C','O'), C=c('R','O'), O=c('R','C')), 
+                ResourcesAndConsumersByNode(c5))
+    AssertEqual(list(R='C', C=c('R','P'), P='C'), 
+                ResourcesAndConsumersByNode(c6))
+    AssertEqual(list(A=c('A','B'), B=c('A','C'), C=c('B','C'), D='D', 
+                     E=vector(mode='character')), 
+                ResourcesAndConsumersByNode(c7))
+}
+
 TestNumberOfTrophicLinks <- function()
 {
     AssertEqual(0, NumberOfTrophicLinks(c1))
@@ -538,21 +554,26 @@ TestCannibals <- function()
 {
     AssertEqual(c(S=FALSE), IsCannibal(c1))
     AssertEqual(0, length(Cannibals(c1)))
+    AssertEqual(0, FractionCannibalistic(c1))
     AssertEqual(c(S=TRUE), IsCannibal(c2))
     AssertEqual('S', Cannibals(c2))
+    AssertEqual(1, FractionCannibalistic(c2))
     AssertEqual(c(R=FALSE,C=FALSE), IsCannibal(c3))
     AssertEqual(0, length(Cannibals(c3)))
+    AssertEqual(0, FractionCannibalistic(c3))
     AssertEqual(c(R=FALSE,C=FALSE,P=FALSE), IsCannibal(c4))
     AssertEqual(0, length(Cannibals(c4)))
+    AssertEqual(0, FractionCannibalistic(c4))
     AssertEqual(c(R=FALSE,C=FALSE,O=FALSE), IsCannibal(c5))
     AssertEqual(0, length(Cannibals(c5)))
+    AssertEqual(0, FractionCannibalistic(c5))
     AssertEqual(c(A=TRUE,B=FALSE,C=TRUE,D=TRUE,E=FALSE), IsCannibal(c7))
     AssertEqual(c('A','C','D'), Cannibals(c7))
-    AssertEqual(c("Cyclops varians rubellus", 
-                    "Orthocyclops modestus",
-                    "Tropocyclops prasinus",
-                    "Chaoborus punctipennis", 
-                    "Umbra limi"), Cannibals(TL84))
+    AssertEqual(3/5, FractionCannibalistic(c7))
+    AssertEqual(c("Cyclops varians rubellus", "Orthocyclops modestus",
+                  "Tropocyclops prasinus", "Chaoborus punctipennis", 
+                  "Umbra limi"), Cannibals(TL84))
+    AssertEqual(5/56, FractionCannibalistic(TL84))
 }
 
 TestTrophicChainsStats <- function()
@@ -618,7 +639,8 @@ TestTrophicChainsStatsOverflow <- function()
               as.integer(length(alist)), 
               as.integer(is.basal), 
               as.integer(nrow(alist)), 
-              as.integer(1),
+              as.integer(1), # test_overflow
+              as.integer(0), # max_queue
               n.chains=n.chains,
               longest=longest,
               status=status, 
@@ -645,6 +667,13 @@ TestTrophicChains <- function()
         # Each chain should start with a basal node
         AssertEqual(TRUE, all(chains[,1] %in% BasalNodes(community)))
 
+        if(any(IsTopLevelNode(community)))
+        {
+            # Each chain should end with a top-level node
+            last <- apply(chains, 1, function(row) row[max(which(""!=row))])
+            AssertEqual(TRUE, all(last %in% TopLevelNodes(community)))
+        }
+
         # Make sure that every link in every chain appears in the predation 
         # matrix
         pm <- PredationMatrix(community)
@@ -664,9 +693,14 @@ TestTrophicChains <- function()
     test1 <- Community(nodes=data.frame(node=c('A', 'B', 'C')), 
                        trophic.links=cbind(resource=c('A', 'B', 'C'), 
                                            consumer=c('B', 'C', 'B')), 
-                      properties=list(title='test1'))
+                       properties=list(title='test1'))
 
     test2 <- Community(nodes=data.frame(node=c('A', 'B', 'C')), 
+                       trophic.links=cbind(resource=c('A', 'B', 'A', 'C'), 
+                                           consumer=c('B', 'C', 'C', 'B')), 
+                       properties=list(title='test2'))
+
+    test3 <- Community(nodes=data.frame(node=c('A', 'B', 'C')), 
                        trophic.links=cbind(resource=c('A', 'B', 'A'), 
                                            consumer=c('B', 'C', 'C')), 
                        properties=list(title='test2'))
@@ -674,17 +708,20 @@ TestTrophicChains <- function()
 
     to.test <- list(list(c1,NULL), 
       list(c2,NULL), 
-      list(c3,cheddar:::.Chains(data.frame(Node.1='R',Node.2='C'))), 
-      list(c4,cheddar:::.Chains(data.frame(Node.1='R',Node.2='C',Node.3='P'))), 
-      list(c5,cheddar:::.Chains(data.frame(Node.1=c('R','R'), 
-                                           Node.2=c('O','C'), 
-                                           Node.3=c('', 'O')))), 
-      list(c6,cheddar:::.Chains(data.frame(Node.1='R',Node.2='C',Node.3='P'))), 
-      list(c7,cheddar:::.Chains(data.frame(Node.1='A',Node.2='B',Node.3='C'))),
-      list(test1,cheddar:::.Chains(data.frame(Node.1='A',Node.2='B',Node.3='C'))), 
-      list(test2,cheddar:::.Chains(data.frame(Node.1=c('A','A'),
-                                              Node.2=c('C','B'), 
-                                              Node.3=c('','C')))))
+      list(c3,data.frame(Node.1='R',Node.2='C', stringsAsFactors=FALSE)), 
+      list(c4,data.frame(Node.1='R',Node.2='C',Node.3='P', stringsAsFactors=FALSE)), 
+      list(c5,data.frame(Node.1=c('R','R'), 
+                         Node.2=c('O','C'), 
+                         Node.3=c('', 'O'), stringsAsFactors=FALSE)), 
+      list(c6,data.frame(Node.1='R',Node.2='C',Node.3='P', stringsAsFactors=FALSE)), 
+      list(c7,data.frame(Node.1='A',Node.2='B',Node.3='C', stringsAsFactors=FALSE)),
+      list(test1,data.frame(Node.1='A',Node.2='B',Node.3='C', stringsAsFactors=FALSE)), 
+      list(test2,data.frame(Node.1=c('A','A'),
+                            Node.2=c('B','C'), 
+                            Node.3=c('C','B'), stringsAsFactors=FALSE)),
+      list(test3,data.frame(Node.1=c('A','A'),
+                            Node.2=c('C','B'), 
+                            Node.3=c( '','C'), stringsAsFactors=FALSE)))
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -709,7 +746,11 @@ TestTrophicChains <- function()
       list(YthanEstuary, c(7621, 10), list('Diatoms','Crangon crangon',
                                            'Somateria mollissima')),
       list(BroadstoneStream, c(5398, 10), list('Potamophylax cingulatus', 
-                                               'Cordulegaster boltonii')))
+                                               'Cordulegaster boltonii')), 
+      list(Benguela, c(15430, 14), list('Phytoplankton', 'Anchovy', 'Seals', 
+                                        'Sharks')))
+    to.test <- head(to.test, -1)
+
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -722,19 +763,6 @@ TestTrophicChains <- function()
         AssertEqual(expected.first.chain, 
                     unname(chains[1,1:length(expected.first.chain),drop=TRUE]))
         CheckChains(community, chains)
-    }
-
-    # Skipwith Pond has over 2.5 million chains - this kills my 32-bit 
-    # Windows machine.
-    if(FALSE)
-    {
-        # Don't run all checks
-        chains <- TrophicChains(SkipwithPond)
-        AssertEqual(dim(chains), c(2538120,17))
-        AssertEqual(chains[1,1:3], 
-                    c('Detritus',
-                      'Small oligochaetes (principally Enchytraeidae)',
-                      'Polycelis tenuis'))
     }
 }
 
@@ -767,10 +795,10 @@ TestThreeNodeChains <- function()
       list(c1, NULL), 
       list(c2, NULL), 
       list(c3, NULL), 
-      list(c4, cheddar:::.Chains(data.frame(bottom='R',intermediate='C',top='P'))), 
-      list(c5, cheddar:::.Chains(data.frame(bottom='R',intermediate='C',top='O'))), 
-      list(c6, cheddar:::.Chains(data.frame(bottom='R',intermediate='C',top='P'))),
-      list(c7, cheddar:::.Chains(data.frame(bottom='A',intermediate='B',top='C'))))
+      list(c4, data.frame(bottom='R',intermediate='C',top='P')), 
+      list(c5, data.frame(bottom='R',intermediate='C',top='O')), 
+      list(c6, data.frame(bottom='R',intermediate='C',top='P')),
+      list(c7, data.frame(bottom='A',intermediate='B',top='C')))
     for(index in 1:length(to.test))
     {
         community <- to.test[[index]][[1]]
@@ -812,23 +840,6 @@ TestThreeNodeChains <- function()
         AssertEqual(expected.rows.no.loops, nrow(chains))
         CheckChains(community, chains)
     }
-}
-
-TestChainLength <- function(chains)
-{
-    AssertEqual(NULL, ChainLength(TrophicChains(c1)))
-    AssertEqual(NULL, ChainLength(TrophicChains(c2)))
-    AssertEqual(1, ChainLength(TrophicChains(c3)))
-    AssertEqual(2, ChainLength(TrophicChains(c4)))
-    AssertEqual(c(1,2), ChainLength(TrophicChains(c5)))
-    AssertEqual(2, ChainLength(TrophicChains(c6)))
-    AssertEqual(4.83500334001336007361, 
-                        mean(ChainLength(TrophicChains(TL84))))
-
-    AssertEqual(2, ChainLength(ThreeNodeChains(c4)))
-    AssertEqual(2, ChainLength(ThreeNodeChains(c5)))
-    AssertEqual(2, ChainLength(ThreeNodeChains(c6)))
-    AssertEqual(rep(2, 1044), ChainLength(ThreeNodeChains(TL84)))
 }
 
 TestTrophicHeight <- function()
@@ -930,23 +941,25 @@ TestTrophicSpecies <- function()
 TestTrophicLinksForNodes <- function()
 {
     AssertEqual(NULL, TrophicLinksForNodes(c1, 'S'))
-    AssertEqual(data.frame(resource='S', consumer='S'), 
+    AssertEqual(data.frame(resource='S', consumer='S', stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c2, 'S'))
 
-    AssertEqual(data.frame(resource='R', consumer='C'), 
+    AssertEqual(data.frame(resource='R', consumer='C', stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c3, 'R'))
-    AssertEqual(data.frame(resource='R', consumer='C'), 
+    AssertEqual(data.frame(resource='R', consumer='C', stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c3, 'C'))
-    AssertEqual(data.frame(resource='R', consumer='C'), 
+    AssertEqual(data.frame(resource='R', consumer='C', stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c3, c('R','C')))
 
-    AssertEqual(data.frame(resource='R', consumer='C'), 
+    AssertEqual(data.frame(resource='R', consumer='C', stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c4, 'R'))
-    AssertEqual(data.frame(resource=c('R','C'), consumer=c('C','P')), 
+    AssertEqual(data.frame(resource=c('R','C'), consumer=c('C','P'), 
+                           stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c4, 'C'))
-    AssertEqual(data.frame(resource='C', consumer='P'), 
+    AssertEqual(data.frame(resource='C', consumer='P', stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c4, 'P'))
-    AssertEqual(data.frame(resource=c('R','C'), consumer=c('C','P')), 
+    AssertEqual(data.frame(resource=c('R','C'), consumer=c('C','P'), 
+                           stringsAsFactors=FALSE), 
                 TrophicLinksForNodes(c4, c('R','C','P')))
 }
 
@@ -1019,20 +1032,20 @@ TestRemoveCannibalisticLinks <- function()
 
 TestShortestPathLengths <- function()
 {
-    AssertEqual(matrix(0, dimnames=list('S', 'S')), ShortestPaths(c1))
-    AssertEqual(matrix(0, dimnames=list('S', 'S')), ShortestPaths(c2))
-    AssertEqual(matrix(c(0,1, 1,0), ncol=2, 
-                       dimnames=list(c('R','C'), c('R','C'))), 
-                ShortestPaths(c3))
-    AssertEqual(matrix(c(0,1,2, 1,0,1, 2,1,0), ncol=3, 
-                       dimnames=list(c('R','C','P'), c('R','C','P'))), 
-                ShortestPaths(c4))
-    AssertEqual(matrix(c(0,1,1, 1,0,1, 1,1,0), ncol=3, 
-                       dimnames=list(c('R','C','O'), c('R','C','O'))), 
-                ShortestPaths(c5))
-    AssertEqual(matrix(c(0,1,2, 1,0,1, 2,1,0), ncol=3, 
-                       dimnames=list(c('R','C','P'), c('R','C','P'))), 
-                ShortestPaths(c6))
+    # Helper function that creates expected matrices
+    F <- function(data, nodes)
+    {
+        m <- matrix(data, ncol=length(nodes), dimnames=list(nodes, nodes))
+        mode(m) <- 'numeric' # Necessary for a 1 x 1 matrix that contains only NA
+        return (m)
+    }
+
+    AssertEqual(F(0, 'S'), ShortestPaths(c1))
+    AssertEqual(F(0, 'S'), ShortestPaths(c2))
+    AssertEqual(F(c(0,1, 1,0), c('R','C')), ShortestPaths(c3))
+    AssertEqual(F(c(0,1,2, 1,0,1, 2,1,0), c('R','C','P')), ShortestPaths(c4))
+    AssertEqual(F(c(0,1,1, 1,0,1, 1,1,0), c('R','C','O')), ShortestPaths(c5))
+    AssertEqual(F(c(0,1,2, 1,0,1, 2,1,0), c('R','C','P')), ShortestPaths(c6))
 }
 
 TestSumDietGap <- function()
@@ -1173,3 +1186,149 @@ TestMinimiseSumDietGaps <- function()
     }
 }
 
+TestTrophicSimilarity <- function()
+{
+    # Helper function that creates expected matrices
+    F <- function(data, nodes)
+    {
+        m <- matrix(data, ncol=length(nodes), dimnames=list(nodes, nodes))
+        mode(m) <- 'numeric' # Necessary for a 1 x 1 matrix that contains only NA
+        return (m)
+    }
+    AssertEqual(F(NA, 'S'), TrophicSimilarity(c1))
+    AssertEqual(F(NA, 'S'), TrophicSimilarity(c2))
+    AssertEqual(F(c(1,0,0,1), c('R','C')), TrophicSimilarity(c3))
+    AssertEqual(F(c(1,0,1,0,1,0,1,0,1), c('R','C','P')), TrophicSimilarity(c4))
+    AssertEqual(F(c(1,1/3,1/3,1/3,1,1/3,1/3,1/3,1), c('R','C','O')), 
+                TrophicSimilarity(c5))
+    AssertEqual(F(c(1,0,1,0,1,0,1,0,1), c('R','C','P')), TrophicSimilarity(c6))
+    AssertEqual(F(c(1,1/3,1/3,0,0, 1/3,1,1/3,0,0, 1/3,1/3,1,0,0, 0,0,0,NA,NA, 0,0,0,NA,NA), 
+                  LETTERS[1:5]), TrophicSimilarity(c7))
+}
+
+TestOmnivores <- function()
+{
+    AssertEqual(vector(mode='character'), Omnivores(c1))
+    AssertEqual(vector(mode='character'), Omnivores(c2))
+    AssertEqual(vector(mode='character'), Omnivores(c3))
+    AssertEqual(vector(mode='character'), Omnivores(c4))
+    AssertEqual('O', Omnivores(c5))
+    AssertEqual(vector(mode='character'), Omnivores(c6))
+    AssertEqual(vector(mode='character'), Omnivores(c7))
+
+    AssertEqual(c('Microzooplankton', 'Zooplankton', 'Ctenophores', 
+        'Chrysaora quinquecirrha', 'Other suspension feeders', 'Mya', 
+        'Crassostrea virginica', 'Callinectes sapidus', 'Anchoa mitchilli', 
+        'Brevoortia tyrannus', 'Trinectes maculatus', 'Leiostomus xanthurus', 
+        'Morone americana', 'Pomatomus saltatrix', 'Paralichthys dentatus', 
+        'Morone saxatilis'), Omnivores(ChesapeakeBay))
+    AssertEqual(c('Microzooplankton', 'Zooplankton', 'Ctenophores', 
+        'Chrysaora quinquecirrha', 'Other suspension feeders', 'Mya', 
+        'Crassostrea virginica', 'Callinectes sapidus', 'Anchoa mitchilli', 
+        'Brevoortia tyrannus', 'Trinectes maculatus', 'Leiostomus xanthurus', 
+        'Pomatomus saltatrix', 'Paralichthys dentatus', 'Morone saxatilis'), 
+      Omnivores(ChesapeakeBay, level=ChainAveragedTrophicLevel))
+}
+
+TestOmnivory <- function()
+{
+    AssertEqual(0, Omnivory(c1))
+    AssertEqual(0, Omnivory(c2))
+    AssertEqual(0, Omnivory(c3))
+    AssertEqual(0, Omnivory(c4))
+    AssertEqual(1/3, Omnivory(c5))
+    AssertEqual(0, Omnivory(c6))
+    AssertEqual(0, Omnivory(c7))
+    # Value of 0.455 for Chesapeake Bay presented by Bersier et al 2002 Ecology
+    res <- Omnivory(ChesapeakeBay, level=ChainAveragedTrophicLevel)
+    AssertEqual(0.455, round(res, 3))
+}
+
+TestNodeQuantitativeDescriptors <- function()
+{
+    res <- NodeQuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
+
+    # The values in Bersier et al 2002, Table 1:
+    expected <- matrix(c(
+0, 7,      0, 80051, 0,    3.19, 0,    0,    0,    0,    0,    0,    2.62, 5.47,
+0, 8,      0,  2977, 0,    3.21, 0,    0,    0,    0,    0,    0,    2.64, 0.21,
+0, 6,      0,294955, 0,    3.63, 0,    0,    0,    0,    0,    0,    2.99,22.96,
+0, 1,      0, 18086, 0,    1,    0,    0,    0,    0,    0,    0,    0.82, 0.39,
+0, 1,      0, 88721, 0,    1,    0,    0,    0,    0,    0,    0,    0.82, 1.9,
+1, 1,  88721, 31638, 1,    1,    0.5,  0.74, 0,    0,    0.65, 3.9,  0.82, 0.68,
+3, 5,  64224, 11742, 2.13, 2.42, 0.47, 0.83, 0.89, 1,    1.39, 6,    2,    0.61,
+3, 7,  46389,  9855, 1.81, 2.48, 0.42, 0.77, 0.89, 0.56, 1.19, 3.69, 2.04, 0.52,
+3, 1,  10447,   552, 2.01, 1,    0.67, 0.97, 2,    1.01, 1.31, 0.92, 0.82, 0.01,
+2, 0,   1711,     0, 1.88, 0,    1,    1,    1,    0.88, 1.23, 0.14, 0,    0,
+3, 1,   4594,   538, 1.41, 1,    0.58, 0.92, 0.89, 0.27, 0.92, 0.28, 0.82, 0.01,
+3, 2,   2488,   224, 1.41, 1.18, 0.54, 0.93, 0.89, 0.26, 0.92, 0.15, 0.97, 0.01,
+3, 0,   4830,     0, 1.41, 0,    1,    1,    0.89, 0.26, 0.92, 0.3,  0,    0,
+1, 5, 160831,   609, 1,    3.41, 0.23, 0.99, 0,    0,    0.65, 7.06, 2.8,  0.04,
+1, 6,  25062,   547, 1,    2.94, 0.25, 0.94, 0,    0,    0.65, 1.1,  2.42, 0.03,
+1, 2,  57335,  4593, 1,    1.07, 0.48, 0.92, 0,    0,    0.65, 2.52, 0.88, 0.11,
+2, 0,  54048,     0, 1.89, 0,    1,    1,    0,    0,    1.24, 4.49, 0,    0,
+1, 6,  14075,  1027, 1,    1.31, 0.43, 0.91, 0,    0,    0.65, 0.62, 1.08, 0.03,
+7, 2,   8593,   295, 4.12, 1.05, 0.8,  0.99, 2.59, 1.48, 2.69, 1.55, 0.86, 0.03,
+1, 0,      5,     0, 1,    0,    1,    1,    0,    0,    0.65, 0,    0,    0,
+1, 1,     26,     0, 1,   1,    0.5,  0.99, 0,    0,    0.65, 0,    0.82, 0,
+3, 6,   1823,   153, 1.59, 3.58, 0.31, 0.84, 0.89, 0.55, 1.04, 0.13, 2.94, 0.1,
+3, 3,    273,    21, 1.42, 2.64, 0.35, 0.87, 0.89, 0.36, 0.93, 0.02, 2.17, 0,
+1, 0,      5,     0, 1,    0,    1,    1,    0,    0,    0.65, 0,    0,    0,
+3, 0,     10,     0, 1.93, 0,    1,    1,    0,    0,    1.26, 0,    0,    0,
+4, 0,     96,     0, 2.95, 0,    1,    1,    0.75, 0.36, 1.93, 0.01, 0,    0,
+5, 1,    483,    10, 2.66, 1,    0.72, 0.99, 0.65, 0.14, 1.74, 0.06, 0.82, 0,
+3, 0,    150,     0, 2.56, 0,    1,    1,    0.89, 0.38, 1.67, 0.02, 0,    0,
+3, 0,    219,     0, 2.24, 0,    1,    1,    0,    0,    1.46, 0.02, 0,    0,
+3, 0,     16,     0, 2.41, 0,    1,    1,    0.89, 0.90, 1.58, 0,    0,    0,
+1, 1,     91,     4, 1,    1,    0.5,  0.96, 0,    0,    0.65, 0,    0.82, 0,
+4, 0,     26,     0, 3.11, 0,    1,    1,    1.83, 0.82, 2.03, 0,    0,    0,
+4, 0,     30,     0, 2.52, 0,    1,    1,    0,    0, 1.65, 0,       0,    0
+), ncol=14, byrow=TRUE)
+    colnames(expected) <- colnames(res)
+    rownames(expected) <- rownames(res)
+
+    # Some differences to the published values
+    # TODO Contact Bersier to get to the bottom of these differences
+    expected['Ctenophores','bIn'] <- 10446          # Change from 10447
+    expected['Macoma spp','bIn'] <- 57334           # Change from 57335
+    expected['Leiostomus xanthurus','bIn'] <- 482   # Change from 483
+    expected['Arius felis','bIn'] <- 218            # Change from 219
+    expected['Microzooplankton','nP'] <- 2.43       # Change from 2.42
+    expected['Leiostomus xanthurus','d.prime'] <- 0.73 # Change from 0.72
+    expected['Callinectes sapidus','v'] <- 0.01     # Change from 0.03
+    expected['Anchoa mitchilli','v'] <- 0.01        # Change from 0.1
+
+    # bIn and bOut are rounded to zero dp in the paper
+    res[,'bIn'] <- round(res[,'bIn'], 0)
+    res[,'bOut'] <- round(res[,'bOut'], 0)
+    AssertEqual(round(res, 2), expected)
+}
+
+TestQuantitativeDescriptors <- function()
+{
+    res <- QuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
+    expected <- matrix(c(
+        0.364,   0.364,   0.455,
+        0.485,   0.485,   0.394,
+        0.152,   0.152,   0.152,
+        0.75,    0.711,   0.317,    # Col 3 shown as 0.316 in the paper
+        2.212,   1.372,   2.096,
+        0.067,   0.042,   0.064,
+        0.397,   0.451,   0.011,
+        0.055,   0.055,   0.195,
+        0.288,   0.287,   0.112,
+        0.260,   0.207,   0.682,
+        3.157,   1.605,   1.517,
+        3.000,   1.618,   0.675,
+        1.096,   0.488,   1.910,
+        6.000,   2.970,   6.408,
+        0.455,   0.510,   0.280, 
+        2.607,   1.801,   1.375,
+        3.476,   1.911,   2.818,    # Col 3 shown as 2.812 in the paper
+        0.739,   0.645,   1.882,
+        1.195,   1.032,   4.066
+        ), ncol=3, byrow=TRUE)
+    colnames(expected) <- colnames(res)
+    rownames(expected) <- rownames(res)
+    AssertEqual(round(res, 3), expected)
+}
