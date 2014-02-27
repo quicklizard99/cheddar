@@ -909,7 +909,7 @@ ShortestPaths <- function(community, weight.by=NULL)
               lengths=lengths, 
               status=status, 
               PACKAGE='cheddar', 
-              NAOK=TRUE, DUP=FALSE)
+              NAOK=TRUE)
 
     if(0==res$status)
     {
@@ -1075,7 +1075,7 @@ SumConsumerGaps <- function(community)
                   best=best, 
                   status=status, 
                   PACKAGE='cheddar', 
-                  NAOK=TRUE, DUP=FALSE)
+                  NAOK=TRUE)
 
         if(-1==res$status)
         {

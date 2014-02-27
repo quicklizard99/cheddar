@@ -28,7 +28,7 @@
               n.chains=n.chains,
               longest=longest,
               status=status, 
-              PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+              PACKAGE='cheddar', NAOK=TRUE)
 
     if(-1==res$status)
     {
@@ -36,9 +36,10 @@
     }
     else if(0==res$status)
     {
-        stopifnot((0==n.chains && 0==longest) || (0<n.chains && 0<longest))
-        stopifnot(longest <= NumberOfNodes(community))
-        return (c(n.chains=n.chains, longest=longest))
+        stopifnot((0==res$n.chains && 0==res$longest) || 
+                  (0<res$n.chains && 0<res$longest))
+        stopifnot(res$longest <= NumberOfNodes(community))
+        return (c(n.chains=res$n.chains, longest=res$longest))
     }
     else if(1==res$status)
     {
@@ -72,7 +73,7 @@
               as.integer(nrow(alist)), 
               as.integer(max.queue),
               status=status, 
-              PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+              PACKAGE='cheddar', NAOK=TRUE)
 
     if(-1==res$status)
     {
@@ -135,7 +136,7 @@ TrophicChainsStats <- function(community)
                   node.pos.counts=node.pos.counts,
                   chain.lengths=chain.lengths,
                   status=status, 
-                  PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+                  PACKAGE='cheddar', NAOK=TRUE)
 
         if(-1==res$status)
         {
@@ -143,11 +144,11 @@ TrophicChainsStats <- function(community)
         }
         else if(0==res$status)
         {
-            dim(node.pos.counts) <- c(longest, n)
-            node.pos.counts <- t(node.pos.counts)
-            rownames(node.pos.counts) <- unname(NP(community, 'node'))
-            return (list(chain.lengths=chain.lengths, 
-                         node.pos.counts=node.pos.counts))
+            dim(res$node.pos.counts) <- c(longest, n)
+            res$node.pos.counts <- t(res$node.pos.counts)
+            rownames(res$node.pos.counts) <- unname(NP(community, 'node'))
+            return (list(chain.lengths=res$chain.lengths, 
+                         node.pos.counts=res$node.pos.counts))
                          
         }
         else if(1==res$status)
@@ -270,7 +271,7 @@ TrophicChains <- function(community, node.properties=NULL,
               as.integer(max.queue),
               chains=chains, 
               status=status, 
-              PACKAGE='cheddar', NAOK=TRUE, DUP=FALSE)
+              PACKAGE='cheddar', NAOK=TRUE)
 
     trace('After trophic_chains', as.double(Sys.time()-start), '\n')
 
