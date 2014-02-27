@@ -1182,7 +1182,7 @@ MeanMaximumTrophicSimilarity <- function(community)
     # MxSim = 1/S \sum_1^S max(s_{ij}) (i!=j)
     I <- TrophicSimilarity(community)
     diag(I) <- NA    # Exclude diagonal
-    return (mean(apply(I, 1, max, na.rm=TRUE)))
+    return (mean(apply(I, 2, max, na.rm=TRUE)))
 }
 
 IsOmnivore <- function(community, level=PreyAveragedTrophicLevel)
