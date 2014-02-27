@@ -13,7 +13,7 @@
 ## 0.1-624 Released 2013-12-02
 **Available on CRAN**
 * [Issue 29](https://github.com/quicklizard99/cheddar/issues/29)
-  Does not build using modern C++ compilers #29
+  Does not build using modern C++ compilers
 
 ## 0.1-623 Released 2013-11-07
 #### Improvements
