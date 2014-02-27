@@ -1,7 +1,7 @@
 Package: cheddar
 Type: Package
 Title: Analysis and visualisation of ecological communities
-Version: 0.1-625
+Version: 0.1-626
 Date: 2014-02-26
 Author: Lawrence Hudson with contributions from Dan Reuman and Rob Emerson
 Maintainer: Lawrence Hudson <l.hudson@nhm.ac.uk>
