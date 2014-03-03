@@ -26,7 +26,7 @@
 * [Issue 27](https://github.com/quicklizard99/cheddar/issues/27)
   PredationMatrixToLinks should be able to extract a link property 
 * [Issue 28](https://github.com/quicklizard99/cheddar/issues/28)
-  Quantified web stats a la Bersier et al 2002 Ecology
+  Quantitative web stats a la Bersier et al 2002 Ecology
 
 ## 0.1-622 Released 2013-03-19
 **Available on CRAN**
