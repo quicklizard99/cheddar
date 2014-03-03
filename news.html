@@ -36,14 +36,81 @@
         <p class="subheading">26<sup>th</sup> February 2014</p>
         <p>
           Cheddar 0.1-625 was released today and is available on CRAN.
-          See the <a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history">release history</a> for details.
+        </p>
+
+        <p>
+          This release introduces an enhancement to the TrophicChains function. 
+          The number of possible trophic chains within a food web rapidly 
+          increases with the number of nodes and links. The worst-case scenario 
+          is that every consumer eats every other node in the network. In this
+          case, the of the number chains increases factorially with the 
+          number of nodes and, even for food webs with relatively few nodes, 
+          the number of trophic chains becomes too large to compute within 
+          practical time and within available memory. The 'Large numbers of 
+          trophic chains' section of the 'Community' vignette explains this in 
+          more detail. Starting with this release of cheddar, the TrophicChains 
+          function will raise an error if the number of chains reaches a 
+          configurable safety limit. 
+        </p>
+
+        <p>
+          See the 
+          <a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history">release history</a> 
+          for details.
         </p>
 
         <h3 class="heading separator">New release</h3>
         <p class="subheading">2<sup>nd</sup> December 2013</p>
         <p>
           Cheddar 0.1-624 was released today and is available on CRAN.
-          See the <a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history">release history</a> for details.
+        </p>
+
+        <p>
+          This releases makes it possible to build cheddar using modern C++ 
+          compilers. See the 
+          <a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history">release history</a> 
+          for details.
+        </p>
+
+        <h3 class="heading separator">New release</h3>
+        <p class="subheading">7<sup>th</sup> November 2013</p>
+        <p>
+          Cheddar 0.1-623 was released today and is available on CRAN.
+        </p>
+
+        <p>
+          This release adds functions to that compute the quantitative web stats 
+          defined by 
+          <a href="http://dx.doi.org/10.1890/0012-9658(2002)083[2394:QDOFWM]2.0.CO;2">
+            Bersier et al (2002) Ecology
+          </a> - descriptors that are based upon information-theory and that 
+          consider the strength of trophic interactions. 
+          The NodeQuantitativeDescriptors and QuantitativeDescriptors 
+          functions compute tables of node-level and community-level 
+          quantitative descriptors respectively, as presented in Bersier et al 
+          Tables 1 and 2.
+        </p>
+        <pre>library(cheddar)
+data(ChesapeakeBay)
+QuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
+NodeQuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')</pre>
+        <p>
+          These release also introduces the NvMTriTrophicTable function, which 
+          builds upon existing functions within cheddar, and provides a 
+          convenient way to compute the set of statistics presented in Table 1
+           of <a href="http://dx.doi.org/10.1073/pnas.0910582106">
+          Cohen et al (2009) PNAS</a>.
+        </p>
+
+        <p>
+          The RemoveNode function has been enhanced in this release - it now 
+          offers a range of methods for how species' removals are propagated 
+          through the food web. 
+        </p>
+
+        <p>
+          See the <a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history">release history</a> 
+          for a list of changes.
         </p>
 
         <h3 class="heading separator">New release</h3>
