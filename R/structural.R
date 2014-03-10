@@ -1,7 +1,5 @@
 # Artificial communities using structural models
 
-# TODO Generalize NicheModelLinks to cater for cascade etc?
-
 # TODO Allow generator function to return node, links and/or community 
 # properties? This would allow:
 #   * A generator that just produced M and/or N
@@ -56,12 +54,14 @@
 # Science USA 105:4191–4196
 
 
-RandomLinks <- function(pool, n, C=0.15)
+RandomLinks <- function(pool, n, C=0.15, nodes)
 {
-    # Pool - node names
+    # A list of n webs with C*S*S randomly assigned links
+    # pool - node names that contains unique node names
     # n - number of webs
     # C - directed connectance
-    # A list of n webs with C*S*S randomly assigned links.
+    # nodes - data.frame with a column 'node' that contains unique node names
+    if(missing(pool)) pool <- nodes$node
     stopifnot(0<C && C<1)
     stopifnot(0<length(pool))
     stopifnot(length(pool)==length(unique(pool)))
@@ -71,17 +71,18 @@ RandomLinks <- function(pool, n, C=0.15)
     # sample.int rounds size down, so a size of 258.999999 would result in 258 
     # values. Round to size to nearest int to avoid this.
     size <- round(C*S*S, 0)
-    rows <- replicate(n, sample.int(S*S, size), simplify=FALSE)
     possible <- data.frame(resource=rep(pool, each=S), consumer=pool, 
                            stringsAsFactors=FALSE)
+    rows <- replicate(n, sample.int(S*S, size), simplify=FALSE)
     return (lapply(rows, function(r) possible[r,]))
 }
 
-CascadeModelLinks <- function(pool, n, C=0.15)
+CascadeModelLinks <- function(pool, n, C=0.15, nodes)
 {
     # Cascade model of Cohen, J. E., and C. M. Newman. 1985. A stochastic 
     # theory of community food webs. I. Models and aggregated data. Proceedings 
     # of the Royal Society of London Series B 224:421–448.
+    if(missing(pool)) pool <- nodes$node
     stopifnot(0<C && C<1)
     stopifnot(0<length(pool))
     stopifnot(length(pool)==length(unique(pool)))
@@ -120,7 +121,7 @@ CascadeModelLinks <- function(pool, n, C=0.15)
 }
 
 .NicheModelLinks1 <- function(pool, n, C=0.15, niche.positions=NULL, 
-                            probabilistic=FALSE)
+                              probabilistic=FALSE, nodes)
 {
     # First idea - generate values per web
 
@@ -134,6 +135,7 @@ CascadeModelLinks <- function(pool, n, C=0.15)
     # n - number of webs
     # C - directed connectance
     # niche.positions - either NULL or length(pool) real numbers between 0 and 1
+    if(missing(pool)) pool <- nodes$node
     stopifnot(0<C && C<0.5)
     stopifnot(0<length(pool))
     stopifnot(length(pool)==length(unique(pool)))
@@ -188,7 +190,7 @@ CascadeModelLinks <- function(pool, n, C=0.15)
 }
 
 .NicheModelLinks2 <- function(pool, n, C=0.15, niche.positions=NULL, 
-                            probabilistic=FALSE)
+                              probabilistic=FALSE, nodes)
 {
     # Second idea - generate all values up front
 
@@ -202,6 +204,11 @@ CascadeModelLinks <- function(pool, n, C=0.15)
     # n - number of webs
     # C - directed connectance
     # niche.positions - either NULL or length(pool) real numbers between 0 and 1
+
+    # TODO optional colname in nodes from which to compute niche centres?
+    # TODO optional colname in nodes from which to compute niche ranges?
+
+    if(missing(pool)) pool <- nodes$node
     stopifnot(0<C && C<0.5)
     stopifnot(0<length(pool))
     stopifnot(length(pool)==length(unique(pool)))
@@ -263,32 +270,123 @@ CascadeModelLinks <- function(pool, n, C=0.15)
         }
     }
 
-    return (return (lapply(1:n, fn)))
+    return (lapply(1:n, fn))
 }
 
 NicheModelLinks <- .NicheModelLinks2
 
-CommunityFactory <- function(S, node=paste('Node', 1:S), 
-                             generator=NicheModelLinks, n=1, accept=NULL, 
-                             energetically.feasible=TRUE, 
+.AddLinksRegistryLinks <- function(possible, synthesized, res.col, con.col, 
+                                   res.method, con.method)
+{
+    # http://www.r-bloggers.com/identifying-records-in-data-frame-a-that-are-not-contained-in-data-frame-b-%E2%80%93-a-comparison/
+    a <- do.call('paste', synthesized[,c(res.col,con.col)])
+    b <- do.call('paste', possible[,c(res.col,con.col)])
+
+    to.match <- ''==synthesized$resource.method & ''==synthesized$consumer.method
+    synthesized$resource.method[a %in% b & to.match] <- res.method
+    synthesized$consumer.method[a %in% b & to.match] <- con.method
+    return (synthesized)
+}
+
+LinksRegistryLinks <- function(nodes, n, links.registry, method=c('exact','genus'))
+{
+    # nodes - data.frame of nodes. Must have the columns resource.genus and 
+    # consumer.genus if method is genus
+    # n - number of webs
+    # links.registry - a data.frame of possible links. Must contain columns 
+    # resource and consumer. 
+    # C - directed connectance
+    # A list of n webs with links matched in links.registry
+    # TODO match on life stages
+    # TODO match on genus and family
+    # TODO record type of match in returned link
+    method <- match.arg(method)
+    stopifnot(0<nrow(nodes))
+    stopifnot(nrow(nodes)==length(unique(nodes$node)))
+    stopifnot(0<n)
+    stopifnot(all(c('resource','consumer') %in% colnames(links.registry)))
+
+    # All possible links
+    resource <- consumer <- nodes
+    colnames(resource) <- paste('resource', tolower(colnames(resource)), sep='.')
+    colnames(resource)['resource.node'==colnames(resource)] <- 'resource'
+    colnames(consumer) <- paste('consumer', tolower(colnames(consumer)), sep='.')
+    colnames(consumer)['consumer.node'==colnames(consumer)] <- 'consumer'
+
+    possible <- cbind(resource[rep(1:nrow(resource), each=nrow(resource)),], 
+                      consumer[rep(1:nrow(resource), times=nrow(resource)),])
+
+    synthesized <- links.registry
+    synthesized$resource.method <- synthesized$consumer.method <- ''
+
+
+    # TODO What we want
+    # all cols in registry
+    # registry.resource registry.consumer
+    # resource and consumer to be the matched node name
+
+    # Match on species identity
+    synthesized <- .AddLinksRegistryLinks(possible, synthesized, 'resource', 
+        'consumer', 'Exact', 'Exact')
+
+    if('genus'==method)
+    {
+        stopifnot(all('genus' %in% colnames(nodes)))
+        stopifnot(all(c('resource.genus','consumer.genus') %in% colnames(links.registry)))
+
+        # Resource genus, consumer exact
+        synthesized <- .AddLinksRegistryLinks(possible, synthesized, 
+            'resource.genus', 'consumer', 'Genus', 'Exact')
+        # Resource exact, consumer genus
+        synthesized <- .AddLinksRegistryLinks(possible, synthesized, 
+            'resource', 'consumer.genus', 'Exact', 'Genus')
+        # Resource genus, consumer genus
+        synthesized <- .AddLinksRegistryLinks(possible, synthesized, 
+            'resource.genus', 'consumer.genus', 'Genus', 'Genus')
+    }
+
+    synthesized <- synthesized[''!=synthesized$resource.method & ''!=synthesized$consumer.method,]
+
+    rownames(synthesized) <- NULL
+    synthesized <- droplevels(synthesized)
+    return (rep(list(synthesized), n))
+}
+
+CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1, 
+                             accept=NULL, energetically.feasible=TRUE, 
                              trace.progress=FALSE, 
                              trusted=TRUE, ...)
 {
-    # Returns a collection of artificially generated communities
-    # S - number of nodes in the pool
-    # node - node names; if given must be of length S
+    # Returns a collection of artificially generated communities. 
+    # Either S or nodes should be provided - no need to provide both. 
+    # S - number of nodes in the generated communities
+    # nodes - either node names or a data.frame of node properties that 
+    # satisfies the conditions nodes of Community.
+
     # generator - function used to generate sets of trophic links
     # n - number of communities to generate
     # accept - either NULL or a function that takes a community as its only 
-    # argument and returns a bool
+    # argument and returns a logical
     # energetically.feasible - if TRUE, communities that are not energetically 
     # feasible according to PreyAveragedTrophicLevel are discarded
     # trace.progress - if TRUE, the feedback is printed
     # ... - other arguments to generator
 
+    if(missing(nodes))
+    {
+        nodes <- paste('Node', 1:S)
+    }
+
+    if(is.character(nodes))
+    {
+        nodes <- data.frame(node=nodes, row.names=nodes, stringsAsFactors=FALSE)
+    }
+
+    if(missing(S))    S <- nrow(nodes)
+
     stopifnot(0<S)
     stopifnot(0<n)
-    stopifnot(length(node)==S)
+    stopifnot(nrow(nodes)==S)
 
     if(trace.progress)
     {
@@ -299,16 +397,19 @@ CommunityFactory <- function(S, node=paste('Node', 1:S),
         tracefn <- function(...) {}
     }
 
-    # The nodes and properties used by each generated community
-    nodes <- data.frame(node=node, row.names=node, stringsAsFactors=FALSE)
+    # The properties used by each generated community
     properties <- list(title='Artificial community')
 
+    # TODO Faster to use a fixed-length list?
+    #      All elements initially NULL
+    #      Set infeasable and unacceptable communities to NULL.
+    #      Loop while any(sapply(communities, is.null))
     communities <- NULL
     while(length(communities)<n)
     {
         # Produce communities
         tracefn(paste('Generating', n-length(communities), 'communities\n'))
-        args <- c(list(pool=node, n=n-length(communities)), list(...))
+        args <- c(list(nodes=nodes, n=n-length(communities)), list(...))
         new <- lapply(do.call(generator, args), function(links)
         {
             if(trusted)
@@ -353,6 +454,7 @@ CommunityFactory <- function(S, node=paste('Node', 1:S),
     }
 
     # Assign sensible titles
+    tracefn(n, length(communities), '\n')
     communities <- mapply(title=paste('Artificial community', 1:n), 
                           community=communities, 
                           SIMPLIFY=FALSE, 
@@ -373,8 +475,7 @@ CommunitiesLike <- function(community, ...)
 {
     if(!is.Community(community)) stop('Not a Community')
     if(is.null(TLPS(community))) stop('The community has no trophic links')
-    return (CommunityFactory(S=NumberOfNodes(community), 
+    return (CommunityFactory(nodes=NPS(community), 
                              C=DirectedConnectance(community), 
-                             node=unname(NP(community, 'node')), 
                              ...))
 }
