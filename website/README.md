@@ -28,7 +28,7 @@ The [pelican][pelican] project
     cd ..
 
 ## Make pelican pages
-    pelican -s pages/pelicanconf.py
+    make -C pages html
 
 ## Copy example images to pelican output
     mkdir -p pages/output/static/images/

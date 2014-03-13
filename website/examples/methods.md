@@ -2,8 +2,8 @@ Title: methods
 URL: methods.html
 save_as: methods.html
 
-<!--<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script> -->
-<script src="./jquery-1.9.1.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<!--<script src="./jquery-1.9.1.min.js"></script>-->
 <style>
 .popup {
   display: none;
@@ -89,7 +89,7 @@ Most examples use the dataset of Tuesday Lake sampled in 1984
         {% set path = 'output/' + method.safename + 'graphical1.txt' %}
         {% highlight 'rout' %}{% include path %}{% endhighlight %}
 
-        <img src="/static/images/{{ method.safename }}1.png" 
+        <img src="static/images/{{ method.safename }}1.png" 
              alt="Example {{ method.description }} plot"/>
       {% endif %}
 
@@ -98,7 +98,7 @@ Most examples use the dataset of Tuesday Lake sampled in 1984
         {% set path = 'output/' + method.safename + 'graphical2.txt' %}
         {% highlight 'rout' %}{% include path %}{% endhighlight %}
 
-        <img src="/static/images/{{ method.safename }}2.png" 
+        <img src="static/images/{{ method.safename }}2.png" 
              alt="Example {{ method.description }} plot"/>
       {% endif %}
 
