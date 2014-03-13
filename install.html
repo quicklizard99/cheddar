@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Paper by Clitherow et al in PLoS ONE</title>
+    <title>install</title>
     <meta charset="utf-8" />
         <link rel="stylesheet" href="http://quicklizard99.github.io/cheddar/theme/css/main.css" type="text/css" />
     <link href="http://quicklizard99.github.io/cheddar/" type="application/atom+xml" rel="alternate" title="cheddar ATOM Feed" />
@@ -30,7 +30,7 @@
                                                             <li >
                             <a href="http://quicklizard99.github.io/cheddar/index.html">cheddar</a>
                         </li>
-                                            <li >
+                                            <li class="active">
                             <a href="http://quicklizard99.github.io/cheddar/install.html">install</a>
                         </li>
                                             <li >
@@ -40,37 +40,39 @@
                                             </ul>
         </nav>
     </header><!-- /#banner -->
-    <section id="content" class="body">
-  <article>
-    <header>
-      <h1 class="entry-title">
-        <a href="http://quicklizard99.github.io/cheddar/Clitherow et al (2013).html" rel="bookmark"
-           title="Permalink to Paper by Clitherow et al in PLoS ONE">Paper by Clitherow et al in PLoS ONE</a></h1>
-          </header>
-
-    <div class="entry-content">
-      <footer class="post-info">
-    <abbr class="published" title="2013-04-20T00:00:00">
-        Sat 20 April 2013
-    </abbr>
-            <address class="vcard author">
-            by <a class="url fn" href="http://quicklizard99.github.io/cheddar/author/lawrence-hudson.html">Lawrence Hudson</a>
-        </address>
-        in <a href="http://quicklizard99.github.io/cheddar/category/news.html">news</a>
-         - 
-            <a href="http://quicklizard99.github.io/cheddar/tag/paper.html">paper</a>
             
-</footer><!-- /.post-info -->      <p>The authors examined patterns in species-poor communities of glacier-fed 
-rivers. They used Cheddar to compute the suite of tritrophic food-web 
-statistics, which combine the set of trophic links with species' body masses 
-and numerical abundances. Their analysis revealed that any disturbances to a 
-single taxon could propagate throughout the community food-web.</p>
-<p>Clitherow et al (2013) Food Web Structure in a Harsh Glacier-Fed River. 
-<em>Public Library of Science ONE</em>, 8 (4) e60899. 
-<a href="http://dx.doi.org/10.1371/journal.pone.0060899">10.1371/journal.pone.0060899</a></p>
-    </div><!-- /.entry-content -->
-    
-  </article>
+<section id="content" class="body">    
+    <!-- <h1 class="entry-title">install</h1> -->
+        
+        <h2>Released version</h2>
+<p>The current stable release (currently 0.1-625) is always available on 
+<a href="http://cran.r-project.org/web/packages/cheddar/index.html">CRAN</a> and can be 
+installed in R simply by entering:</p>
+<div class="highlight"><pre>install.packages<span class="p">(</span><span class="s">&#39;cheddar&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Cheddar's vignettes show you round the package:</p>
+<div class="highlight"><pre>library<span class="p">(</span>cheddar<span class="p">)</span>
+vignette<span class="p">(</span><span class="s">&#39;CheddarQuickstart&#39;</span><span class="p">)</span> <span class="c1"># Essential reading</span>
+vignette<span class="p">(</span><span class="s">&#39;Community&#39;</span><span class="p">)</span>         <span class="c1"># Also essential</span>
+vignette<span class="p">(</span><span class="s">&#39;PlotsAndStats&#39;</span><span class="p">)</span>
+vignette<span class="p">(</span><span class="s">&#39;Collections&#39;</span><span class="p">)</span>
+vignette<span class="p">(</span><span class="s">&#39;ImportExport&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p><a href="https://github.com/quicklizard99/cheddar/release_history.md">Release history</a>.</p>
+<p>Send questions, comments or other feedback to me (l.hudson (at) nhm.ac.uk), or 
+use the 
+<a href="https://github.com/quicklizard99/cheddar/issues">issue tracker</a>.</p>
+<h2>Help me get my data into Cheddar!</h2>
+<p>Researchers typically use their own bespoke data formats and there are probably 
+as many data formats as there are researchers. It is therefore extremely hard 
+to write a generic 'import my data into Cheddar' function.</p>
+<p>If you have community data that you would like to import into Cheddar, please 
+contact me (l.hudson (at) nhm.ac.uk) - I will either provide example 
+data-import R code for you to modify or will write the required code for you.</p>
 </section>
     <section id="extras" class="body">
                     </section><!-- /#extras -->

@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>methods</title>
+    <meta charset="utf-8" />
+        <link rel="stylesheet" href="http://quicklizard99.github.io/cheddar/theme/css/main.css" type="text/css" />
+    <link href="http://quicklizard99.github.io/cheddar/" type="application/atom+xml" rel="alternate" title="cheddar ATOM Feed" />
+    
+    <!--[if IE]>
+            <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+    <!--[if lte IE 7]>
+            <link rel="stylesheet" type="text/css" media="all" href="http://quicklizard99.github.io/cheddar/css/ie.css"/>
+            <script src="http://quicklizard99.github.io/cheddar/js/IE8.js" type="text/javascript"></script><![endif]-->
+
+    <!--[if lt IE 7]>
+            <link rel="stylesheet" type="text/css" media="all" href="http://quicklizard99.github.io/cheddar/css/ie6.css"/><![endif]-->
+</head>
+
+<body id="index" class="home">
+    <a href="https://github.com/quicklizard99/cheddar">
+<img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub">
+</a>
+    <header id="banner" class="body">
+        <h1>
+            <a href="http://quicklizard99.github.io/cheddar/">cheddar </a>
+        </h1>
+        <nav>
+            <ul>
+                                                            <li >
+                            <a href="http://quicklizard99.github.io/cheddar/index.html">cheddar</a>
+                        </li>
+                                            <li >
+                            <a href="http://quicklizard99.github.io/cheddar/install.html">install</a>
+                        </li>
+                                            <li class="active">
+                            <a href="http://quicklizard99.github.io/cheddar/methods.html">methods</a>
+                        </li>
+                                                                        <li ><a href="http://quicklizard99.github.io/cheddar/category/news.html">news</a></li>
+                                            </ul>
+        </nav>
+    </header><!-- /#banner -->
+            
+<section id="content" class="body">    
+    <!-- <h1 class="entry-title">methods</h1> -->
+        
+        <!--<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script> -->
+
+<script src="./jquery-1.9.1.min.js"></script>
+
+<style>
+.popup {
+  display: none;
+  padding-left: 40px;
+  padding-right: 40px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+table {
+  width: 100%;
+}
+
+thead {
+  border-bottom: 1px solid black;
+}
+</style>
+
+<script>
+$(document).ready(function() {
+  $('.toggleLink').click(function() {
+    $(this).parents('tr').first().nextAll('.popup').first().toggle();
+  });
+});
+</script>
+
+<h2>Methods</h2>
+<p>Ecologists are focussing increasingly on explaining the structure of 
+communities by enriching traditional food web data with additional information. 
+Many community studies collect either the food web, species' body masses, or 
+abundance data, and an ever increasing number of studies measure two or three 
+of these data types and/or additional data. Various combinations of data allow 
+different properties to be explored and different hypotheses to be tested. </p>
+<p>Cheddar provides many relevant published methods. The examples below illustrate 
+the different views of community data that contain different combinations of 
+trophic links, body masses, and abundance data, following 
+<a href="#Cohenetal2003">Cohen et al 2003</a>, without going into detail. 
+Most examples use the dataset of Tuesday Lake sampled in 1984 
+(<a href="#Cohenetal2003">Cohen et al 2003</a>; 
+ <a href="#Jonssonetal2005">Jonsson et al 2005</a>).</p>
+<table>
+  <thead>
+    <tr>
+      <th style="width: 80px">Trophic links</th>
+      <th style="width: 80px">Body mass</th>
+      <th style="width: 80px">Numerical abundance</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Rank of body mass</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotMvRankM</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotMvRankM<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotMvRankM<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/rankofbodymass1.png" 
+             alt="Example Rank of body mass plot"/>
+
+
+
+        <!--<div class="highlight"><pre>PlotMvRankM<span class="p">(</span>TL84<span class="p">,</span> show.nodes.as<span class="o">=</span><span class="s">&quot;labels&quot;</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotMvRankM<span class="p">(</span>TL84<span class="p">,</span> show.nodes.as<span class="o">=</span><span class="s">&quot;labels&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/rankofbodymass2.png" 
+             alt="Example Rank of body mass plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Distribution of body mass</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotMDistribution</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotMDistribution<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotMDistribution<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/distributionofbodymass1.png" 
+             alt="Example Distribution of body mass plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Rank of numerical abundance</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotNvRankN</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotNvRankN<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNvRankN<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/rankofnumericalabundance1.png" 
+             alt="Example Rank of numerical abundance plot"/>
+
+
+
+        <!--<div class="highlight"><pre>PlotNvRankN<span class="p">(</span>TL84<span class="p">,</span> show.nodes.as<span class="o">=</span><span class="s">&quot;labels&quot;</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNvRankN<span class="p">(</span>TL84<span class="p">,</span> show.nodes.as<span class="o">=</span><span class="s">&quot;labels&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/rankofnumericalabundance2.png" 
+             alt="Example Rank of numerical abundance plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Distribution of numerical abundance</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotNDistribution</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotNDistribution<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNDistribution<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/distributionofnumericalabundance1.png" 
+             alt="Example Distribution of numerical abundance plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Approximate biomass abundance spectrum</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotBSpectrum</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Kerr&Dickie2001">Kerr & Dickie 2001</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotBSpectrum<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotBSpectrum<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/approximatebiomassabundancespectrum1.png" 
+             alt="Example Approximate biomass abundance spectrum plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Approximate numerical abundance spectrum</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotNSpectrum</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Kerr&Dickie2001">Kerr & Dickie 2001</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotNSpectrum<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNSpectrum<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/approximatenumericalabundancespectrum1.png" 
+             alt="Example Approximate numerical abundance spectrum plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Constraint space defined by a convex hull</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>NvMConvexHull</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Leaper&Raffaelli1999">Leaper & Raffaelli 1999</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>ch <span class="o">&lt;-</span> NvMConvexHull<span class="p">(</span>TL84<span class="p">)</span>
+print<span class="p">(</span>ch<span class="o">$</span>area<span class="p">)</span>
+
+<span class="c1"># Show the hull graphically</span>
+PlotNvM<span class="p">(</span>TL84<span class="p">)</span>
+polygon<span class="p">(</span>ch<span class="o">$</span>points<span class="p">,</span> lwd<span class="o">=</span><span class="m">2</span><span class="p">,</span> border<span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">)</span>
+points<span class="p">(</span>ch<span class="o">$</span>points<span class="p">,</span> pch<span class="o">=</span><span class="m">3</span><span class="p">,</span> col<span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span> cex<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>ch <span class="o">&lt;-</span> NvMConvexHull<span class="p">(</span>TL84<span class="p">)</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>ch<span class="o">$</span>area<span class="p">)</span>
+<span class="go">[1] 30.68266</span>
+
+<span class="gp">&gt; </span><span class="c1"># Show the hull graphically</span>
+<span class="gp">&gt; </span>PlotNvM<span class="p">(</span>TL84<span class="p">)</span>
+
+<span class="gp">&gt; </span>polygon<span class="p">(</span>ch<span class="o">$</span>points<span class="p">,</span> lwd<span class="o">=</span><span class="m">2</span><span class="p">,</span> border<span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt; </span>points<span class="p">(</span>ch<span class="o">$</span>points<span class="p">,</span> pch<span class="o">=</span><span class="m">3</span><span class="p">,</span> col<span class="o">=</span><span class="s">&#39;red&#39;</span><span class="p">,</span> cex<span class="o">=</span><span class="m">3</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/constraintspacedefinedbyaconvexhull1.png" 
+             alt="Example Constraint space defined by a convex hull plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Distribution of biomass abundance</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotBDistribution</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotBDistribution<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotBDistribution<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/distributionofbiomassabundance1.png" 
+             alt="Example Distribution of biomass abundance plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Mass-abundance allometry</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotNvM</code>
+
+          <code>PlotMvN</code>
+
+          <code>NvMLinearModels</code>
+
+          <code>PlotLinearModels</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotNvM<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNvM<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/massabundanceallometry1.png" 
+             alt="Example Mass-abundance allometry plot"/>
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># Fit linear regressions to the whole community and to each group</span>
+PlotNvM<span class="p">(</span>TL84<span class="p">)</span>
+models <span class="o">&lt;-</span> NvMLinearRegressions<span class="p">(</span>TL84<span class="p">)</span>
+PlotLinearModels<span class="p">(</span>models<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># Fit linear regressions to the whole community and to each group</span>
+<span class="gp">&gt; </span>PlotNvM<span class="p">(</span>TL84<span class="p">)</span>
+
+<span class="gp">&gt; </span>models <span class="o">&lt;-</span> NvMLinearRegressions<span class="p">(</span>TL84<span class="p">)</span>
+
+<span class="gp">&gt; </span>PlotLinearModels<span class="p">(</span>models<span class="p">)</span>
+<span class="go">        &lt;NA&gt;     producer invertebrate    vert.ecto </span>
+<span class="go">     &quot;black&quot;    &quot;#33bd2b&quot;    &quot;#4d82ff&quot;    &quot;#c175f0&quot; </span>
+</pre></div>
+
+
+        <img src="/static/images/massabundanceallometry2.png" 
+             alt="Example Mass-abundance allometry plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Rank of biomass abundance</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotBvRankB</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotBvRankB<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotBvRankB<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/rankofbiomassabundance1.png" 
+             alt="Example Rank of biomass abundance plot"/>
+
+
+
+        <!--<div class="highlight"><pre>PlotBvRankB<span class="p">(</span>TL84<span class="p">,</span> show.nodes.as<span class="o">=</span><span class="s">&quot;labels&quot;</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotBvRankB<span class="p">(</span>TL84<span class="p">,</span> show.nodes.as<span class="o">=</span><span class="s">&quot;labels&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/rankofbiomassabundance2.png" 
+             alt="Example Rank of biomass abundance plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Basic network properties</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>NumberOfNodes</code>
+
+          <code>NumberOfTrophicLinks</code>
+
+          <code>LinkageDensity</code>
+
+          <code>DirectedConnectance</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Martinez1991">Martinez 1991</a>;
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre>print<span class="p">(</span>NumberOfTrophicLinks<span class="p">(</span>TL84<span class="p">))</span>
+print<span class="p">(</span>LinkageDensity<span class="p">(</span>TL84<span class="p">))</span>
+print<span class="p">(</span>DirectedConnectance<span class="p">(</span>TL84<span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>print<span class="p">(</span>NumberOfTrophicLinks<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 269</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>LinkageDensity<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 4.803571</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>DirectedConnectance<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 0.08577806</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Feeding interactions as a matrix</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotPredationMatrix</code>
+
+          <code>PredationMatrix</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotPredationMatrix<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotPredationMatrix<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/feedinginteractionsasamatrix1.png" 
+             alt="Example Feeding interactions as a matrix plot"/>
+
+
+
+
+
+        <!--<div class="highlight"><pre>pm <span class="o">&lt;-</span> PredationMatrix<span class="p">(</span>TL84<span class="p">)</span>
+<span class="c1"># A square matrix</span>
+print<span class="p">(</span>class<span class="p">(</span>pm<span class="p">))</span>
+print<span class="p">(</span>NumberOfNodes<span class="p">(</span>TL84<span class="p">))</span>
+print<span class="p">(</span>nrow<span class="p">(</span>pm<span class="p">))</span>
+print<span class="p">(</span>ncol<span class="p">(</span>pm<span class="p">))</span>
+
+<span class="c1"># All values are 0 or 1. 1 indicates a feeding link</span>
+print<span class="p">(</span>unique<span class="p">(</span>as.vector<span class="p">(</span>pm<span class="p">)))</span>
+
+<span class="c1"># 269 trophic links</span>
+print<span class="p">(</span>NumberOfTrophicLinks<span class="p">(</span>TL84<span class="p">))</span>
+print<span class="p">(</span>sum<span class="p">(</span>pm<span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>pm <span class="o">&lt;-</span> PredationMatrix<span class="p">(</span>TL84<span class="p">)</span>
+
+<span class="gp">&gt; </span><span class="c1"># A square matrix</span>
+<span class="gp">&gt; </span>print<span class="p">(</span>class<span class="p">(</span>pm<span class="p">))</span>
+<span class="go">[1] &quot;matrix&quot;</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>NumberOfNodes<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 56</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>nrow<span class="p">(</span>pm<span class="p">))</span>
+<span class="go">[1] 56</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>ncol<span class="p">(</span>pm<span class="p">))</span>
+<span class="go">[1] 56</span>
+
+<span class="gp">&gt; </span><span class="c1"># All values are 0 or 1. 1 indicates a feeding link</span>
+<span class="gp">&gt; </span>print<span class="p">(</span>unique<span class="p">(</span>as.vector<span class="p">(</span>pm<span class="p">)))</span>
+<span class="go">[1] 0 1</span>
+
+<span class="gp">&gt; </span><span class="c1"># 269 trophic links</span>
+<span class="gp">&gt; </span>print<span class="p">(</span>NumberOfTrophicLinks<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 269</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>sum<span class="p">(</span>pm<span class="p">))</span>
+<span class="go">[1] 269</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Food-web plotted vertically by trophic level</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotWebByLevel</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotWebByLevel<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotWebByLevel<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/foodwebplottedverticallybytrophiclevel1.png" 
+             alt="Example Food-web plotted vertically by trophic level plot"/>
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># A different measure of trophic level</span>
+PlotWebByLevel<span class="p">(</span>TL84<span class="p">,</span> level<span class="o">=</span><span class="s">&#39;ChainAveragedTrophicLevel&#39;</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># A different measure of trophic level</span>
+<span class="gp">&gt; </span>PlotWebByLevel<span class="p">(</span>TL84<span class="p">,</span> level<span class="o">=</span><span class="s">&#39;ChainAveragedTrophicLevel&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/foodwebplottedverticallybytrophiclevel2.png" 
+             alt="Example Food-web plotted vertically by trophic level plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Intervality and diet gaps</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>SumDietGaps</code>
+
+          <code>SumConsumerGaps</code>
+
+          <code>MinimiseSumDietGaps</code>
+
+          <code>MinimiseSumConsumerGaps</code>
+
+          <code>OrderCommunity</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Stoufferetal2006">Stouffer et al 2006</a>;
+
+            <a href="#Zooketal2011">Zook et al 2011</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre><span class="c1"># 5 repetitions of the simulated annealing method used to minimise diet gaps</span>
+<span class="c1"># Use the result with the smallest number of gaps</span>
+res <span class="o">&lt;-</span> MinimiseSumDietGaps<span class="p">(</span>TL84<span class="p">,</span> n<span class="o">=</span><span class="m">5</span><span class="p">)</span>
+print<span class="p">(</span>res<span class="o">$</span>sum.gaps<span class="p">)</span>
+PlotPredationMatrix<span class="p">(</span>res<span class="o">$</span>reordered<span class="p">,</span> main<span class="o">=</span>res<span class="o">$</span>sum.gaps<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># 5 repetitions of the simulated annealing method used to minimise diet gaps</span>
+<span class="gp">&gt; </span><span class="c1"># Use the result with the smallest number of gaps</span>
+<span class="gp">&gt; </span>res <span class="o">&lt;-</span> MinimiseSumDietGaps<span class="p">(</span>TL84<span class="p">,</span> n<span class="o">=</span><span class="m">5</span><span class="p">)</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>res<span class="o">$</span>sum.gaps<span class="p">)</span>
+<span class="go">[1] 3</span>
+
+<span class="gp">&gt; </span>PlotPredationMatrix<span class="p">(</span>res<span class="o">$</span>reordered<span class="p">,</span> main<span class="o">=</span>res<span class="o">$</span>sum.gaps<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/intervalityanddietgaps1.png" 
+             alt="Example Intervality and diet gaps plot"/>
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># The data contain species&#39; body masses - we can compare to number of diet </span>
+<span class="c1"># gaps when taxa are ordered by body mass</span>
+byM <span class="o">&lt;-</span> OrderCommunity<span class="p">(</span>TL84<span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">)</span>
+print<span class="p">(</span>SumDietGaps<span class="p">(</span>byM<span class="p">))</span>
+PlotPredationMatrix<span class="p">(</span>byM<span class="p">,</span> main<span class="o">=</span>SumDietGaps<span class="p">(</span>byM<span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># The data contain species&#39; body masses - we can compare to number of diet </span>
+<span class="gp">&gt; </span><span class="c1"># gaps when taxa are ordered by body mass</span>
+<span class="gp">&gt; </span>byM <span class="o">&lt;-</span> OrderCommunity<span class="p">(</span>TL84<span class="p">,</span> <span class="s">&#39;M&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>SumDietGaps<span class="p">(</span>byM<span class="p">))</span>
+<span class="go">[1] 132</span>
+
+<span class="gp">&gt; </span>PlotPredationMatrix<span class="p">(</span>byM<span class="p">,</span> main<span class="o">=</span>SumDietGaps<span class="p">(</span>byM<span class="p">))</span>
+</pre></div>
+
+
+        <img src="/static/images/intervalityanddietgaps2.png" 
+             alt="Example Intervality and diet gaps plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Node connectivity categories</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>BasalNodes</code>
+
+          <code>IntermediateNodes</code>
+
+          <code>TopLevelNodes</code>
+
+          <code>IsolatedNodes</code>
+
+          <code>IsBasalNode</code>
+
+          <code>IsIntermediateNode</code>
+
+          <code>IsTopLevelNode</code>
+
+          <code>IsIsolatedNode</code>
+
+          <code>FractionBasalNodes</code>
+
+          <code>FractionIntermediateNodes</code>
+
+          <code>FractionTopLevelNodes</code>
+
+          <code>FractionIsolatedNodes</code>
+
+          <code>FractionConnectedNodes</code>
+
+          <code>FractionIsolatedNodes</code>
+
+          <code>FractionBasalNodes</code>
+
+          <code>FractionNonBasalNodes</code>
+
+          <code>FractionTopLevelNodes</code>
+
+          <code>FractionNonTopLevelNodes</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># A table of node connectivity</span>
+connectivity <span class="o">&lt;-</span> NPS<span class="p">(</span>TL84<span class="p">,</span> c<span class="p">(</span><span class="s">&#39;IsBasalNode&#39;</span><span class="p">,</span> <span class="s">&#39;IsIsolatedNode&#39;</span><span class="p">,</span> 
+                            <span class="s">&#39;IsIntermediateNode&#39;</span><span class="p">,</span> <span class="s">&#39;IsTopLevelNode&#39;</span><span class="p">))</span>
+print<span class="p">(</span>connectivity<span class="p">)</span>
+
+<span class="c1"># Each row sums to 1, confirming that a node fits only one of the four categories</span>
+print<span class="p">(</span>all<span class="p">(</span><span class="m">1</span><span class="o">==</span>rowSums<span class="p">(</span>connectivity<span class="p">)))</span>
+
+<span class="c1"># These summations are 1</span>
+print<span class="p">(</span>sum<span class="p">(</span>FractionBasalNodes<span class="p">(</span>TL84<span class="p">),</span> 
+          FractionIntermediateNodes<span class="p">(</span>TL84<span class="p">),</span> 
+          FractionTopLevelNodes<span class="p">(</span>TL84<span class="p">),</span> 
+          FractionIsolatedNodes<span class="p">(</span>TL84<span class="p">)))</span>
+
+print<span class="p">(</span>sum<span class="p">(</span>FractionConnectedNodes<span class="p">(</span>TL84<span class="p">),</span> 
+          FractionIsolatedNodes<span class="p">(</span>TL84<span class="p">)))</span>
+
+print<span class="p">(</span>sum<span class="p">(</span>FractionBasalNodes<span class="p">(</span>TL84<span class="p">),</span> 
+          FractionNonBasalNodes<span class="p">(</span>TL84<span class="p">)))</span>
+
+print<span class="p">(</span>sum<span class="p">(</span>FractionTopLevelNodes<span class="p">(</span>TL84<span class="p">),</span> 
+          FractionNonTopLevelNodes<span class="p">(</span>TL84<span class="p">)))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># A table of node connectivity</span>
+<span class="gp">&gt; </span>connectivity <span class="o">&lt;-</span> NPS<span class="p">(</span>TL84<span class="p">,</span> c<span class="p">(</span><span class="s">&#39;IsBasalNode&#39;</span><span class="p">,</span> <span class="s">&#39;IsIsolatedNode&#39;</span><span class="p">,</span> 
+<span class="gp">+ </span>                            <span class="s">&#39;IsIntermediateNode&#39;</span><span class="p">,</span> <span class="s">&#39;IsTopLevelNode&#39;</span><span class="p">))</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>connectivity<span class="p">)</span>
+<span class="go">                               IsBasalNode IsIsolatedNode IsIntermediateNode IsTopLevelNode</span>
+<span class="go">Nostoc sp.                            TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Arthrodesmus sp.                      TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Asterionella formosa                 FALSE           TRUE              FALSE          FALSE</span>
+<span class="go">Cryptomonas sp. 1                     TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Cryptomonas sp. 2                     TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Chroococcus dispersus                 TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Closteriopsis longissimus             TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Chrysosphaerella longispina          FALSE           TRUE              FALSE          FALSE</span>
+<span class="go">Dinobryon bavaricum                   TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Dinobryon cylindricum                 TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Dactylococcopsis fascicularis         TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Diceras sp.                          FALSE           TRUE              FALSE          FALSE</span>
+<span class="go">Dictyosphaerium pulchellum            TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Dinobryon sertularia                  TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Dinobryon sociale                     TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Glenodinium quadridens                TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Microcystis aeruginosa                TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Mallomonas sp. 1                      TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Mallomonas sp. 2                      TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Unclassified flagellates              TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Peridinium limbatum                   TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Peridinium cinctum                    TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Peridinium pulsillum                  TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Peridinium wisconsinense              TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Chromulina sp.                        TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Rhizosolenia sp.                     FALSE           TRUE              FALSE          FALSE</span>
+<span class="go">Selenastrum minutum                   TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Spinocosmarium sp.                   FALSE           TRUE              FALSE          FALSE</span>
+<span class="go">Staurastrum sp.                      FALSE           TRUE              FALSE          FALSE</span>
+<span class="go">Synedra sp.                           TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Trachelomonas sp.                     TRUE          FALSE              FALSE          FALSE</span>
+<span class="go">Ascomorpha eucadis                   FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Synchaeta sp.                        FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Bosmina longirostris                 FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Conochilus (solitary)                FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Cyclops varians rubellus             FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Diaphanosoma leuchtenbergianum       FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Daphnia pulex                        FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Filinia longispina                   FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Conochiloides dossuarius             FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Gastropus stylifer                   FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Holopedium gibberum                  FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Kellicottia sp.                      FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Keratella cochlearis                 FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Keratella testudo                    FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Leptodiaptomus siciloides            FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Orthocyclops modestus                FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Ploesoma sp.                         FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Polyarthra vulgaris                  FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Trichocerca multicrinis              FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Trichocerca cylindrica               FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Tropocyclops prasinus                FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Chaoborus punctipennis               FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Phoxinus eos                         FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Phoxinus neogaeus                    FALSE          FALSE               TRUE          FALSE</span>
+<span class="go">Umbra limi                           FALSE          FALSE              FALSE           TRUE</span>
+
+<span class="gp">&gt; </span><span class="c1"># Each row sums to 1, confirming that a node fits only one of the four categories</span>
+<span class="gp">&gt; </span>print<span class="p">(</span>all<span class="p">(</span><span class="m">1</span><span class="o">==</span>rowSums<span class="p">(</span>connectivity<span class="p">)))</span>
+<span class="go">[1] TRUE</span>
+
+<span class="gp">&gt; </span><span class="c1"># These summations are 1</span>
+<span class="gp">&gt; </span>print<span class="p">(</span>sum<span class="p">(</span>FractionBasalNodes<span class="p">(</span>TL84<span class="p">),</span> 
+<span class="gp">+ </span>          FractionIntermediateNodes<span class="p">(</span>TL84<span class="p">),</span> 
+<span class="gp">+ </span>          FractionTopLevelNodes<span class="p">(</span>TL84<span class="p">),</span> 
+<span class="gp">+ </span>          FractionIsolatedNodes<span class="p">(</span>TL84<span class="p">)))</span>
+<span class="go">[1] 1</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>sum<span class="p">(</span>FractionConnectedNodes<span class="p">(</span>TL84<span class="p">),</span> 
+<span class="gp">+ </span>          FractionIsolatedNodes<span class="p">(</span>TL84<span class="p">)))</span>
+<span class="go">[1] 1</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>sum<span class="p">(</span>FractionBasalNodes<span class="p">(</span>TL84<span class="p">),</span> 
+<span class="gp">+ </span>          FractionNonBasalNodes<span class="p">(</span>TL84<span class="p">)))</span>
+<span class="go">[1] 1</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>sum<span class="p">(</span>FractionTopLevelNodes<span class="p">(</span>TL84<span class="p">),</span> 
+<span class="gp">+ </span>          FractionNonTopLevelNodes<span class="p">(</span>TL84<span class="p">)))</span>
+<span class="go">[1] 1</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Omnivory</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>Omnivory</code>
+
+          <code>Omnivores</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Polis1991">Polis 1991</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre>print<span class="p">(</span>Omnivory<span class="p">(</span>TL84<span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>print<span class="p">(</span>Omnivory<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 0.1428571</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Overview of complexity</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotCircularWeb</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotCircularWeb<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotCircularWeb<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/overviewofcomplexity1.png" 
+             alt="Example Overview of complexity plot"/>
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># Order by increasing degree</span>
+PlotCircularWeb<span class="p">(</span>OrderCommunity<span class="p">(</span>TL84<span class="p">,</span> <span class="s">&#39;Degree&#39;</span><span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># Order by increasing degree</span>
+<span class="gp">&gt; </span>PlotCircularWeb<span class="p">(</span>OrderCommunity<span class="p">(</span>TL84<span class="p">,</span> <span class="s">&#39;Degree&#39;</span><span class="p">))</span>
+</pre></div>
+
+
+        <img src="/static/images/overviewofcomplexity2.png" 
+             alt="Example Overview of complexity plot"/>
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Trophic level</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PreyAveragedTrophicLevel</code>
+
+          <code>FlowBasedTrophicLevel</code>
+
+          <code>ShortestTrophicLevel</code>
+
+          <code>ShortWeightedTrophicLevel</code>
+
+          <code>LongestTrophicLevel</code>
+
+          <code>LongWeightedTrophicLevel</code>
+
+          <code>ChainAveragedTrophicLevel</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Levine1980">Levine 1980</a>;
+
+            <a href="#Cohenetal2003">Cohen et al 2003</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+            <a href="#Williams&Martinez2004">Williams & Martinez 2004</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotWebByLevel<span class="p">(</span>TL84<span class="p">,</span> level<span class="o">=</span><span class="s">&#39;PreyAveragedTrophicLevel&#39;</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotWebByLevel<span class="p">(</span>TL84<span class="p">,</span> level<span class="o">=</span><span class="s">&#39;PreyAveragedTrophicLevel&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/trophiclevel1.png" 
+             alt="Example Trophic level plot"/>
+
+
+
+        <!--<div class="highlight"><pre>PlotWebByLevel<span class="p">(</span>TL84<span class="p">,</span> level<span class="o">=</span><span class="s">&#39;ChainAveragedTrophicLevel&#39;</span><span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotWebByLevel<span class="p">(</span>TL84<span class="p">,</span> level<span class="o">=</span><span class="s">&#39;ChainAveragedTrophicLevel&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/trophiclevel2.png" 
+             alt="Example Trophic level plot"/>
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># Six different measures of trophic level</span>
+print<span class="p">(</span>round<span class="p">(</span>TrophicLevels<span class="p">(</span>TL84<span class="p">),</span> <span class="m">2</span><span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># Six different measures of trophic level</span>
+<span class="gp">&gt; </span>print<span class="p">(</span>round<span class="p">(</span>TrophicLevels<span class="p">(</span>TL84<span class="p">),</span> <span class="m">2</span><span class="p">))</span>
+<span class="go">                               ShortestTL ShortWeightedTL LongestTL LongWeightedTL ChainAveragedTL PreyAveragedTL</span>
+<span class="go">Nostoc sp.                              1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Arthrodesmus sp.                        1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Asterionella formosa                    1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Cryptomonas sp. 1                       1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Cryptomonas sp. 2                       1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Chroococcus dispersus                   1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Closteriopsis longissimus               1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Chrysosphaerella longispina             1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Dinobryon bavaricum                     1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Dinobryon cylindricum                   1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Dactylococcopsis fascicularis           1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Diceras sp.                             1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Dictyosphaerium pulchellum              1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Dinobryon sertularia                    1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Dinobryon sociale                       1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Glenodinium quadridens                  1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Microcystis aeruginosa                  1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Mallomonas sp. 1                        1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Mallomonas sp. 2                        1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Unclassified flagellates                1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Peridinium limbatum                     1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Peridinium cinctum                      1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Peridinium pulsillum                    1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Peridinium wisconsinense                1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Chromulina sp.                          1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Rhizosolenia sp.                        1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Selenastrum minutum                     1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Spinocosmarium sp.                      1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Staurastrum sp.                         1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Synedra sp.                             1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Trachelomonas sp.                       1            1.00         1           1.00            1.00           1.00</span>
+<span class="go">Ascomorpha eucadis                      2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Synchaeta sp.                           2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Bosmina longirostris                    2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Conochilus (solitary)                   2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Cyclops varians rubellus                3            3.07         4           3.57            3.33           3.14</span>
+<span class="go">Diaphanosoma leuchtenbergianum          2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Daphnia pulex                           2            2.05         3           2.55            2.42           2.11</span>
+<span class="go">Filinia longispina                      2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Conochiloides dossuarius                2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Gastropus stylifer                      2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Holopedium gibberum                     2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Kellicottia sp.                         2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Keratella cochlearis                    2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Keratella testudo                       2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Leptodiaptomus siciloides               2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Orthocyclops modestus                   3            3.10         5           4.10            4.20           3.21</span>
+<span class="go">Ploesoma sp.                            2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Polyarthra vulgaris                     2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Trichocerca multicrinis                 2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Trichocerca cylindrica                  2            2.00         2           2.00            2.00           2.00</span>
+<span class="go">Tropocyclops prasinus                   3            3.07         4           3.57            3.33           3.14</span>
+<span class="go">Chaoborus punctipennis                  2            2.59         6           4.59            4.60           3.17</span>
+<span class="go">Phoxinus eos                            3            3.26         7           5.26            5.17           3.53</span>
+<span class="go">Phoxinus neogaeus                       3            3.26         7           5.26            5.17           3.53</span>
+<span class="go">Umbra limi                              3            3.40         8           5.90            5.84           3.80</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Trophic similarity</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>TrophicSimilarity</code>
+
+          <code>MeanMaximumTrophicSimilarity</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Williams&Martinez2000">Williams & Martinez 2000</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre>print<span class="p">(</span>MeanMaximumTrophicSimilarity<span class="p">(</span>TL84<span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>print<span class="p">(</span>MeanMaximumTrophicSimilarity<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">[1] 0.8520697</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Trophic generality and vulnerability</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>TrophicGenerality</code>
+
+          <code>TrophicVulnerability</code>
+
+          <code>NormalisedTrophicGenerality</code>
+
+          <code>NormalisedTrophicGenerality</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Williams&Martinez2000">Williams & Martinez 2000</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre>print<span class="p">(</span>TrophicGenerality<span class="p">(</span>TL84<span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>print<span class="p">(</span>TrophicGenerality<span class="p">(</span>TL84<span class="p">))</span>
+<span class="go">                    Nostoc sp.               Arthrodesmus sp.           Asterionella formosa              Cryptomonas sp. 1 </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">             Cryptomonas sp. 2          Chroococcus dispersus      Closteriopsis longissimus    Chrysosphaerella longispina </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">           Dinobryon bavaricum          Dinobryon cylindricum  Dactylococcopsis fascicularis                    Diceras sp. </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">    Dictyosphaerium pulchellum           Dinobryon sertularia              Dinobryon sociale         Glenodinium quadridens </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">        Microcystis aeruginosa               Mallomonas sp. 1               Mallomonas sp. 2       Unclassified flagellates </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">           Peridinium limbatum             Peridinium cinctum           Peridinium pulsillum       Peridinium wisconsinense </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">                Chromulina sp.               Rhizosolenia sp.            Selenastrum minutum             Spinocosmarium sp. </span>
+<span class="go">                             0                              0                              0                              0 </span>
+<span class="go">               Staurastrum sp.                    Synedra sp.              Trachelomonas sp.             Ascomorpha eucadis </span>
+<span class="go">                             0                              0                              0                              6 </span>
+<span class="go">                 Synchaeta sp.           Bosmina longirostris          Conochilus (solitary)       Cyclops varians rubellus </span>
+<span class="go">                             6                             11                              7                             16 </span>
+<span class="go">Diaphanosoma leuchtenbergianum                  Daphnia pulex             Filinia longispina       Conochiloides dossuarius </span>
+<span class="go">                            14                             28                              6                              7 </span>
+<span class="go">            Gastropus stylifer            Holopedium gibberum                Kellicottia sp.           Keratella cochlearis </span>
+<span class="go">                             6                             19                              6                              6 </span>
+<span class="go">             Keratella testudo      Leptodiaptomus siciloides          Orthocyclops modestus                   Ploesoma sp. </span>
+<span class="go">                             6                             16                             17                              6 </span>
+<span class="go">           Polyarthra vulgaris        Trichocerca multicrinis         Trichocerca cylindrica          Tropocyclops prasinus </span>
+<span class="go">                             6                              6                              6                             16 </span>
+<span class="go">        Chaoborus punctipennis                   Phoxinus eos              Phoxinus neogaeus                     Umbra limi </span>
+<span class="go">                            22                              9                              9                             12 </span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Trophic species</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>TrophicSpecies
+LumpTrophicSpecies</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Briand&Cohen1984">Briand & Cohen 1984</a>;
+
+            <a href="#Pimmetal1991">Pimm et al 1991</a>;
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre>TL84.lumped <span class="o">&lt;-</span> LumpTrophicSpecies<span class="p">(</span>TL84<span class="p">)</span>
+print<span class="p">(</span>length<span class="p">(</span>unique<span class="p">(</span>TrophicSpecies<span class="p">(</span>TL84<span class="p">))))</span>    <span class="c1"># 22 trophic species in TL84...</span>
+print<span class="p">(</span>NumberOfNodes<span class="p">(</span>TL84.lumped<span class="p">))</span>              <span class="c1"># ... and 22 nodes in the lumped web</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>TL84.lumped <span class="o">&lt;-</span> LumpTrophicSpecies<span class="p">(</span>TL84<span class="p">)</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>length<span class="p">(</span>unique<span class="p">(</span>TrophicSpecies<span class="p">(</span>TL84<span class="p">))))</span>    <span class="c1"># 22 trophic species in TL84...</span>
+<span class="go">[1] 22</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>NumberOfNodes<span class="p">(</span>TL84.lumped<span class="p">))</span>              <span class="c1"># ... and 22 nodes in the lumped web</span>
+<span class="go">[1] 22</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td><a href="javascript:;" class="toggleLink">Resource body mass against consumer body mass</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotMRvMC</code>
+
+          <code>PlotMCvMR</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotMRvMC<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotMRvMC<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/resourcebodymassagainstconsumerbodymass1.png" 
+             alt="Example Resource body mass against consumer body mass plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Resource numerical abundance against consumer numerical abundance</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotNRvNC</code>
+
+          <code>PlotNCvNR</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Jonssonetal2005">Jonsson et al 2005</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotNRvNC<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNRvNC<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/resourcenumericalabundanceagainstconsumernumericalabundance1.png" 
+             alt="Example Resource numerical abundance against consumer numerical abundance plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center"></td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Numerical abundance pyramid</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotNPyramid</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotNPyramid<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotNPyramid<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/numericalabundancepyramid1.png" 
+             alt="Example Numerical abundance pyramid plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Resource biomass abundance against consumer biomass abundance</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotBRvBC</code>
+
+          <code>PlotBCvBR</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotBRvBC<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotBRvBC<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/resourcebiomassabundanceagainstconsumerbiomassabundance1.png" 
+             alt="Example Resource biomass abundance against consumer biomass abundance plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Quantitative food-web descriptors based on information-theory indices</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>QuantitativeDescriptors</code>
+
+          <code>NodeQuantitativeDescriptors</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Bersieretal2002">Bersier et al 2002</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># Table 2 of Bersier et al 2002</span>
+table <span class="o">&lt;-</span> QuantitativeDescriptors<span class="p">(</span>ChesapeakeBay<span class="p">,</span> <span class="s">&#39;biomass.flow&#39;</span><span class="p">)</span>
+print<span class="p">(</span>round<span class="p">(</span>table<span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># Table 2 of Bersier et al 2002</span>
+<span class="gp">&gt; </span>table <span class="o">&lt;-</span> QuantitativeDescriptors<span class="p">(</span>ChesapeakeBay<span class="p">,</span> <span class="s">&#39;biomass.flow&#39;</span><span class="p">)</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>round<span class="p">(</span>table<span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+<span class="go">                                         Qualitative Unweighted Weighted</span>
+<span class="go">Fraction top level                              0.36       0.36     0.45</span>
+<span class="go">Fraction intermediate                           0.48       0.48     0.39</span>
+<span class="go">Fraction basal                                  0.15       0.15     0.15</span>
+<span class="go">Ratio resources:consumers                       0.75       0.71     0.32</span>
+<span class="go">Link density                                    2.21       1.37     2.10</span>
+<span class="go">Connectance                                     0.07       0.04     0.06</span>
+<span class="go">Fraction links top:intermediate                 0.40       0.45     0.01</span>
+<span class="go">Fraction links top:basal                        0.05       0.05     0.20</span>
+<span class="go">Fraction links intermediate:intermediate        0.29       0.29     0.11</span>
+<span class="go">Fraction links intermediate:basal               0.26       0.21     0.68</span>
+<span class="go">Mean chain length                               3.16       1.60     1.52</span>
+<span class="go">Median chain length                             3.00       1.62     0.67</span>
+<span class="go">SD chain length                                 1.10       0.49     1.91</span>
+<span class="go">Max chain length                                6.00       2.97     6.41</span>
+<span class="go">Degree of omnivory                              0.45       0.51     0.28</span>
+<span class="go">Generality                                      2.61       1.80     1.37</span>
+<span class="go">Vulnerability                                   3.48       1.91     2.82</span>
+<span class="go">SD standardised generality                      0.74       0.65     1.88</span>
+<span class="go">SD standardised vulnerability                   1.19       1.03     4.07</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Biomass abundance pyramid</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>PlotBPyramid</code>
+
+      </p>
+
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre>PlotBPyramid<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span>PlotBPyramid<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/biomassabundancepyramid1.png" 
+             alt="Example Biomass abundance pyramid plot"/>
+
+
+
+
+
+    </td>
+  </tr>
+
+  <tr>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td style="text-align: center">&check;</td>
+    <td><a href="javascript:;" class="toggleLink">Tri-trophic statistics</a></td>
+  </tr>
+  <tr class="popup">
+    <td colspan="4" style="max-width: 720px">
+      <p>
+        <strong><em>Functions</em></strong>:
+
+          <code>NvMTriTrophicStatistics</code>
+
+          <code>NvMTriTrophicTable</code>
+
+          <code>PlotAuppervAlower</code>
+
+      </p>
+
+
+        <p>
+          <strong><em>References</em></strong>:
+
+            <a href="#Cohenetal2009">Cohen et al 2009</a>;
+
+        </p>
+
+
+      <p><strong><em>Examples</em></strong></p>
+
+
+        <!--<div class="highlight"><pre><span class="c1"># Figure 1 D from Cohen et al 2009</span>
+PlotAuppervAlower<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># Figure 1 D from Cohen et al 2009</span>
+<span class="gp">&gt; </span>PlotAuppervAlower<span class="p">(</span>TL84<span class="p">)</span>
+</pre></div>
+
+
+        <img src="/static/images/tritrophicstatistics1.png" 
+             alt="Example Tri-trophic statistics plot"/>
+
+
+
+
+
+        <!--<div class="highlight"><pre><span class="c1"># Table 1 from Cohen et al 2009</span>
+collection <span class="o">&lt;-</span> CommunityCollection<span class="p">(</span>list<span class="p">(</span>TL84<span class="p">,</span> TL86<span class="p">,</span> YthanEstuary<span class="p">))</span>
+table <span class="o">&lt;-</span> NvMTriTrophicTable<span class="p">(</span>collection<span class="p">)</span>
+print<span class="p">(</span>round<span class="p">(</span>table<span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+</pre></div>
+-->
+
+        <div class="highlight"><pre><span class="gp">&gt; </span><span class="c1"># Table 1 from Cohen et al 2009</span>
+<span class="gp">&gt; </span>collection <span class="o">&lt;-</span> CommunityCollection<span class="p">(</span>list<span class="p">(</span>TL84<span class="p">,</span> TL86<span class="p">,</span> YthanEstuary<span class="p">))</span>
+
+<span class="gp">&gt; </span>table <span class="o">&lt;-</span> NvMTriTrophicTable<span class="p">(</span>collection<span class="p">)</span>
+
+<span class="gp">&gt; </span>print<span class="p">(</span>round<span class="p">(</span>table<span class="p">,</span> <span class="m">2</span><span class="p">))</span>
+<span class="go">                                                            Tuesday Lake sampled in 1984 Tuesday Lake sampled in 1986 Ythan Estuary</span>
+<span class="go">Mean link length                                                                    6.33                         5.90          7.29</span>
+<span class="go">Mean L upper                                                                        5.41                         3.43          5.06</span>
+<span class="go">Mean L lower                                                                        5.99                         5.69          6.15</span>
+<span class="go">2 x mean link length                                                               12.67                        11.79         14.57</span>
+<span class="go">Mean 2-span                                                                        11.02                         8.65         10.51</span>
+<span class="go">Mean L upper + L lower                                                             11.40                         9.12         11.20</span>
+<span class="go">2 x mean link length / mean 2-span                                                  1.15                         1.36          1.39</span>
+<span class="go">Mean L upper + L lower/ mean 2-span                                                 1.03                         1.05          1.07</span>
+<span class="go">Mean count chain length                                                             4.84                         4.84          4.43</span>
+<span class="go">Mean count chain length x mean link length                                         30.62                        28.56         32.31</span>
+<span class="go">Community span                                                                     20.78                        22.66         21.98</span>
+<span class="go">Mean count chain length x mean link length / community span                         1.47                         1.26          1.47</span>
+<span class="go">Mean sum chain lengths                                                             19.96                        23.33         16.88</span>
+<span class="go">Mean chain span                                                                    18.71                        20.63         13.18</span>
+<span class="go">Mean chain span / community span                                                    0.90                         0.91          0.60</span>
+<span class="go">Mean sum chain lengths / mean chain span                                            1.07                         1.13          1.28</span>
+<span class="go">Mean sum chain lengths / community span                                             0.96                         1.03          0.77</span>
+<span class="go">L                                                                                 264.00                       236.00        379.00</span>
+<span class="go">S^2                                                                              2500.00                      2601.00       8281.00</span>
+<span class="go">L/S^2                                                                               0.11                         0.09          0.05</span>
+<span class="go">L/S                                                                                 5.28                         4.63          4.16</span>
+<span class="go">L                                                                                 269.00                       241.00        417.00</span>
+<span class="go">S^2                                                                              3136.00                      3249.00       8464.00</span>
+<span class="go">L/S^2                                                                               0.09                         0.07          0.05</span>
+<span class="go">L/S                                                                                 4.80                         4.23          4.53</span>
+</pre></div>
+
+
+    </td>
+  </tr>
+
+</table>
+
+<h2>References</h2>
+<p><a href="http://dx.doi.org/10.1890/0012-9658(2002)083[2394:QDOFWM]2.0.CO;2" name="Bersieretal2002">
+  Bersier, L. and Banašek-Richter, C. and Cattin, M. (2002) Ecology 80 2394-2407
+</a></p>
+<p><a href="http://dx.doi.org/10.1038/307264a0" name="Briand&Cohen1984">
+  Briand, F and Cohen, J.E. 1984 Community food webs have scale-invariant structure Nature 307, 264-267
+</a></p>
+<p><a href="http://dx.doi.org/10.2307/5483" name="Cohenetal1993">
+  Cohen, J.E. and Pimm, S.L. and Yodzis, P. and Saldana, J. 1993 Body sizes of animal predators and animal prey in food webs. Journal of Animal Ecology 62 1 67-78
+</a></p>
+<p><a href="http://dx.doi.org/10.1073/pnas.232715699" name="Cohenetal2003">
+  Cohen, J.E. and Jonsson, T. and Carpenter, S.R. (2003) Ecological community description using the food web species abundance and body size. Proceedings of the National Academy of Sciences of the United States of America 100 4 1781-1786
+</a></p>
+<p><a href="http://dx.doi.org/10.1073/pnas.0910582106" name="Cohenetal2009">
+  Cohen, J.E. and Schittler, D.N. and Raffaelli, D.G. and Reuman, D.C. (2009) Food webs are more than the sum of their tritrophic parts. Proceedings of the National Academy of Sciences of the United States of America 106, 52, 22335-22340
+</a></p>
+<p><a href="http://dx.doi.org/10.1016/S0065-2504(05)36001-6" name="Jonssonetal2005">
+  Jonsson, T. and Cohen J.E. and Carpenter, S. R. 2005 Food webs body size and species abundance in ecological community description. Advances in Ecological Research 36 1-84
+</a></p>
+<p><a href="http://cup.columbia.edu/book/978-0-231-08458-1/the-biomass-spectrum" name="Kerr&Dickie2001">
+  Kerr, S.R. and Dickie, L.M. 2001 The biomass spectrum: a predator-prey theory of aquatic production. Columbia Univ Press
+</a></p>
+<p><a href="http://dx.doi.org/10.1046/j.1461-0248.1999.00069.x" name="Leaper&Raffaelli1999">
+  Leaper,  R. and Raffaelli,  D. (1999) Defining the abundance body-size constraint space: data from a real food web. Ecology Letters 2  3 191-199
+</a></p>
+<p><a href="http://dx.doi.org/10.1016/0022-5193(80)90288-X" name="Levine1980">
+  Levine, S (1980) Several measures of trophic structure applicable to complex food webs. Journal of Theoretical Biology 83, 195-207
+</a></p>
+<p><a href="http://dx.doi.org/10.2307/2937047" name="Martinez1991">
+  Martinez, N. D. 1991 Artifacts or attributes? Effects of resolution on the Little Rock Lake food web. Ecological Monographs 61, 367-392
+</a></p>
+<p><a href="http://dx.doi.org/10.1038/350669a0" name="Pimmetal1991">
+  Pimm, S.L. and Lawton, J.H. and Cohen, J.E. 1991 Food web patterns and their consequences Nature 350, 669-674
+</a></p>
+<p><a href="http://www.jstor.org/discover/10.2307/2462536?uid=3738032&amp;uid=2&amp;uid=4&amp;sid=21103711065523" name="Polis1991">
+  Polis, G. A. (1991) Complex desert food webs: an empirical critique of food web theory. American Naturalist 138, 123-155
+</a></p>
+<p><a href="http://dx.doi.org/10.1073/pnas.0603844103" name="Stoufferetal2006">
+  Stouffer, D.B. and Camacho, J. and Amaral, L.A.N. (2006) Proceedings of the National Academy of Sciences of the United States of America 103, 50, 19015-19020
+</a></p>
+<p><a href="http://dx.doi.org/10.1038/35004572" name="Williams&Martinez2000">
+  Williams, R.J. and Martinez, N.D. (2000) Simple rules yield complex food webs. Nature 404, 180-183
+</a></p>
+<p><a href="http://dx.doi.org/10.1086/381964" name="Williams&Martinez2004">
+  Williams, R. J. and Martinez, N. D. (2004) Limits to Trophic Levels and Omnivory in Complex Food Webs: Theory and Data. American Naturalist 163, 63, 458-468.
+</a></p>
+<p><a href="http://dx.doi.org/10.1016/j.jtbi.2010.11.045" name="Zooketal2011">
+  Zook, A.E. and Eklof, A. and Jacob, U. and Allesina, S. (2011) Journal of Theoretical Biology 271, 1 106-113
+</a></p>
+</section>
+    <section id="extras" class="body">
+                    </section><!-- /#extras -->
+
+    <footer id="contentinfo" class="body">
+        Powered by <a href="http://getpelican.org">Pelican</a> and 
+        <a href="http://www.python.org">Python</a>.
+    </footer><!-- /#contentinfo -->
+
+        </body>
+</html>
