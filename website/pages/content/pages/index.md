@@ -22,7 +22,4 @@ Analysis and visualisation of food-web data in the
 
 <div class="notice">
   If you are a food-web ecologist working in R, Cheddar will save you time
-  <sup>*</sup>
 </div>
-
-\* At least, we are confident that it will
