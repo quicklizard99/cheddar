@@ -1,0 +1,5 @@
+Markdown
+pelican
+Jinja2
+jinja2-highlight
+ghp-import
