@@ -108,7 +108,7 @@ connectivity
 
 # Each row sums to 1, confirming that exactly one of the columns in each row 
 # is TRUE.
-all(1==apply(connectivity, 1, sum))
+all(1==rowSums(connectivity))
 
 # These summations are 1
 sum(FractionBasalNodes(TL84), 
