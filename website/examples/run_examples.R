@@ -35,14 +35,7 @@ PlotExample <- function(safename, example.number, example)
     DefaultGraphics()
 
     # Execute the example
-    if(TRUE)
-    {
-        TextExample(safename, 'graphical', example.number, example)
-    }
-    else
-    {
-        eval(parse(text=example))
-    }
+    TextExample(safename, 'graphical', example.number, example)
 
     dev.off()
 }
@@ -50,21 +43,15 @@ PlotExample <- function(safename, example.number, example)
 TextExample <- function(safename, type, example.number, example)
 {
     fname <- paste0(safename, type, example.number, '.txt')
+    cat(fname, '\n')
     stopifnot(!file.exists(file.path(output.dir, fname)))
 
-    if(TRUE)
-    {
-        cat(example, file='~/x.R')
-        sink(file.path(output.dir, fname))
-        source('~/x.R', echo=TRUE, keep.source=TRUE, max.deparse.length=1e4)
-        sink()
-    }
-    else
-    {
-        sink(file.path(output.dir, fname))
-        eval(parse(text=example))
-        sink()
-    }
+    temp.path <- tempfile()
+    on.exit(unlink(temp.path))
+    cat(example, file=temp.path)
+    sink(file.path(output.dir, fname))
+    source(temp.path, echo=TRUE, keep.source=TRUE, max.deparse.length=1e4)
+    sink()
 }
 
 fname <- 'examples.csv'
