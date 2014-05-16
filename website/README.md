@@ -24,7 +24,7 @@ The [pelican][pelican] project
 ## Make examples
     cd examples
     ./run_examples.R
-    ./create_methods_page.py > ../pages/content/pages/methods.md
+    ./render_methods_page.py > ../pages/content/pages/methods.md
     cd ..
 
 ## Make pelican pages
