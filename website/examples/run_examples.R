@@ -1,4 +1,8 @@
 #!/usr/bin/env Rscript
+
+# Runs examples in examples.csv. Textual and graphical output written to files in
+# output/
+
 cat('Running examples\n')
 options(warn=2)
 
