@@ -3,13 +3,13 @@
 references.csv and files in output/
 """
 
-from unicode_csv import UnicodeDictReader
+from csv import DictReader
 from jinja2 import Environment, FileSystemLoader
 
-env = Environment(loader=FileSystemLoader('.'), 
+env = Environment(loader=FileSystemLoader('.'),
                   extensions=['jinja2_highlight.HighlightExtension'])
 
 template = env.get_template('methods.md')
-print template.render(methods=UnicodeDictReader(file('examples.csv','rb')), 
-                      references=UnicodeDictReader(file('references.csv','rb'))
-                     )
+print(template.render(methods=DictReader(open('examples.csv')),
+                      references=DictReader(open('references.csv'))
+                     ))
