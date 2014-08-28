@@ -1,5 +1,8 @@
 #  Cheddar release history
 
+## 0.1-626 Released 2014-08-28
+* Fixed warning raised by R 3.1 and later
+
 ## 0.1-625 Released 2014-02-25
 **Available on CRAN**
 #### Bugs fixed
