@@ -9,4 +9,3 @@
 * support for collections of communities, allowing investigation into changes in community structure through time, across environmental gradients or resulting from experimental manipulation.
 
 Cheddar is hosted on [Github](https://github.com/quicklizard99/cheddar).
-
