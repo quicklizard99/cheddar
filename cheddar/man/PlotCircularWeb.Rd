@@ -30,6 +30,7 @@ PlotCircularWeb(community,
 
 \seealso{\code{\link{Community}}, 
          \code{\link{PlotBSpectrum}}, 
+         \code{\link{PlotWagonWheel}}, 
          \code{\link{PlotNPS}}, 
          \code{\link{PlotNPSDistribution}}, 
          \code{\link{PlotNSpectrum}}, 
@@ -48,5 +49,5 @@ PlotCircularWeb(TL84, origin.degrees=180)
 # counter-clockwise
 PlotCircularWeb(TL84, origin.degrees=180, clockwise=FALSE)
 }
-\keyword{hplot}
 
+\keyword{hplot}
