@@ -25,8 +25,9 @@ TrophicLevels(community, weight.by=NULL, include.isolated=TRUE)
 
 \arguments{
   \item{community}{an object of class \code{Community}.}
-  \item{include.isolated}{if \code{FALSE} then nodes for which 
-    \code{IsIsolatedNode} is \code{TRUE} are given a trophic level of 
+  \item{include.isolated}{if \code{TRUE} then nodes for which
+    \code{IsIsolatedNode} is \code{TRUE} are given a trophic level of
+    1; if \code{FALSE} then isolated nodes are given a trophic level of
     \code{NA}.}
   \item{weight.by}{the name of a node property, either first-class or computed, 
     by which to weight flow-based trophic level. Must satisfy the criteria 
@@ -42,12 +43,13 @@ trophic level. These functions follow the definitions of Williams and Martinez
 
 \code{PreyAveragedTrophicLevel} returns 1 plus the mean trophic level of the 
 node's resources, using the matrix inversion method of Levine (1980) that is 
-very fast and accounts for flow through loops. If this matrix inversion fails, 
-there is an important problem with the network topology. For a food web to be 
-energetically feasible, every node must be connected to a basal node. When the 
-inversion fails it is because there is at least one node that has no connection 
-to a basal node. \code{FlowBasedTrophicLevel} also implements the matrix 
-inversion technique and uses the \code{weight.by} node property to provide an 
+very fast and accounts for flow through loops. If this matrix inversion fails
+then there is an important problem with the network topology and the function
+will return a vector containing all \code{NA}s. For a food web to be
+energetically feasible, every node must be connected to a basal node. When the
+inversion fails it is because there is at least one node that has no connection
+to a basal node. \code{FlowBasedTrophicLevel} also implements the matrix
+inversion technique and uses the \code{weight.by} node property to provide an
 estimate of energy flow through each trophic link.
 
 \code{ShortestTrophicLevel}, \code{ShortWeightedTrophicLevel}, 
@@ -70,10 +72,12 @@ a matrix containing every measure of trophic level in columns `ShortestTL',
 `ShortWeightedTL', `LongestTL', `LongWeightedTL', `ChainAveragedTL', 
 `PreyAveragedTL' and, if \code{weight.by} is given, `FlowBasedTL'.
 
-Jonsson et al (2005) defined `trophic height' to be the same as 
-Williams and Martinez' (2004) chain-averaged trophic level. 
-\code{TrophicHeight} is therefore a synonym for 
-\code{ChainAveragedTrophicLevel}. 
+Jonsson et al (2005) defined `trophic height' to be the same as
+Williams and Martinez' (2004) chain-averaged trophic level so
+\code{TrophicHeight} is a synonym for \code{ChainAveragedTrophicLevel}.
+
+All methods will return a vector containing all \code{NA}s if no nodes are basal
+i.e., all nodes are cannibalistic or `community' has no trophic links.
 }
 
 \value{Either a vector of length \code{NumberOfNodes} or a \code{matrix} with 
@@ -92,8 +96,10 @@ and Omnivory in Complex Food Webs: Theory and Data. American Naturalist
 
 \author{Lawrence Hudson and Rich Williams}
 
-\seealso{\code{\link{IsIsolatedNode}}, \code{\link{NPS}}, 
-         \code{\link{TrophicChains}}, \code{\link{TrophicChainsStats}}, 
+\seealso{\code{\link{IsIsolatedNode}}, \code{\link{IsBasalNode}},
+         \code{\link{IsCannibal}}, \code{\link{NPS}},
+         \code{\link{TrophicChains}}, \code{\link{NumberOfNodes}},
+         \code{\link{NumberOfTrophicLinks}}, \code{\link{TrophicChainsStats}},
          \code{\link{PredationMatrix}}}
 
 \examples{
