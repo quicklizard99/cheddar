@@ -1,0 +1,98 @@
+"links","M","N","functions","textual1","graphical1","graphical2","description","references","safename"
+FALSE,TRUE,FALSE,"PlotMvRankM","","PlotMvRankM(TL84)","PlotMvRankM(TL84, show.nodes.as=""labels"")","Rank of body mass","Cohen et al 2003;Jonsson et al 2005","rankofbodymass"
+FALSE,TRUE,FALSE,"PlotMDistribution","","PlotMDistribution(TL84)","","Distribution of body mass","Cohen et al 2003;Jonsson et al 2005","distributionofbodymass"
+FALSE,FALSE,TRUE,"PlotNvRankN","","PlotNvRankN(TL84)","PlotNvRankN(TL84, show.nodes.as=""labels"")","Rank of numerical abundance","Cohen et al 2003;Jonsson et al 2005","rankofnumericalabundance"
+FALSE,FALSE,TRUE,"PlotNDistribution","","PlotNDistribution(TL84)","","Distribution of numerical abundance","Cohen et al 2003;Jonsson et al 2005","distributionofnumericalabundance"
+FALSE,TRUE,TRUE,"PlotBSpectrum","","PlotBSpectrum(TL84)","","Approximate biomass abundance spectrum","Kerr & Dickie 2001","approximatebiomassabundancespectrum"
+FALSE,TRUE,TRUE,"PlotNSpectrum","","PlotNSpectrum(TL84)","","Approximate numerical abundance spectrum","Kerr & Dickie 2001","approximatenumericalabundancespectrum"
+FALSE,TRUE,TRUE,"NvMConvexHull","","ch <- NvMConvexHull(TL84)
+print(ch$area)
+
+# Show the hull graphically
+PlotNvM(TL84)
+polygon(ch$points, lwd=2, border='red')
+points(ch$points, pch=3, col='red', cex=3)","","Constraint space defined by a convex hull","Leaper & Raffaelli 1999","constraintspacedefinedbyaconvexhull"
+FALSE,TRUE,TRUE,"PlotBDistribution","","PlotBDistribution(TL84)","","Distribution of biomass abundance","Cohen et al 2003;Jonsson et al 2005","distributionofbiomassabundance"
+FALSE,TRUE,TRUE,"PlotNvM PlotMvN NvMLinearModels PlotLinearModels","","PlotNvM(TL84)","# Fit linear regressions to the whole community and to each group
+PlotNvM(TL84)
+models <- NvMLinearRegressions(TL84)
+PlotLinearModels(models)","Mass-abundance allometry","Cohen et al 2003;Jonsson et al 2005","massabundanceallometry"
+FALSE,TRUE,TRUE,"PlotBvRankB","","PlotBvRankB(TL84)","PlotBvRankB(TL84, show.nodes.as=""labels"")","Rank of biomass abundance","Cohen et al 2003;Jonsson et al 2005","rankofbiomassabundance"
+TRUE,FALSE,FALSE,"NumberOfNodes NumberOfTrophicLinks LinkageDensity DirectedConnectance","print(NumberOfTrophicLinks(TL84))
+print(LinkageDensity(TL84))
+print(DirectedConnectance(TL84))","","","Basic network properties","Martinez 1991;Cohen et al 2003;Jonsson et al 2005","basicnetworkproperties"
+TRUE,FALSE,FALSE,"PlotPredationMatrix PredationMatrix","pm <- PredationMatrix(TL84)
+# A square matrix
+print(class(pm))
+print(NumberOfNodes(TL84))
+print(nrow(pm))
+print(ncol(pm))
+
+# All values are 0 or 1. 1 indicates a feeding link
+print(unique(as.vector(pm)))
+
+# 269 trophic links
+print(NumberOfTrophicLinks(TL84))
+print(sum(pm))","PlotPredationMatrix(TL84)","","Feeding interactions as a matrix","","feedinginteractionsasamatrix"
+TRUE,FALSE,FALSE,"PlotWebByLevel","","PlotWebByLevel(TL84)","# A different measure of trophic level
+PlotWebByLevel(TL84, level='ChainAveragedTrophicLevel')","Food-web plotted vertically by trophic level","","foodwebplottedverticallybytrophiclevel"
+TRUE,FALSE,FALSE,"SumDietGaps SumConsumerGaps MinimiseSumDietGaps MinimiseSumConsumerGaps OrderCommunity","","# 5 repetitions of the simulated annealing method used to minimise diet gaps
+# Use the result with the smallest number of gaps
+res <- MinimiseSumDietGaps(TL84, n=5)
+print(res$sum.gaps)
+PlotPredationMatrix(res$reordered, main=res$sum.gaps)","# The data contain species' body masses - we can compare to number of diet 
+# gaps when taxa are ordered by body mass
+byM <- OrderCommunity(TL84, 'M')
+print(SumDietGaps(byM))
+PlotPredationMatrix(byM, main=SumDietGaps(byM))","Intervality and diet gaps","Stouffer et al 2006;Zook et al 2011","intervalityanddietgaps"
+TRUE,FALSE,FALSE,"BasalNodes IntermediateNodes TopLevelNodes IsolatedNodes IsBasalNode IsIntermediateNode IsTopLevelNode IsIsolatedNode FractionBasalNodes FractionIntermediateNodes FractionTopLevelNodes FractionIsolatedNodes FractionConnectedNodes FractionIsolatedNodes FractionBasalNodes FractionNonBasalNodes FractionTopLevelNodes FractionNonTopLevelNodes","# A table of node connectivity
+connectivity <- NPS(TL84, c('IsBasalNode', 'IsIsolatedNode', 
+                            'IsIntermediateNode', 'IsTopLevelNode'))
+print(connectivity)
+ 
+# Each row sums to 1, confirming that a node fits only one of the four categories
+print(all(1==rowSums(connectivity)))
+
+# These summations are 1
+print(sum(FractionBasalNodes(TL84), 
+          FractionIntermediateNodes(TL84), 
+          FractionTopLevelNodes(TL84), 
+          FractionIsolatedNodes(TL84)))
+
+print(sum(FractionConnectedNodes(TL84), 
+          FractionIsolatedNodes(TL84)))
+
+print(sum(FractionBasalNodes(TL84), 
+          FractionNonBasalNodes(TL84)))
+
+print(sum(FractionTopLevelNodes(TL84), 
+          FractionNonTopLevelNodes(TL84)))","","","Node connectivity categories","","nodeconnectivitycategories"
+TRUE,FALSE,FALSE,"Omnivory Omnivores","print(Omnivory(TL84))","","","Omnivory","Polis 1991","omnivory"
+TRUE,FALSE,FALSE,"PlotCircularWeb","","PlotCircularWeb(TL84)","# Order by increasing degree
+PlotCircularWeb(OrderCommunity(TL84, 'Degree'))","Overview of complexity","","overviewofcomplexity"
+TRUE,FALSE,FALSE,"PreyAveragedTrophicLevel FlowBasedTrophicLevel ShortestTrophicLevel ShortWeightedTrophicLevel LongestTrophicLevel LongWeightedTrophicLevel ChainAveragedTrophicLevel","# Six different measures of trophic level
+print(round(TrophicLevels(TL84), 2))","PlotWebByLevel(TL84, level='PreyAveragedTrophicLevel')","PlotWebByLevel(TL84, level='ChainAveragedTrophicLevel')","Trophic level","Levine 1980;Cohen et al 2003;Jonsson et al 2005;Williams & Martinez 2004","trophiclevel"
+TRUE,FALSE,FALSE,"TrophicSimilarity MeanMaximumTrophicSimilarity","print(MeanMaximumTrophicSimilarity(TL84))","","","Trophic similarity","Williams & Martinez 2000","trophicsimilarity"
+TRUE,FALSE,FALSE,"TrophicGenerality TrophicVulnerability NormalisedTrophicGenerality NormalisedTrophicGenerality","print(TrophicGenerality(TL84))","","","Trophic generality and vulnerability","Williams & Martinez 2000","trophicgeneralityandvulnerability"
+TRUE,FALSE,FALSE,"TrophicSpecies
+LumpTrophicSpecies","TL84.lumped <- LumpTrophicSpecies(TL84)
+print(length(unique(TrophicSpecies(TL84))))    # 22 trophic species in TL84...
+print(NumberOfNodes(TL84.lumped))              # ... and 22 nodes in the lumped web","","","Trophic species","Briand & Cohen 1984;Pimm et al 1991;Jonsson et al 2005","trophicspecies"
+TRUE,FALSE,FALSE,"PlotWagonWheel","","PlotWagonWheel(TL84, 'Ploesoma sp.', main= 'Ploesoma sp.')","# 'Daphnia pulex' is the focus, nodes ordered by degree (total number of
+# trophic links), lines partially transparent
+PlotWagonWheel(OrderCommunity(TL84, 'Degree'), 'Daphnia pulex',
+            show.nodes.as='labels', link.col=rgb(0.8,0.8,0.8,0.5),
+            main='Daphnia pulex')","Shortest trophic paths","","shortesttrophicpaths"
+TRUE,TRUE,FALSE,"PlotMRvMC PlotMCvMR","","PlotMRvMC(TL84)","","Resource body mass against consumer body mass","Jonsson et al 2005","resourcebodymassagainstconsumerbodymass"
+TRUE,FALSE,TRUE,"PlotNRvNC PlotNCvNR","","PlotNRvNC(TL84)","","Resource numerical abundance against consumer numerical abundance","Jonsson et al 2005","resourcenumericalabundanceagainstconsumernumericalabundance"
+TRUE,FALSE,TRUE,"PlotNPyramid","","PlotNPyramid(TL84)","","Numerical abundance pyramid","","numericalabundancepyramid"
+TRUE,TRUE,TRUE,"PlotBRvBC PlotBCvBR","","PlotBRvBC(TL84)","","Resource biomass abundance against consumer biomass abundance","","resourcebiomassabundanceagainstconsumerbiomassabundance"
+TRUE,TRUE,TRUE,"QuantitativeDescriptors NodeQuantitativeDescriptors","# Table 2 of Bersier et al 2002
+table <- QuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
+print(round(table, 2))","","","Quantitative food-web descriptors based on information-theory indices","Bersier et al 2002","quantitativefoodwebdescriptorsbasedoninformationtheoryindices"
+TRUE,TRUE,TRUE,"PlotBPyramid","","PlotBPyramid(TL84)","","Biomass abundance pyramid","","biomassabundancepyramid"
+TRUE,TRUE,TRUE,"NvMTriTrophicStatistics NvMTriTrophicTable PlotAuppervAlower","# Table 1 from Cohen et al 2009
+collection <- CommunityCollection(list(TL84, TL86, YthanEstuary))
+table <- NvMTriTrophicTable(collection)
+print(round(table, 2))","# Figure 1 D from Cohen et al 2009
+PlotAuppervAlower(TL84)","","Tri-trophic statistics","Cohen et al 2009","tritrophicstatistics"

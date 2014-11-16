@@ -79,6 +79,7 @@ and/or numerical abundance, $N$, following \cite{CohenEtAl2003PNAS}
       \checkmark    &            &            & \code{PlotWebByLevel}         & Food web plotted vertically by trophic level                   \\
       \checkmark    &            &            & \code{PlotDegreeDistribution} & Histogram of node degree                                       \\
       \checkmark    &            &            & \code{PlotCircularWeb}        & An overview of complexity                                      \\
+      \checkmark    &            &            & \code{PlotWagonWheel}         & Concentric circles around a focal node                         \\
       \checkmark    & \checkmark &            & \code{PlotMRvMC} *            & $\log_{10} (M)$ of resource versus $\log_{10} (M)$ of consumer \\
       \checkmark    &            & \checkmark & \code{PlotNRvNC} *            & $\log_{10} (N)$ of resource versus $\log_{10} (N)$ of consumer \\
       \checkmark    &            & \checkmark & \code{PlotNPyramid}           & $\log_{10} (\sum(N))$ by trophic level                         \\

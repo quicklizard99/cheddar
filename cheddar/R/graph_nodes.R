@@ -732,3 +732,83 @@ PlotCircularWeb <- function(community,
             frame.plot=frame.plot, xaxt='n', yaxt='n', xlim=xlim, ylim=ylim,...)
 }
 
+PlotWagonWheel <- function(community, focus,
+                           clockwise=TRUE,
+                           origin.degrees=0,
+                           frame.plot=FALSE,
+                           main=NULL,
+                           ...)
+{
+    # A plot of the food web in a circular arrangement, with the focal species
+    # at the centre with concentric circles radiating outwards to species that
+    # are 1, 2, 3 etc links away.
+    # origin.degrees=0 will plot the first species at each level at the 12
+    # o'clock position. 
+
+    if(!is.Community(community)) stop('Not a Community')
+    if(!is.character(focus))
+    {
+        stopifnot(focus>0 && focus<=NumberOfNodes(community))
+        focus <- unname(NP(community, 'node'))[focus]
+    }
+    stopifnot(1==length(focus) && focus %in% NP(community, 'node'))
+
+    stopifnot(!focus %in% IsolatedNodes(community))
+
+    x <- y <- rep(NA, NumberOfNodes(community))
+    names(x) <- names(y) <- unname(NP(community, 'node'))
+
+    # Focal species at the origin
+    x[focus] <- y[focus] <- 0
+
+    x[IsolatedNodes(community)] <- y[IsolatedNodes(community)] <- NA
+
+    # Shortest distances between nodes
+    d <- ShortestPaths(community)[,focus]
+    d <- d[setdiff(names(d), focus)]
+
+    # Distance to isolated species will be Inf
+    d <- d[!is.infinite(d)]
+
+    # Should never happen
+    stopifnot(!any(is.na(d)))
+
+    # Axes limits
+    max.distance <- max(d)
+    lim <- c(-max.distance,max.distance)
+
+    # For each circle, create a sequence of vectors
+    for(level in sort(unique(d)))
+    {
+        at.this.level <- d[d==level]
+        z <- complex(modulus=level,
+                     argument=seq(0, 2*pi,length.out=1+length(at.this.level)))
+        names(z) <- names(at.this.level)
+        z <- head(z, -1)
+
+        # Rotate origin
+        # The two calls to ifelse(clockwise,...) ensure that origin.degrees 
+        # works consistently regardless of the value of clockwise. 
+        # -90 is so that origin.degrees of 0 puts the origin at 12 o'clock.
+        z <- z * complex(argument=(ifelse(clockwise,1,-1)*origin.degrees-90 + 
+                                   ifelse(clockwise,0,1)*180)*2*pi/360)
+
+        # Adjust direction
+        if(clockwise)
+        {
+            z <- Conj(z)
+        }
+
+        x[names(at.this.level)] <- Re(z)
+        y[names(at.this.level)] <- Im(z)
+    }
+
+    if(is.null(main))
+    {
+        main <- paste0(CPS(community)$title, ' (', focus, ')')
+    }
+    PlotNPS(community, x, y, xlab='', ylab='', are.values=TRUE,
+            frame.plot=frame.plot, xaxt='n', yaxt='n', xlim=lim, ylim=lim,
+            main=main, ...)
+
+}
