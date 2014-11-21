@@ -1,5 +1,8 @@
-# Runs all of cheddar's tests. You must cd cheddar/tests before running 
-# Rscript run_all.R
+#!/usr/bin/env Rscript
+# Runs all of cheddar's tests
+# cd cheddar/tests
+# ./run.R
+
 options(warn=2)
 library(cheddar)
 
