@@ -1,7 +1,6 @@
 \name{ArtificialCommunities}
 \alias{ArtificialCommunities}
 \alias{CommunityFactory}
-\alias{CommunitiesLike}
 \alias{NicheModelLinks}
 \alias{RandomLinks}
 \alias{CascadeModelLinks}
@@ -9,37 +8,41 @@
 \description{Functions for creating artificial communities.}
 
 \usage{
-CommunityFactory(S, node=paste('Node', 1:S), generator = NicheModelLinks, 
-                 n = 1, accept = NULL, energetically.feasible = TRUE, 
-                 trace.progress = FALSE, ...)
+CommunityFactory(S, nodes, generator = NicheModelLinks, 
+                 n = 1, accept = NULL, energetically.feasible = TRUE,
+                 trace.progress = FALSE, validate=TRUE, properties=NULL, ...)
 
-CommunitiesLike(community, ...)
-
-RandomLinks(pool, n, C = 0.15)
-CascadeModelLinks(pool, n, C = 0.15)
+RandomLinks(pool, n, C = 0.15, nodes)
+CascadeModelLinks(pool, n, C = 0.15, nodes)
 NicheModelLinks(pool, n, C = 0.15, niche.positions = NULL, 
-                probabilistic = FALSE)
+                probabilistic = FALSE, nodes)
 }
 
 \arguments{
-  \item{S}{numeric - the number of nodes that the generated communities will 
-    contain.}
-  \item{node}{character - the names of the nodes in the generated communities; 
-    must be of length \code{S}.}
+  \item{S}{numeric - the number of nodes in the generated communities; nodes
+    will be named Node 1...Node S}
+  \item{nodes}{character -  either node names or a data.frame of node
+    properties; either \code{S} or \code{nodes} should be provided.}
   \item{generator}{the function used to generate sets of trophic links.}
   \item{n}{numeric - the number of communities to generate.}
-  \item{accept}{if not \code{NULL}, a that takes a community as its only 
-    argument and returns a bool.}
-  \item{energetically.feasible}{logical - if \code{TRUE} only communities 
-    that are energetically feasible are returned.}
+  \item{accept}{either \code{NULL} or a function that takes a \code{Community}
+    object as its only argument and returns a \code{logical}; if not \code{NULL}
+    then only communities for which the function returns \code{TRUE} will be
+    returned.}
+  \item{energetically.feasible}{logical - if \code{TRUE}, then then only
+    communities that are energetically feasible according to the
+    \code{PreyAveragedTrophicLevel} function will be returned.}
   \item{trace.progress}{logical - if \code{TRUE} the function prints feedback.}
-  \item{community}{an object of class \code{Community}.}
+  \item{validate}{if \code{TRUE}, created communities are validated using the
+    checks provided by the \code{Community} function.}
+  \item{properties}{list - the \code{properties} argument of the
+    \code{Community} function.}
   \item{...}{other values to functions that create trophic links.}
-  \item{pool}{character - the names of the nodes in the generated communities.}
+  \item{pool}{character - the pool of node names.}
   \item{C}{numeric - the target directed connectance of the generated 
     communities.}
   \item{niche.positions}{numeric - each species' position on the niche axis; 
-    must be of length \code{S} and $0<=niche.positions<=1$.}
+    must be of length \code{S}; $0<=niche.positions<=1$.}
   \item{probabilistic}{logical - if \code{TRUE} then links are generated using 
     the probabilistic niche model.}
 }
@@ -50,11 +53,6 @@ generated communities using a food-web structural model, which is given by
 \code{NicheModelLinks}. If \code{energetically.feasible} is \code{TRUE} 
 then those communities that are not energetically feasible according to 
 \code{PreyAveragedTrophicLevel} are discarded.
-
-\code{CommunitiesLike} uses \code{CommunityFactory} to generate communities 
-that are similar to an existing \code{Community}. The new communities will have 
-the same number of nodes, the same node names and the same or a similar number 
-of trophic links, depending on how the trophic links are generated.
 
 \code{RandomLinks} returns a \code{data.frame} containing exactly $CSS$ trophic 
 links. Each possible trophic link has an equal chance of being drawn. The 
@@ -76,19 +74,18 @@ communities that are created. If \code{probabilistic} is \code{TRUE} then the
 links are generated using the probabilistic niche model described by Williams 
 et al 2010.
 
-You should never need to call \code{RandomLinks}, \code{CascadeModelLinks} or 
-\code{NicheModelLinks} directly - just pass them as arguments to 
-\code{CommunityFactory} or \code{CommunitiesLike}.
+You will probably never has a reason to call \code{RandomLinks},
+\code{CascadeModelLinks} or \code{NicheModelLinks} directly - just pass them as
+arguments to \code{CommunityFactory}.
 
-TODO - writing your own trophic links functions
+TODO LH - writing your own trophic links functions.
 }
 
 \value{
-\code{CommunityFactory} and \code{CommunitiesLike} return a 
-\code{CommunityCollection}. 
+\code{CommunityFactory} returns a \code{CommunityCollection}. 
 
-\code{RandomLinks} and \code{NicheModelLinks} return a \code{data.frame} 
-containing columns `resource' and `consumer'.
+\code{RandomLinks}, \code{CascadeModelLinks}, \code{NicheModelLinks} return a
+\code{data.frame} containing columns `resource' and `consumer'.
 }
 
 \references{
@@ -121,7 +118,11 @@ summary(sapply(res, DirectedConnectance))    # All 0.15
 # 100 communities generated using the niche model, with properties similar to 
 # TL84
 data(TL84)
-res <- CommunitiesLike(TL84, n=100, trace.progress=TRUE)
+res <- CommunityFactory(nodes=NPS(TL84),
+                        C=DirectedConnectance(TL84),
+                        properties=CPS(TL84),
+                        trace.progress=TRUE,
+                        n=100)
 length(res)    # 100
 summary(sapply(res, NumberOfNodes))    # All 56
 
@@ -139,20 +140,33 @@ abline(v=DirectedConnectance(TL84), col=2)
 # 100 communities similar to TL84 using the order of body masses as the niche
 # positions
 niche.positions <- order(NP(TL84, 'M'))/NumberOfNodes(TL84)
-res <- CommunitiesLike(TL84, n=100, trace.progress=TRUE, 
-                       niche.positions=niche.positions)
+res <- CommunityFactory(nodes=NPS(TL84),
+                        C=DirectedConnectance(TL84),
+                        properties=CPS(TL84),
+                        trace.progress=TRUE,
+                        niche.positions=niche.positions,
+                        n=100)
 
-# The probabilistic niche model
-res <- CommunitiesLike(TL84, n=100, trace.progress=TRUE, probabilistic=TRUE)
+# Using the probabilistic niche model
+res <- CommunityFactory(nodes=NPS(TL84),
+                        C=DirectedConnectance(TL84),
+                        properties=CPS(TL84),
+                        trace.progress=TRUE,
+                        probabilistic=TRUE,
+                        n=100)
 
 # Williams et al (2010) described the allometric niche model as being the 
 # probabilistic niche model with niche positions computed from log-transformed 
 # body masses scaled to be between 0 and 1
 logM <- Log10M(TL84)
 niche.positions <- (logM-min(logM)) / diff(range(logM))
-#niche.positions <- sort(niche.positions)
-res <- CommunitiesLike(TL84, n=100, trace.progress=TRUE, probabilistic=TRUE, 
-                       niche.positions=niche.positions)
+res <- CommunityFactory(nodes=NPS(TL84),
+                        C=DirectedConnectance(TL84),
+                        properties=CPS(TL84),
+                        trace.progress=TRUE,
+                        probabilistic=TRUE,
+                        niche.positions=niche.positions,
+                        n=100)
 }
 
 \keyword{utilities}

@@ -277,8 +277,8 @@ NicheModelLinks <- .NicheModelLinks2
 
 CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1, 
                              accept=NULL, energetically.feasible=TRUE, 
-                             trace.progress=FALSE, 
-                             trusted=TRUE, ...)
+                             trace.progress=FALSE, validate=TRUE,
+                             properties=NULL, ...)
 {
     # Returns a collection of artificially generated communities. 
     # Either S or nodes should be provided - no need to provide both. 
@@ -305,6 +305,12 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
         nodes <- data.frame(node=nodes, row.names=nodes, stringsAsFactors=FALSE)
     }
 
+    if('category' %in% colnames(nodes))
+    {
+        print('Removing node category')
+        nodes$category <- NULL
+    }
+
     if(missing(S))    S <- nrow(nodes)
 
     stopifnot(0<S)
@@ -321,7 +327,11 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
     }
 
     # The properties used by each generated community
-    properties <- list(title='Artificial community')
+    if(!is.null(properties) && 'title' %in% names(properties))
+    {
+        properties$title <- NULL
+    }
+    properties <- c(properties, list(title='Artificial community'))
 
     # TODO Faster to use a fixed-length list?
     #      All elements initially NULL
@@ -335,7 +345,13 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
         args <- c(list(nodes=nodes, n=n-length(communities)), list(...))
         new <- lapply(do.call(generator, args), function(links)
         {
-            if(trusted)
+            if(validate)
+            {
+                # Validate generated values
+                return (Community(nodes=nodes, trophic.links=links,
+                                  properties=properties))
+            }
+            else
             {
                 # Avoid the time-consuming validation carried out by Community
                 community <- list(nodes=nodes, trophic.links=links, 
@@ -343,31 +359,33 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
                 class(community) <- c('Community', 'list')
                 return (community)
             }
-            else
-            {
-                # Validate generated values
-                return (Community(nodes=nodes, trophic.links=links, 
-                                  properties=properties))
-            }
         })
 
         if(energetically.feasible)
         {
-            tracefn('Removing communities that are not energetically feasible\n')
             acceptable <- sapply(new, function(community)
             {
                 !(all(is.na(PreyAveragedTrophicLevel(community))))
             })
-            new <- new[acceptable]
-            tracefn(paste(length(new), 'communities remain\n'))
+
+            if(any(!acceptable))
+            {
+                new <- new[acceptable]
+                tracefn('Removing', sum(!acceptable), 'communities that are',
+                        'not energetically feasible.', length(new),
+                        'communities remain\n')
+            }
         }
 
         if(!is.null(accept) && length(new)>0)
         {
-            tracefn('Removing communities that are not acceptable\n')
             acceptable <- sapply(new, accept)
-            new <- new[acceptable]
-            tracefn(paste(length(new), 'communities remain\n'))
+            if(any(!acceptable))
+            {
+                new <- new[acceptable]
+                tracefn('Removing', sum(!acceptable), 'communities that are',
+                        'not acceptable.', length(new), 'communities remain\n')
+            }
         }
 
         if(length(new)>0)
@@ -377,7 +395,6 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
     }
 
     # Assign sensible titles
-    tracefn(n, length(communities), '\n')
     communities <- mapply(title=paste('Artificial community', 1:n), 
                           community=communities, 
                           SIMPLIFY=FALSE, 
@@ -392,13 +409,4 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
     })
 
     return (CommunityCollection(communities))
-}
-
-CommunitiesLike <- function(community, ...)
-{
-    if(!is.Community(community)) stop('Not a Community')
-    if(is.null(TLPS(community))) stop('The community has no trophic links')
-    return (CommunityFactory(nodes=NPS(community), 
-                             C=DirectedConnectance(community), 
-                             ...))
 }

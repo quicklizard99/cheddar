@@ -81,29 +81,3 @@ TestNicheModelLinks <- function()
     AssertEqual(45, mean(sapply(res, nrow)), tolerance=7, scale=1)
     AssertEqual(FALSE, any(sapply(res, function(r) any(duplicated(r)))))
 }
-
-TestCommunitiesLike <- function()
-{
-    AssertRaises(CommunitiesLike(c1))   # No trophic links
-    AssertRaises(CommunitiesLike(c2))   # Directed connectance of 1
-
-    # 10 communities like a resource-consumer system
-    res <- CommunitiesLike(c3, n=10, generator=RandomLinks)
-    AssertEqual(rep(2, 10), unname(sapply(res, NumberOfNodes)))
-    AssertEqual(rep(1, 10), unname(sapply(res, NumberOfTrophicLinks)))
-    AssertEqual(rep(0.25, 10), unname(sapply(res, DirectedConnectance)))
-
-    # 50 communities like TL84 with randomly assigned links
-    res <- CommunitiesLike(TL84, n=50, generator=RandomLinks)
-    AssertEqual(rep(NumberOfNodes(TL84), 50), 
-                unname(sapply(res, NumberOfNodes)))
-    AssertEqual(rep(NumberOfTrophicLinks(TL84), 50), 
-                unname(sapply(res, NumberOfTrophicLinks)))
-
-    # 500 communities like TL84 using the niche model
-    res <- CommunitiesLike(TL84, n=500, generator=NicheModelLinks)
-    AssertEqual(rep(NumberOfNodes(TL84), 500), 
-                unname(sapply(res, NumberOfNodes)))
-    AssertEqual(NumberOfTrophicLinks(TL84), 
-                mean(sapply(res, NumberOfTrophicLinks)), tolerance=5, scale=1)
-}
