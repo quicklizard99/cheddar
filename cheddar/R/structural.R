@@ -305,12 +305,6 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
         nodes <- data.frame(node=nodes, row.names=nodes, stringsAsFactors=FALSE)
     }
 
-    if('category' %in% colnames(nodes))
-    {
-        print('Removing node category')
-        nodes$category <- NULL
-    }
-
     if(missing(S))    S <- nrow(nodes)
 
     stopifnot(0<S)
@@ -324,6 +318,12 @@ CommunityFactory <- function(S, nodes, generator=NicheModelLinks, n=1,
     else
     {
         tracefn <- function(...) {}
+    }
+
+    if('category' %in% colnames(nodes))
+    {
+        tracefn('Removing node category')
+        nodes$category <- NULL
     }
 
     # The properties used by each generated community
