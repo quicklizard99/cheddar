@@ -8,4 +8,4 @@ Maintainer: Lawrence Hudson <l.hudson@nhm.ac.uk>
 Description: Cheddar provides a flexible, extendable representation of an ecological community and a range of functions for analysis and visualisation, focusing on food web, body mass and numerical abundance data. It also allows inter-web comparisons such as examining changes in community structure over environmental, temporal or spatial gradients.
 License: BSD_2_clause + file LICENSE
 LazyLoad: yes
-URL: https://github.com/quicklizard99/cheddar/, http://quicklizard99.github.com/cheddar/
+URL: http://quicklizard99.github.com/cheddar/
