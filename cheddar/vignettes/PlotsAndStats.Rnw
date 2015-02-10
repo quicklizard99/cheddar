@@ -9,7 +9,11 @@
 \usepackage[none]{hyphenat}     % No hyphens
 
 %\VignetteIndexEntry{Cheddar plots and statistics}
-%\VignetteKeyword{food web,body mass,numerical abundance,community,allometry}
+%\VignetteKeyword{food web}
+%\VignetteKeyword{body mass}
+%\VignetteKeyword{numerical abundance}
+%\VignetteKeyword{community}
+%\VignetteKeyword{allometry}
 
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\R}{\textsf{R} }
