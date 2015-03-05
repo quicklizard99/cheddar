@@ -235,10 +235,10 @@ NvMTriTrophicStatistics <- function(community)
     # The angle of a link (or link angle) was the counter-
     # clockwise angle to the link from a horizontal arrow starting from R
     # and pointing right parallel to the positive log(M)-axis, and took
-    # values in the interval [-180°, 180°) (Fig. 2A)]. (The angle is not
+    # values in the interval [-180, 180) (Fig. 2A)]. (The angle is not
     # defined when MR = MC and NR = NC, as in cannibalism, for
-    # example.) If the link angle equaled -45°, then the link had slope -1
-    # because tan(-45°) = tan(-pi/4 radians) = -1
+    # example.) If the link angle equaled -45, then the link had slope -1
+    # because tan(-45) = tan(-pi/4 radians) = -1
 
     chains <- TLPS(community)
     log10M <- Log10M(community)

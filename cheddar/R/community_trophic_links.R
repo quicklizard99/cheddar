@@ -1236,8 +1236,8 @@ NodeQuantitativeDescriptors <- function(community, weight)
 
     # p 2396:
     # Trophic level of a taxon (Yodzis 1989); the characterization we adopt 
-    # here is ‘‘one plus the length of the longest chain from the focal taxon 
-    # to a basal taxon.’’
+    # here is 'one plus the length of the longest chain from the focal taxon
+    # to a basal taxon.'
     t <- LongestTrophicLevel(community)
     res <- ResourcesByNode(community)
     o.prime <- -1 + 2^sapply(1:NumberOfNodes(community), function(k)
