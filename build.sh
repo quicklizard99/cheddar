@@ -1,5 +1,5 @@
 VERSION=`cat cheddar/DESCRIPTION  | grep Version: | sed s/.*:\ //g`
-echo "Building cheddar ${VERSION}"
+echo Building cheddar ${VERSION} using `R --version | head -1`
 rm -rf build  && \
     mkdir build && \
     cd build && \
