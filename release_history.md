@@ -1,6 +1,11 @@
 #  Cheddar release history
 
-## 0.1-627
+## 0.1-629 2015-04-16
+**Available on CRAN**
+#### Miscellaneous
+* Non-code changes in order to comply with CRAN policies
+
+## 0.1-627 2014-11-24
 #### Improvements
 * [Issue 32](https://github.com/quicklizard99/cheddar/issues/32)
   Plot web with focal node with concentric circles enhancement
