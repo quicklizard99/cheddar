@@ -1,6 +1,7 @@
 #  Cheddar release history
 
 ## 0.1-629 2015-04-16
+**Available on CRAN**
 #### Miscellaneous
 * Non-code changes in order to comply with CRAN policies
 
