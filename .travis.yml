@@ -7,10 +7,12 @@ before_install:
   - chmod 755 ./travis-tool.sh
   - ./travis-tool.sh bootstrap
 
+r_github_packages:
+  - jimhester/covr
+
 install:
   cd cheddar
   - ../travis-tool.sh install_deps
-  - ../travis-tool.sh github_package jimhester/covr
 
 script: ../travis-tool.sh run_tests
 
