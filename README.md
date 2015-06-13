@@ -1,5 +1,8 @@
 ## Overview
 
+[![Travis status](https://travis-ci.org/quicklizard99/cheddar.svg?branch=master)](https://travis-ci.org/quicklizard99/cheddar)
+[![Coverage Status](https://coveralls.io/repos/quicklizard99/cheddar/badge.svg?branch=master)](https://coveralls.io/r/quicklizard99/cheddar?branch=master)
+
 [Cheddar](http://quicklizard99.github.com/cheddar/) is a R package for food-web ecologists. It provides 
 
 * a flexible, well-defined representation of an ecological community together with functions that make data import easy and that detect many commonly-occurring errors
@@ -9,5 +12,3 @@
 * support for collections of communities, allowing investigation into changes in community structure through time, across environmental gradients or resulting from experimental manipulation.
 
 Cheddar is hosted on [Github](https://github.com/quicklizard99/cheddar).
-
-[ ![Travis status](https://travis-ci.org/quicklizard99/cheddar.svg?branch=master) ](https://travis-ci.org/quicklizard99/cheddar)
