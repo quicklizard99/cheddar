@@ -30,3 +30,5 @@ GITHUB_URL = "https://github.com/quicklizard99/cheddar"
 USE_FOLDER_AS_CATEGORY = True
 DISPLAY_CATEGORIES_ON_MENU = True
 DISPLAY_PAGES_ON_MENU = True
+
+STATIC_PATHS = ['pages', 'news']

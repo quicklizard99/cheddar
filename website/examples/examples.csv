@@ -79,7 +79,7 @@ LumpTrophicSpecies","TL84.lumped <- LumpTrophicSpecies(TL84)
 print(length(unique(TrophicSpecies(TL84))))    # 22 trophic species in TL84...
 print(NumberOfNodes(TL84.lumped))              # ... and 22 nodes in the lumped web","","","Trophic species","Briand & Cohen 1984;Pimm et al 1991;Jonsson et al 2005","trophicspecies"
 TRUE,FALSE,FALSE,"PlotWagonWheel","","PlotWagonWheel(TL84, 'Ploesoma sp.', main= 'Ploesoma sp.')","# 'Daphnia pulex' is the focus, nodes ordered by degree (total number of
-# trophic links), lines partially transparent
+# trophic links), lines partially transparent. The six isolated species are not shown.
 PlotWagonWheel(OrderCommunity(TL84, 'Degree'), 'Daphnia pulex',
             show.nodes.as='labels', link.col=rgb(0.8,0.8,0.8,0.5),
             main='Daphnia pulex')","Shortest trophic paths","","shortesttrophicpaths"
