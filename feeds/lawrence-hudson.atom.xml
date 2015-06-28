@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom"><title>cheddar</title><link href="/" rel="alternate"></link><link href="/feeds/lawrence-hudson.atom.xml" rel="self"></link><id>/</id><updated>2015-04-16T00:00:00+01:00</updated><entry><title>Cheddar 0.1-629 released</title><link href="/Cheddar%200.1-629%20released..html" rel="alternate"></link><updated>2015-04-16T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2015-04-16:Cheddar 0.1-629 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-629 was released today and is available on CRAN.&lt;/p&gt;
+<feed xmlns="http://www.w3.org/2005/Atom"><title>cheddar</title><link href="http://quicklizard99.github.io/cheddar/" rel="alternate"></link><link href="http://quicklizard99.github.io/cheddar/feeds/lawrence-hudson.atom.xml" rel="self"></link><id>http://quicklizard99.github.io/cheddar/</id><updated>2015-04-16T00:00:00+01:00</updated><entry><title>Cheddar 0.1-629 released</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%200.1-629%20released..html" rel="alternate"></link><updated>2015-04-16T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2015-04-16:cheddar/Cheddar 0.1-629 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-629 was released today and is available on CRAN.&lt;/p&gt;
 &lt;p&gt;This release adds the &lt;code&gt;PlotWagonWheel&lt;/code&gt; function, which shows a focal node
 at the centre with other nodes in concentric circles that are one, two, three
 etc trophic links away. Isolated nodes are not shown.&lt;/p&gt;
@@ -15,7 +15,7 @@ PlotWagonWheel&lt;span class="p"&gt;(&lt;/span&gt;TL84&lt;span class="p"&gt;,&lt
 &lt;/pre&gt;&lt;/div&gt;
 
 
-&lt;p&gt;&lt;img alt="Example PlotWagonWheel plot" src="/PlotWagonWheel1.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Example PlotWagonWheel plot" src="http://quicklizard99.github.io/cheddar/PlotWagonWheel1.png" /&gt;&lt;/p&gt;
 &lt;!--
 dev.off()
 png('PlotWagonWheel2.png', width=525, height=525)
@@ -33,10 +33,10 @@ PlotWagonWheel&lt;span class="p"&gt;(&lt;/span&gt;OrderCommunity&lt;span class="
 dev.off()
 --&gt;
 
-&lt;p&gt;&lt;img alt="Example PlotWagonWheel plot" src="/PlotWagonWheel2.png" /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt="Example PlotWagonWheel plot" src="http://quicklizard99.github.io/cheddar/PlotWagonWheel2.png" /&gt;&lt;/p&gt;
 &lt;p&gt;See the 
 &lt;a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history"&gt;release history&lt;/a&gt; 
-for details. &lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Cheddar 0.1-625 released</title><link href="/Cheddar%200.1-625%20released..html" rel="alternate"></link><updated>2014-02-26T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2014-02-26:Cheddar 0.1-625 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-625 was released today and is available on CRAN.&lt;/p&gt;
+for details. &lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Cheddar 0.1-625 released</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%200.1-625%20released..html" rel="alternate"></link><updated>2014-02-26T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2014-02-26:cheddar/Cheddar 0.1-625 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-625 was released today and is available on CRAN.&lt;/p&gt;
 &lt;p&gt;This release introduces an enhancement to the &lt;code&gt;TrophicChains&lt;/code&gt; function. 
 The number of possible trophic chains within a food web rapidly 
 increases with the number of nodes and links. The worst-case scenario 
@@ -51,23 +51,23 @@ function will raise an error if the number of chains reaches a
 configurable safety limit. &lt;/p&gt;
 &lt;p&gt;See the 
 &lt;a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history"&gt;release history&lt;/a&gt; 
-for details. &lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Paper by McLaughlin et al in Adv Ecol Res</title><link href="/McLaughlin%20et%20al%20(2013).html" rel="alternate"></link><updated>2014-02-23T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2014-02-23:McLaughlin et al (2013).html</id><summary type="html">&lt;p&gt;The authors examined how food-web structure varied among a system of naturally 
+for details. &lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Paper by McLaughlin et al in Adv Ecol Res</title><link href="http://quicklizard99.github.io/cheddar/McLaughlin%20et%20al%20(2013).html" rel="alternate"></link><updated>2014-02-23T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2014-02-23:cheddar/McLaughlin et al (2013).html</id><summary type="html">&lt;p&gt;The authors examined how food-web structure varied among a system of naturally 
 fragmented islands in a river network. They used cheddar to produce a number 
 of statistics and figures.&lt;/p&gt;
 &lt;p&gt;McLaughlin et al (2013) Habitat Isolation Reduces the Temporal Stability of 
 Island Ecosystems in the Face of Flood Disturbance. 
 &lt;em&gt;Advances in Ecological Research&lt;/em&gt;, 48 225--284. 
-&lt;a href="http://dx.doi.org/10.1016/B978-0-12-417199-2.00004-5"&gt;10.1016/B978-0-12-417199-2.00004-5&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Cheddar 0.1-624 released</title><link href="/Cheddar%200.1-624%20released..html" rel="alternate"></link><updated>2013-12-03T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-12-03:Cheddar 0.1-624 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-624 was released today and is available on CRAN. This releases 
+&lt;a href="http://dx.doi.org/10.1016/B978-0-12-417199-2.00004-5"&gt;10.1016/B978-0-12-417199-2.00004-5&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Cheddar 0.1-624 released</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%200.1-624%20released..html" rel="alternate"></link><updated>2013-12-03T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-12-03:cheddar/Cheddar 0.1-624 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-624 was released today and is available on CRAN. This releases 
 makes it possible to build cheddar using modern C++ compilers. &lt;/p&gt;
 &lt;p&gt;See the 
 &lt;a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history"&gt;release history&lt;/a&gt; 
-for details.&lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Paper by Preston et al in Oecologia</title><link href="/Preston%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-12-01T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-12-01:Preston et al (2013).html</id><summary type="html">&lt;p&gt;The authors examined how different levels of node resolution alter various 
+for details.&lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Paper by Preston et al in Oecologia</title><link href="http://quicklizard99.github.io/cheddar/Preston%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-12-01T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-12-01:cheddar/Preston et al (2013).html</id><summary type="html">&lt;p&gt;The authors examined how different levels of node resolution alter various 
 food-web properties of an empirical freshwater dataset. Chedddar was used to 
 compute some statistics.&lt;/p&gt;
 &lt;p&gt;Complex life cycles in a pond food web: effects of life stage structure and 
 parasites on network properties, trophic positions and the fit of a 
 probabilistic niche model. &lt;em&gt;Oecologia&lt;/em&gt;, 174 (3) 953-965. 
-&lt;a href="http://dx.doi.org/10.1007/s00442-013-2806-5"&gt;10.1007/s00442-013-2806-5&lt;/a&gt;.&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Cheddar 0.1-623 released</title><link href="/Cheddar%200.1-623%20released..html" rel="alternate"></link><updated>2013-11-07T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-11-07:Cheddar 0.1-623 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-623 was released today and is available on CRAN.&lt;/p&gt;
+&lt;a href="http://dx.doi.org/10.1007/s00442-013-2806-5"&gt;10.1007/s00442-013-2806-5&lt;/a&gt;.&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Cheddar 0.1-623 released</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%200.1-623%20released..html" rel="alternate"></link><updated>2013-11-07T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-11-07:cheddar/Cheddar 0.1-623 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-623 was released today and is available on CRAN.&lt;/p&gt;
 &lt;p&gt;This release adds functions to that compute the quantitative web stats defined by 
 &lt;a href="http://dx.doi.org/10.1890/0012-9658(2002)083[2394:QDOFWM]2.0.CO;2"&gt;Bersier et al (2002)&lt;/a&gt;
  - descriptors that are based upon information-theory and that consider the 
@@ -90,7 +90,7 @@ compute the set of statistics presented in Table 1 of
 range of methods for how species' removals are propagated through the food web. &lt;/p&gt;
 &lt;p&gt;See the 
 &lt;a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history"&gt;release history&lt;/a&gt; 
-for details. &lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Paper by Hudson and Reuman published by Proc. R. Soc. B</title><link href="/Hudson%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-09-12T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-09-12:Hudson et al (2013).html</id><summary type="html">&lt;p&gt;We confronted a widely used model of community dynamics with empirical data 
+for details. &lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Paper by Hudson and Reuman published by Proc. R. Soc. B</title><link href="http://quicklizard99.github.io/cheddar/Hudson%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-09-12T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-09-12:cheddar/Hudson et al (2013).html</id><summary type="html">&lt;p&gt;We confronted a widely used model of community dynamics with empirical data 
 from a lake community. Cheddar was used to examine changes in community 
 properties, showing that any important empirical patterns were reproducible 
 as outcomes of dynamics, and were not reproducible when parameters did not 
@@ -98,23 +98,23 @@ follow physiological allometries.&lt;/p&gt;
 &lt;p&gt;Hudson and Reuman (2013) A cure for the plague of parameters: constraining 
 models of complex population dynamics with allometries. 
 &lt;em&gt;Proceedings of the Royal Society of London B&lt;/em&gt;, 280 (1770). 
-&lt;a href="http://rspb.royalsocietypublishing.org/content/280/1770/20131901.full"&gt;10.1098/rspb.2013.1901&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by Ledger et al accepted by Adv. Ecol. Res.</title><link href="/Ledger%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-07-05T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-07-05:Ledger et al (2013).html</id><summary type="html">&lt;p&gt;The authors imposed different flow treatments on fresh-water mesocosms 
+&lt;a href="http://rspb.royalsocietypublishing.org/content/280/1770/20131901.full"&gt;10.1098/rspb.2013.1901&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by Ledger et al accepted by Adv. Ecol. Res.</title><link href="http://quicklizard99.github.io/cheddar/Ledger%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-07-05T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-07-05:cheddar/Ledger et al (2013).html</id><summary type="html">&lt;p&gt;The authors imposed different flow treatments on fresh-water mesocosms 
 containing complex trophic communities. Cheddar was used to produce plots of 
 the food-web data. Communities subjected to drought treaments had fewer species 
 and fewer trophic interactions, leading to the partial collapse of the food web. &lt;/p&gt;
 &lt;p&gt;Ledger et al (2013) Extreme climatic events alter complex food webs: 
 evidence from a mesocosm drought experiment. &lt;em&gt;Advances in Ecological Research&lt;/em&gt;, 
 48 343-395. 
-&lt;a href="http://dx.doi.org/10.1016/B978-0-12-417199-2.00006-9"&gt;10.1016/B978-0-12-417199-2.00006-9&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by Clitherow et al in PLoS ONE</title><link href="/Clitherow%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-04-20T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-04-20:Clitherow et al (2013).html</id><summary type="html">&lt;p&gt;The authors examined patterns in species-poor communities of glacier-fed 
+&lt;a href="http://dx.doi.org/10.1016/B978-0-12-417199-2.00006-9"&gt;10.1016/B978-0-12-417199-2.00006-9&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by Clitherow et al in PLoS ONE</title><link href="http://quicklizard99.github.io/cheddar/Clitherow%20et%20al%20(2013).html" rel="alternate"></link><updated>2013-04-20T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-04-20:cheddar/Clitherow et al (2013).html</id><summary type="html">&lt;p&gt;The authors examined patterns in species-poor communities of glacier-fed 
 rivers. They used Cheddar to compute the suite of tritrophic food-web 
 statistics, which combine the set of trophic links with species' body masses 
 and numerical abundances. Their analysis revealed that any disturbances to a 
 single taxon could propagate throughout the community food-web.&lt;/p&gt;
 &lt;p&gt;Clitherow et al (2013) Food Web Structure in a Harsh Glacier-Fed River. 
 &lt;em&gt;Public Library of Science ONE&lt;/em&gt;, 8 (4) e60899. 
-&lt;a href="http://dx.doi.org/10.1371/journal.pone.0060899"&gt;10.1371/journal.pone.0060899&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Cheddar 0.1-622 released</title><link href="/Cheddar%200.1-622%20released..html" rel="alternate"></link><updated>2013-03-22T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-03-22:Cheddar 0.1-622 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-622 was released today and is available on CRAN. See the 
+&lt;a href="http://dx.doi.org/10.1371/journal.pone.0060899"&gt;10.1371/journal.pone.0060899&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Cheddar 0.1-622 released</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%200.1-622%20released..html" rel="alternate"></link><updated>2013-03-22T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-03-22:cheddar/Cheddar 0.1-622 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-622 was released today and is available on CRAN. See the 
 &lt;a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history"&gt;release history&lt;/a&gt; 
-for details.&lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Cheddar 0.1-620 released</title><link href="/Cheddar%200.1-620%20released..html" rel="alternate"></link><updated>2013-01-22T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2013-01-22:Cheddar 0.1-620 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-620 was released today. See the 
+for details.&lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Cheddar 0.1-620 released</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%200.1-620%20released..html" rel="alternate"></link><updated>2013-01-22T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2013-01-22:cheddar/Cheddar 0.1-620 released..html</id><summary type="html">&lt;p&gt;Cheddar 0.1-620 was released today. See the 
 &lt;a href="https://github.com/quicklizard99/cheddar/blob/master/release_history.md#cheddar-release-history"&gt;release history&lt;/a&gt; 
 for details.&lt;/p&gt;
 &lt;p&gt;This release is not substantial enough to warrant submission to 
@@ -122,21 +122,21 @@ for details.&lt;/p&gt;
 github &lt;a href="https://github.com/blog/1302-goodbye-uploads"&gt;no longer host files for download&lt;/a&gt; 
 so I am unable to make this release available at the moment. I will look for 
 alternative ways to make non-CRAN releases available.&lt;/p&gt;
-&lt;p&gt;If you would like 0.1-620 please contact me (lawrence.hudson08 (at) imperial.ac.uk).&lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Cheddar at BES</title><link href="/Cheddar%20at%20BES.html" rel="alternate"></link><updated>2012-11-28T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2012-11-28:Cheddar at BES.html</id><summary type="html">&lt;p&gt;I will be talking about Cheddar at the 
+&lt;p&gt;If you would like 0.1-620 please contact me (lawrence.hudson08 (at) imperial.ac.uk).&lt;/p&gt;</summary><category term="release"></category></entry><entry><title>Cheddar at BES</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%20at%20BES.html" rel="alternate"></link><updated>2012-11-28T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2012-11-28:cheddar/Cheddar at BES.html</id><summary type="html">&lt;p&gt;I will be talking about Cheddar at the 
 &lt;a href="http://www.britishecologicalsociety.org/meetings/current_future_meetings/2012_annual_meeting/index.php"&gt;2012 BES annual meeting&lt;/a&gt; 
-in Birmingham at 12:30 on Thursday 20th.&lt;/p&gt;</summary><category term="conference"></category></entry><entry><title>Cheddar applications paper published by Methods Ecol. Evol.</title><link href="/Cheddar%20paper.html" rel="alternate"></link><updated>2012-11-24T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2012-11-24:Cheddar paper.html</id><summary type="html">&lt;p&gt;Methods in Ecology and Evolution have published our applications paper that 
+in Birmingham at 12:30 on Thursday 20th.&lt;/p&gt;</summary><category term="conference"></category></entry><entry><title>Cheddar applications paper published by Methods Ecol. Evol.</title><link href="http://quicklizard99.github.io/cheddar/Cheddar%20paper.html" rel="alternate"></link><updated>2012-11-24T00:00:00+00:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2012-11-24:cheddar/Cheddar paper.html</id><summary type="html">&lt;p&gt;Methods in Ecology and Evolution have published our applications paper that 
 describes Cheddar. The article is open-access and can be accessed without a 
 subscription.&lt;/p&gt;
 &lt;p&gt;Hudson et al (2013) Cheddar: analysis and visualisation of ecological 
 communities in R. &lt;em&gt;Methods in Ecology and Evolution&lt;/em&gt;, 4 (1) 99-104. 
-&lt;a href="http://dx.doi.org/10.1111/2041-210X.12005"&gt;10.1111/2041-210X.12005&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by O'Gorman et al in Adv. Ecol. Res.</title><link href="/O'Gorman%20et%20al%202012.html" rel="alternate"></link><updated>2012-10-10T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2012-10-10:O'Gorman et al 2012.html</id><summary type="html">&lt;p&gt;The authors examined the effects of temperature on the structure of 
+&lt;a href="http://dx.doi.org/10.1111/2041-210X.12005"&gt;10.1111/2041-210X.12005&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by O'Gorman et al in Adv. Ecol. Res.</title><link href="http://quicklizard99.github.io/cheddar/O'Gorman%20et%20al%202012.html" rel="alternate"></link><updated>2012-10-10T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2012-10-10:cheddar/O'Gorman et al 2012.html</id><summary type="html">&lt;p&gt;The authors examined the effects of temperature on the structure of 
 communities in geothermally heated streams. Cheddar was used to create a number 
 of plots and to compute a range of statistics. Body size, biomass and 
 trophic interactions varied greatly with temperature.&lt;/p&gt;
 &lt;p&gt;O'Gorman et al (2013) Impacts of warming on the structure and functioning of 
 aquatic communities: individual-to ecosystem-level responses. &lt;em&gt;Advances in 
 Ecological Research&lt;/em&gt;, 47 81–176. 
-&lt;a href="http://dx.doi.org/10.1016/B978-0-12-398315-2.00002-8"&gt;10.1016/B978-0-12-398315-2.00002-8&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by Woodward et al in Phil Trans R Soc B</title><link href="/Woodward%20et%20al%20(2012).html" rel="alternate"></link><updated>2012-09-24T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:,2012-09-24:Woodward et al (2012).html</id><summary type="html">&lt;p&gt;The authors conducted a long-running field experiment to examine changes in 
+&lt;a href="http://dx.doi.org/10.1016/B978-0-12-398315-2.00002-8"&gt;10.1016/B978-0-12-398315-2.00002-8&lt;/a&gt;&lt;/p&gt;</summary><category term="paper"></category></entry><entry><title>Paper by Woodward et al in Phil Trans R Soc B</title><link href="http://quicklizard99.github.io/cheddar/Woodward%20et%20al%20(2012).html" rel="alternate"></link><updated>2012-09-24T00:00:00+01:00</updated><author><name>Lawrence Hudson</name></author><id>tag:quicklizard99.github.io,2012-09-24:cheddar/Woodward et al (2012).html</id><summary type="html">&lt;p&gt;The authors conducted a long-running field experiment to examine changes in 
 the structure of stream communities that were subject to drought treatments. 
 Cheddar was used to quantify changes in community structure. Drought caused 
 the loss of many taxa and trophic links, resulting in changes in many network 
