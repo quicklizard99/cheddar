@@ -2,8 +2,8 @@
 @import url("pygment.css");
 
 body {
-	background: #A7BBD4;
-	font-family: Verdana,sans-serif;
+    background: #A7BBD4;
+    font-family: Verdana,sans-serif;
     font-size: 14px;
     line-height: 1.429;
     margin: 0;
@@ -25,13 +25,13 @@ h5 {font-size: 18px; }
 h6 {font-size: 16px; }
 
 h1, h2, h3, h4, h5, h6 {
-	font-weight: 400;
-	line-height: 1.1;
-	margin-bottom: .8em;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: .8em;
 }
 
 h3, h4, h5, h6 {
-	margin-top: .8em;
+    margin-top: .8em;
 }
 
 a {
@@ -40,7 +40,7 @@ a {
 }
 
 a img {
-	border: 0px;
+    border: 0px;
 }
 
 a:hover, a:active {
@@ -57,17 +57,17 @@ p { margin-top: 1em;
     margin-bottom: 1em;}
 
 ul {
-	list-style: outside disc;
-	margin: 0em 0 0 1.5em;
+    list-style: outside disc;
+    margin: 0em 0 0 1.5em;
 }
 
 ol {
-	list-style: outside decimal;
-	margin: 0em 0 0 1.5em;
+    list-style: outside decimal;
+    margin: 0em 0 0 1.5em;
 }
 
 li { 
-	margin-top: 0.5em;
+    margin-top: 0.5em;
 }
 
 .post-info {
@@ -82,7 +82,7 @@ li {
 }
 
 address {
-	display: inline;
+    display: inline;
 }
 
 .readmore { 
@@ -93,10 +93,10 @@ dt {font-weight: bold;}
 dd {margin-left: 1.5em;}
 
 pre {
-	background-color: black;
-	padding: 10px;
-	margin: 10px;
-	overflow: auto;
+    background-color: black;
+    padding: 10px;
+    margin: 10px;
+    overflow: auto;
 }
 
 /* Quotes */
@@ -118,10 +118,10 @@ div.note {
 
 /* Tables */
 table {
-	margin: .5em auto 1.5em auto;
-	width: 98%;
+    margin: .5em auto 1.5em auto;
+    width: 98%;
 }
-	
+
 /* Thead */
 thead th {padding: .5em .4em; text-align: left;}
 thead td {}
@@ -137,14 +137,14 @@ tfoot th {}
 tfoot td {}
 
 header, section, footer, aside, nav, article, figure {
-	display: block;
-	background: white;
+    display: block;
+    background: white;
 }
 
 .body {
-	clear: both;
-	margin: 0 auto;
-	width: 800px;
+    clear: both;
+    margin: 0 auto;
+    width: 800px;
 }
 
 img {
@@ -157,117 +157,114 @@ img {
 }
 
 img.right, figure.right {
-	float: right;
-	margin: 0 0 2em 2em;
+    float: right;
+    margin: 0 0 2em 2em;
 }
 
 img.left, figure.left {
-	float: left;
-	margin: 0 2em 2em 0;
+    float: left;
+    margin: 0 2em 2em 0;
 }
 
 #banner {
-	margin: 0 auto;
-	padding: 2.5em 0 0 0;
-	background: #c6eafa;
+    margin: 0 auto;
+    padding: 2.5em 0 0 0;
+    background: #c6eafa;
 }
 
 /* Banner */
 #banner h1 {
-	font-size: 3.571em;
-	line-height: 0;
+    font-size: 3.571em;
+    line-height: 0;
 }
 
 #banner h1 a:link, #banner h1 a:visited {
-	color: #000305;
-	font-weight: bold;
-	text-decoration: none;
-	display: block;
-	margin: 0 0 .6em .2em;
+    color: #000305;
+    font-weight: bold;
+    text-decoration: none;
+    display: block;
+    margin: 0 0 .6em .2em;
 }
 
 #banner h1 a:hover, #banner h1 a:active {
 }
 
 #banner h1 strong {
-	font-size: 0.36em;
-	font-weight: normal;
+    font-size: 0.36em;
+    font-weight: normal;
 }
 
 /* Main Nav */
 #banner nav {
     background-color: white;
-	font-size: 1.5em;
-	font-weight: normal;
-	height: 40px;
-	line-height: 30px;
-	margin: 0 auto 1em auto;
-	padding: 0;
-	text-align: center;
-	width: 800px;
-
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+    font-size: 1.5em;
+    font-weight: normal;
+    height: 40px;
+    line-height: 30px;
+    margin: 0 auto 1em auto;
+    padding: 0;
+    text-align: center;
+    width: 800px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 #banner nav ul {
-	list-style: none;
-	margin: 0 auto;
-	width: 100%;
+    list-style: none;
+    margin: 0 auto;
+    width: 100%;
 }
 
 #banner nav li {
-	float: left;
-	display: inline;
-	margin: 0;
+    float: left;
+    display: inline;
+    margin: 0;
 }
 
 #banner nav a:link, #banner nav a:visited {
     color: #0066aa;
-	display: inline-block;
-	height: 30px;
-	padding: 5px 20px;
-	text-decoration: none;
-	font-weight: bold;
+    display: inline-block;
+    height: 30px;
+    padding: 5px 20px;
+    text-decoration: none;
+    font-weight: bold;
 }
 
 #banner nav a:hover, #banner nav a:active,
 #banner nav .active a:link, #banner nav .active a:visited {
     background-color: #0066aa;
-	color: white;
+    color: white;
 }
 
 #banner nav li:first-child a {
-	border-top-left-radius: 5px;
-	-moz-border-radius-topleft: 5px;
-	-webkit-border-top-left-radius: 5px;
-	
-	border-bottom-left-radius: 5px;
-	-moz-border-radius-bottomleft: 5px;
-	-webkit-border-bottom-left-radius: 5px;
+    border-top-left-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -webkit-border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    -moz-border-radius-bottomleft: 5px;
+    -webkit-border-bottom-left-radius: 5px;
 }
 
 /*
-	Featured
+    Featured
 *****************/
 #featured {
-	background: #fff;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px;
-	width: 760px;
-	
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+    background: #fff;
+    margin-bottom: 2em;
+    overflow: hidden;
+    padding: 20px;
+    width: 760px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 #featured figure {
-	/*border: 2px solid #eee;*/
-	float: right;
-	margin: 0.786em 2em 0 5em;
-	width: 248px;
+    /*border: 2px solid #eee;*/
+    float: right;
+    margin: 0.786em 2em 0 5em;
+    width: 248px;
 }
 #featured figure img {display: block; float: right;}
 
@@ -278,62 +275,62 @@ img.left, figure.left {
 #featured h3 a:hover, #featured h3 a:active {color: #fff;}
 
 /*
-	Body
+    Body
 *****************/
 #content {
-	background: #fff;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px 20px;
-	width: 760px;
+    background: #fff;
+    margin-bottom: 2em;
+    overflow: hidden;
+    padding: 20px 20px;
+    width: 760px;
 
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 /*
-	Extras
+    Extras
 *****************/
 #extras {margin: 0 auto 3em auto; overflow: hidden;}
 
 #extras ul {list-style: none; margin: 0;}
 #extras li {border-bottom: 1px solid #fff;}
 #extras h2 {
-	color: #C74350;
-	font-size: 1.429em;
-	margin-bottom: .25em;
-	padding: 0 3px;
+    color: #C74350;
+    font-size: 1.429em;
+    margin-bottom: .25em;
+    padding: 0 3px;
 }
 
 #extras a:link, #extras a:visited {
-	color: #444;
-	display: block;
-	border-bottom: 1px solid #F4E3E3;
-	text-decoration: none;
-	padding: .3em .25em;
+    color: #444;
+    display: block;
+    border-bottom: 1px solid #F4E3E3;
+    text-decoration: none;
+    padding: .3em .25em;
 }
 
 #extras a:hover, #extras a:active {color: #fff;}
 
 /* Blogroll */
 #extras .blogroll {
-	float: left;
-	width: 615px;
+    float: left;
+    width: 615px;
 }
 
 #extras .blogroll li {float: left; margin: 0 20px 0 0; width: 185px;}
 
 /* Social */
 #extras .social {
-	float: right;
-	width: 175px;
+    float: right;
+    width: 175px;
 }
 
 #extras div[class='social'] a {
-	background-repeat: no-repeat;
-	background-position: 3px 6px;
-	padding-left: 25px;
+    background-repeat: no-repeat;
+    background-position: 3px 6px;
+    padding-left: 25px;
 }
 
 /* Icons */
@@ -362,20 +359,19 @@ img.left, figure.left {
 .social a[href*='youtube.com'] {background-image: url('../images/icons/youtube.png');}
 
 /*
-	About
+    About
 *****************/
 #about {
-	background: #fff;
-	font-style: normal;
-	margin-bottom: 2em;
-	overflow: hidden;
-	padding: 20px;
-	text-align: left;
-	width: 760px;
-	
-	border-radius: 10px;
-	-moz-border-radius: 10px;
-	-webkit-border-radius: 10px;
+    background: #fff;
+    font-style: normal;
+    margin-bottom: 2em;
+    overflow: hidden;
+    padding: 20px;
+    text-align: left;
+    width: 760px;
+    border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
 }
 
 #about .primary {float: left; width: 165px;}
@@ -387,75 +383,74 @@ img.left, figure.left {
 #about .bio {float: right; width: 500px;}
 
 /*
-	Footer
+    Footer
 *****************/
 #contentinfo {padding-bottom: 2em; text-align: center;}
 
 /***** Sections *****/
 /* Blog */
 .hentry {
-	display: block;
-	clear: both;
-	padding: 1.5em 0;
+    display: block;
+    clear: both;
+    padding: 1.5em 0;
 }
 
 li:last-child .hentry, #content > .hentry {
-	border: 0; margin: 0;
+    border: 0; margin: 0;
 }
 
 #content > .hentry {
-	padding: 1em 0;
+    padding: 1em 0;
 }
 
 .hentry img{
-	display : none;
+    display : none;
 }
 
 .entry-title {
-	margin-bottom: 10px;
-	margin-top: 0;
+    margin-bottom: 10px;
+    margin-top: 0;
 }
 
 .hentry .post-info * {
-	font-style: normal;
+    font-style: normal;
 }
 
 /* Content */
 .hentry h1 {
-	border-top: 2px solid black;
+    border-top: 2px solid black;
 }
 
 .hentry footer {
-	margin-bottom: 2em;
+    margin-bottom: 2em;
 }
 
 .hentry footer address {
-	display: inline;
+    display: inline;
 }
 
 /* Blog Index */
 #posts-list {
-	list-style: none; margin: 0;
+    list-style: none; margin: 0;
 }
 
 /* About the Author */
 #about-author {
-	background: #f9f9f9;
-	clear: both;
-	font-style: normal;
-	margin: 2em 0;
-	padding: 10px 20px 15px 20px;
-	
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+    background: #f9f9f9;
+    clear: both;
+    font-style: normal;
+    margin: 2em 0;
+    padding: 10px 20px 15px 20px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 
 #about-author strong {
-	color: #C64350;
-	clear: both;
-	display: block;
-	font-size: 1.429em;
+    color: #C64350;
+    clear: both;
+    display: block;
+    font-size: 1.429em;
 }
 
 #about-author .photo {border: 1px solid #ddd; float: left; margin: 5px 1em 0 0;}
@@ -463,15 +458,14 @@ li:last-child .hentry, #content > .hentry {
 /* Comments */
 #comments-list {list-style: none; margin: 0 1em;}
 #comments-list blockquote {
-	background: #f8f8f8;
-	clear: both;
-	font-style: normal;
-	margin: 0;
-	padding: 15px 20px;
-	
-	border-radius: 5px;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
+    background: #f8f8f8;
+    clear: both;
+    font-style: normal;
+    margin: 0;
+    padding: 15px 20px;
+    border-radius: 5px;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
 }
 #comments-list footer {color: #888; padding: .5em 1em 0 0; text-align: right;}
 
