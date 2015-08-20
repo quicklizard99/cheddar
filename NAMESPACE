@@ -1,6 +1,13 @@
 useDynLib(cheddar)
 exportPattern("^[^\\.]")
 
+importFrom("grDevices", "chull", "col2rgb", "rgb")
+importFrom("graphics", "abline", "axis", "barplot", "lines", "par",
+           "plot", "points", "rect", "rug", "segments", "text")
+importFrom("stats", "as.formula", "coef", "fitted", "lm", "median",
+           "sd", "terms", "weighted.mean")
+importFrom("utils", "head", "tail", "write.table")
+
 S3method("dim<-", Community)
 S3method("dim<-", CommunityCollection)
 S3method("length<-", Community)
