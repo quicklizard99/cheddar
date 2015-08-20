@@ -21,12 +21,12 @@ release history:
     Package: \tab cheddar\cr
     Type: \tab Package\cr
     Version: \tab 0.1-630\cr
-    Date: \tab 2015-05-30\cr
+    Date: \tab 2015-08-20\cr
     License: \tab BSD 2 clause\cr
     }
 }
 
-\author{Maintainer: Lawrence Hudson <l.hudson@nhm.ac.uk}
+\author{Maintainer: Lawrence Hudson <quicklizard@googlemail.com>}
 
 %\references{}
 
