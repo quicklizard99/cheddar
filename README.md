@@ -12,4 +12,4 @@
 * functions that perform community-level manipulations such as lumping trophic species and reordering predation matrices
 * support for collections of communities, allowing investigation into changes in community structure through time, across environmental gradients or resulting from experimental manipulation.
 
-Cheddar is hosted on [Github](https://github.com/quicklizard99/cheddar).
+Cheddar is available on [CRAN](https://cran.r-project.org/web/packages/cheddar/index.html) and is hosted on [Github](https://github.com/quicklizard99/cheddar).
