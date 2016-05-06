@@ -4,6 +4,9 @@ r: devel
 
 warnings_are_errors: false
 
+before_install:
+  - tlmgr install hyphenat
+
 r_github_packages:
   - jimhester/covr
 
