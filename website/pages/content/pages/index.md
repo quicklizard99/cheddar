@@ -17,7 +17,7 @@ save_as: index.html
 
 # Cheddar
 
-Analysis and visualisation of food-web data in the 
+Analysis and visualisation of food-web data in the
 [R statistical modelling language](http://www.r-project.org/).
 Cheddar contains reference implementations of a whole host of food-web plots
 and methods taken from more than 15 published papers.
@@ -31,3 +31,6 @@ Different views of the community of Tuesday Lake sampled in
 See [methods](./methods.html) for a comprehensive list of examples.
 
 ![Example Cheddar plots]({attach}cheddar-example.png)
+
+You can see a short
+[video of Cheddar in action](https://dx.doi.org/10.6084/m9.figshare.3470183.v3).
