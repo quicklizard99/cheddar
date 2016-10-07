@@ -1,4 +1,5 @@
-// Minimises diet gaps in food webs using simulated annealing learning as 
+
+// Minimises diet gaps in food webs using simulated annealing learning as
 // described by Stouffer et al (2006) PNAS.
 
 #include <R.h>
@@ -47,7 +48,7 @@ class SumDietGap
     typedef IntVector State;
     typedef int Cost;
 
-    SumDietGap(const IntVector &network, IntVector::size_type n) : 
+    SumDietGap(const IntVector &network, IntVector::size_type n) :
                                                   network_(network), nodes_(n)
     {
       // network_ should be a square matrix, i.e. of size nodes x nodes
@@ -61,20 +62,20 @@ class SumDietGap
       }
       else
       {
-        // Count diet gaps only for consumers with two or more resources. 
-        // Those with fewer than two resources can not contribute to diet gaps. 
+        // Count diet gaps only for consumers with two or more resources.
+        // Those with fewer than two resources can not contribute to diet gaps.
         for(IntVector::size_type consumer=0; consumer<nodes_; ++consumer)
         {
-          if(std::count(network_.begin() + consumer*nodes_, 
+          if(std::count(network_.begin() + consumer*nodes_,
                         network_.begin() + (1+consumer)*nodes_, 1)>1)
           {
             consumers_.push_back(consumer);
           }
         }
 
-        DEBUG_COST(Rprintf("Network with [%d] nodes and [%d] consumers\n[", 
+        DEBUG_COST(Rprintf("Network with [%d] nodes and [%d] consumers\n[",
                            nodes_, consumers_.size()));
-        DEBUG_COST(for(IntVector::size_type i=0; i<consumers_.size(); ++i) 
+        DEBUG_COST(for(IntVector::size_type i=0; i<consumers_.size(); ++i)
                      Rprintf("%d ",consumers_[i]));
         DEBUG_COST(Rprintf("]\n"));
       }
@@ -90,40 +91,40 @@ class SumDietGap
     Cost cost(const State &row_order) const
     {
       /* The sum of gaps in diets over consumers in network, given row_order.
-         consumers should be an an array of nodes that have two or more 
-         resources. Only the diet gaps of nodes in consumers are checked. 
-         Most networks will have resources and/or consumers with only one 
-         resource, so this scheme gives an improvement (over checking all 
-         nodes) in performance of Intervality(). These figures relate to my 
-         old C implementation: 
+         consumers should be an an array of nodes that have two or more
+         resources. Only the diet gaps of nodes in consumers are checked.
+         Most networks will have resources and/or consumers with only one
+         resource, so this scheme gives an improvement (over checking all
+         nodes) in performance of Intervality(). These figures relate to my
+         old C implementation:
 
          With consumers array:
             > system.time(a <- Intervality(TL84))
-               user  system elapsed 
-              0.232   0.000   0.234 
+               user  system elapsed
+              0.232   0.000   0.234
             > system.time(a <- Intervality(YthanEstuary))
-               user  system elapsed 
-              0.704   0.000   0.703 
+               user  system elapsed
+              0.704   0.000   0.703
 
          Without consumers array:
             > system.time(a <- Intervality(TL84))
-               user  system elapsed 
-              0.392   0.000   0.392 
+               user  system elapsed
+              0.392   0.000   0.392
             > system.time(a <- Intervality(YthanEstuary))
-               user  system elapsed 
-              1.124   0.004   1.131 
+               user  system elapsed
+              1.124   0.004   1.131
 
-         The obvious, bone-headed solution of finding start and end of diet and 
-         counting the number of 0s in between is the quickest of all that I 
-         tried. 
+         The obvious, bone-headed solution of finding start and end of diet and
+         counting the number of 0s in between is the quickest of all that I
+         tried.
 
-         Overflow of sum_diet_gaps should never happen because a nodes_ by 
+         Overflow of sum_diet_gaps should never happen because a nodes_ by
          nodes_ matrix can have at most (nodes-1)^2 gaps.
       */
       Cost sum_diet_gaps = 0;
       const IntVector::size_type n = nodes_;
 
-      for(IntVector::size_type consumer_i=0; consumer_i < consumers_.size(); 
+      for(IntVector::size_type consumer_i=0; consumer_i < consumers_.size();
           ++consumer_i)
       {
         const IntVector::value_type consumer = consumers_[consumer_i];
@@ -199,14 +200,14 @@ class Random
 {
   // A pool of uniformly drawn random numbers
   public:
-    Random(DoubleVec::size_type pool_size=1e5) : pool_size_(pool_size), 
+    Random(DoubleVec::size_type pool_size=1e5) : pool_size_(pool_size),
                                                  current_(pool_.end())
     {
     }
 
     double fetch_rand() const
     {
-      // Returns a random number. 
+      // Returns a random number.
       if(current_==pool_.end())
       {
         populate();
@@ -238,19 +239,19 @@ class Random
 
 template <typename Problem> class SimulatedAnnealing
 {
-  // Simple implementation of simulated annealing learning. 
+  // Simple implementation of simulated annealing learning.
 
-  public: 
+  public:
     typedef std::pair<typename Problem::State, typename Problem::Cost> Result;
 
     SimulatedAnnealing(double T_start = 1000,
                        double T_stop = 1,
-                       double c = 0.99, 
-                       unsigned int swaps_per_T = 1000, 
-                       bool trace_anneal = true) : T_start_(T_start), 
+                       double c = 0.99,
+                       unsigned int swaps_per_T = 1000,
+                       bool trace_anneal = true) : T_start_(T_start),
                                                    T_stop_(T_stop),
                                                    c_(c),
-                                                   swaps_per_T_(swaps_per_T), 
+                                                   swaps_per_T_(swaps_per_T),
                                                    trace_anneal_(trace_anneal)
     {
       if(T_start<T_stop || T_stop<=0 || c<=0 || c>=1 || swaps_per_T<=0)
@@ -306,7 +307,7 @@ template <typename Problem> class SimulatedAnnealing
             /* Cost of the solution under consideration */
             typename Problem::Cost cost_consider = problem->cost(consider);
 
-            DEBUG(Rprintf("Cost current [%d] cost consider [%d]\n", 
+            DEBUG(Rprintf("Cost current [%d] cost consider [%d]\n",
                           cost_current, cost_consider));
             bool accept = false;
             if(cost_consider <= cost_current)
@@ -318,8 +319,8 @@ template <typename Problem> class SimulatedAnnealing
             else
             {
               const double unif = rand_pool_.fetch_rand();
-              const double p = exp(-(cost_consider-cost_current)/T);
-              DEBUG(Rprintf("Accept if p [%.6f] > unif [%.6f] at T [%.4f]\n", 
+              const double p = std::exp(-(cost_consider-cost_current)/T);
+              DEBUG(Rprintf("Accept if p [%.6f] > unif [%.6f] at T [%.4f]\n",
                             p, unif, T));
               if(p > unif)
               {
@@ -336,7 +337,7 @@ template <typename Problem> class SimulatedAnnealing
           }
         }
 
-        total_state_changes = total_state_changes + state_changes_better + 
+        total_state_changes = total_state_changes + state_changes_better +
                               state_changes_worse;
 
         if(trace_anneal_)
@@ -367,9 +368,9 @@ template <typename Problem> class SimulatedAnnealing
 extern "C"
 {
 
-void sum_diet_gaps(const int *network, const int *nodes, 
-                   const int *row_order, 
-                   int *sum_diet_gaps, 
+void sum_diet_gaps(const int *network, const int *nodes,
+                   const int *row_order,
+                   int *sum_diet_gaps,
                    int *status)
 {
   /* WARNING: Nested returns */
@@ -382,7 +383,7 @@ void sum_diet_gaps(const int *network, const int *nodes,
 
          nodes:  The number of nodes in the predation matrix
 
-     row_order:  An array of length nodes containing the ordering of the 
+     row_order:  An array of length nodes containing the ordering of the
                  rows in the predation matrix
 
     Out params:
@@ -394,7 +395,7 @@ void sum_diet_gaps(const int *network, const int *nodes,
 
   */
 
-  if(0==network || 0==nodes || *nodes<1 || 0==row_order || 0==sum_diet_gaps || 
+  if(0==network || 0==nodes || *nodes<1 || 0==row_order || 0==sum_diet_gaps ||
      0==status)
   {
     if(0!=status)
@@ -422,7 +423,7 @@ void sum_diet_gaps(const int *network, const int *nodes,
       if(cost>INT_MAX)
       {
         // Sanity check
-        // Overflow should not be possible because a nodes by nodes matrix can 
+        // Overflow should not be possible because a nodes by nodes matrix can
         // have at most (nodes-1)^2 gaps.
         throw CheddarException("Too many gaps to count without overflow");
       }
@@ -440,23 +441,23 @@ void sum_diet_gaps(const int *network, const int *nodes,
   catch(...)
   {
     REprintf("Unexpected error in sum_diet_gap\n");
-  }  
+  }
 }
 
-void minimise_sum_diet_gaps(const int *network, 
-                            const int *nodes, 
-                            const double *T_start, 
-                            const double *T_stop, 
+void minimise_sum_diet_gaps(const int *network,
+                            const int *nodes,
+                            const double *T_start,
+                            const double *T_stop,
                             const double *c,
-                            const int *swaps_per_T, 
-                            const int *trace_anneal, 
-                            int *best_cost, 
+                            const int *swaps_per_T,
+                            const int *trace_anneal,
+                            int *best_cost,
                             int *best,
                             int *status)
 {
   /* WARNING: Nested returns */
   /* Miminise sum diet gaps using simulated annealing learning.
-  
+
      In params:
 
        network:  A predation matrix of nodes x nodes
@@ -477,7 +478,7 @@ void minimise_sum_diet_gaps(const int *network,
     Out params:
      best_cost:  The sum diet gap of the best solution that was found
 
-          best:  An array of length nodes containing the best row ordering 
+          best:  An array of length nodes containing the best row ordering
                  found
 
         status: -1 - unexpected error.
@@ -486,9 +487,9 @@ void minimise_sum_diet_gaps(const int *network,
   */
 
   /* Quick and dirty parameter checks */
-  if(0==network || 0==nodes || *nodes<1 || 
-     0==T_start || 0==T_stop || *T_start<=*T_stop || 0==c || 
-     *c<=0 || *c>=1 || 0==swaps_per_T || 0==*swaps_per_T || 0==trace_anneal || 
+  if(0==network || 0==nodes || *nodes<1 ||
+     0==T_start || 0==T_stop || *T_start<=*T_stop || 0==c ||
+     *c<=0 || *c>=1 || 0==swaps_per_T || 0==*swaps_per_T || 0==trace_anneal ||
      0==best_cost || 0==best || 0==status)
   {
     if(0!=status)
@@ -503,7 +504,7 @@ void minimise_sum_diet_gaps(const int *network,
 
   try
   {
-    if(sizeof(SumDietGap::Cost) < sizeof(*best_cost) || 
+    if(sizeof(SumDietGap::Cost) < sizeof(*best_cost) ||
               sizeof(SumDietGap::State::value_type)!=sizeof(*best))
     {
       // Sanity check
@@ -524,9 +525,9 @@ void minimise_sum_diet_gaps(const int *network,
       }
       else
       {
-        memcpy(best, &res.first[0], sizeof(int) * *nodes);
+        std::memcpy(best, &res.first[0], sizeof(int) * *nodes);
 
-        // Overflow of res.second is not possible because a matrix of size 
+        // Overflow of res.second is not possible because a matrix of size
         // nodes by nodes matrix can have at most (nodes-1)^2 gaps.
         *best_cost = int(res.second);
         *status = 0;        // Normal exit
@@ -540,7 +541,7 @@ void minimise_sum_diet_gaps(const int *network,
   catch(...)
   {
     REprintf("Unexpected error in intervality()\n");
-  }  
+  }
 }
 
 } // extern C
