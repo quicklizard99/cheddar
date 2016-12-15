@@ -13,6 +13,7 @@ The [pelican][pelican] project
 
 # Install
 
+    mkvirtualenv cheddar-website
     pip install -r requirements.txt
     pelican-themes -i cheddar-simple
 
