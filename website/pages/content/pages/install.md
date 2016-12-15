@@ -4,7 +4,7 @@ save_as: install.html
 
 ## Released version
 
-The current stable release (currently 0.1-629) is always available on
+The current stable release (currently 0.1-631) is always available on
 [CRAN](http://cran.r-project.org/web/packages/cheddar/index.html) and can be
 installed in R simply by entering:
 
