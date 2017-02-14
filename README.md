@@ -3,6 +3,7 @@
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.49906.svg)](http://dx.doi.org/10.5281/zenodo.49906)
 [![Travis status](https://travis-ci.org/quicklizard99/cheddar.svg?branch=master)](https://travis-ci.org/quicklizard99/cheddar)
 [![Coverage Status](https://coveralls.io/repos/quicklizard99/cheddar/badge.svg?branch=master)](https://coveralls.io/r/quicklizard99/cheddar?branch=master)
+![Total number of downloads from CRAN](https://cranlogs.r-pkg.org/badges/grand-total/cheddar)
 
 [Cheddar](http://quicklizard99.github.com/cheddar/) is a R package for food-web ecologists. It provides 
 
