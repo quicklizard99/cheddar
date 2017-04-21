@@ -139,7 +139,7 @@ PlotTLPS <- function(community,
     if(axes.limits.equal && 
        (is.null(xlim) || missing(xlim)) && (is.null(ylim) || missing(ylim)))
     {
-        xlim <- ylim <- range(c(X, Y))
+        xlim <- ylim <- range(c(X, Y), na.rm=TRUE)
     }
 
     plot(X, Y, xlim=xlim, ylim=ylim, main=main, xlab=xlab, ylab=ylab, type='n', 
