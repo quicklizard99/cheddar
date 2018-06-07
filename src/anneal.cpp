@@ -8,6 +8,7 @@
 #include <functional>
 #include <vector>
 
+#include "cheddar.h"
 #include "cheddar_exception.h"
 
 //#define DEBUG_ANNEAL
