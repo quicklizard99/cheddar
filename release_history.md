@@ -1,6 +1,12 @@
 #  Cheddar release history
-## 0.1-632 2017-04-21
+
+## 0.1-633 2018-06-09
 **Available on CRAN**
+#### Bugs fixed
+* [Issue 37](https://github.com/quicklizard99/cheddar/issues/37)
+  Fix failing CRAN checks
+
+## 0.1-632 2018-06-09
 #### Bugs fixed
 * [Issue 35](https://github.com/quicklizard99/cheddar/issues/35)
   Error PlotMRvMC when one or more missing body mass values
