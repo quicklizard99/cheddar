@@ -4,8 +4,12 @@
 #include <queue>
 #include <map>
 #include <algorithm>
+
+#include "cheddar.h"
 #include "cheddar_exception.h"
+
 typedef std::vector<int> IntVector;
+
 // Define DEBUG_TC to get lots of debug output
 //#define DEBUG_TC
 #ifdef DEBUG_TC
@@ -13,6 +17,7 @@ typedef std::vector<int> IntVector;
 #else
 #define DEBUG(X)
 #endif
+
 std::vector<IntVector> Adjacency(const int *adjacency, int node_count)
 {
   // Returns a C++ representation of the adjacency list in R matrix form
@@ -29,6 +34,7 @@ std::vector<IntVector> Adjacency(const int *adjacency, int node_count)
   }
   return (adj);
 }
+
 template <typename Visitor> class TrophicChains
 {
   // Enumerates every unique chain in a food web, using a breadth-first search.
@@ -43,6 +49,7 @@ private:
   const IntVector &is_basal_;
   typedef std::queue<IntVector> Queue;
   Queue::size_type max_queue_;
+
 private:
 #ifdef DEBUG_TC
   void print_adjacency() const
@@ -55,6 +62,7 @@ private:
       Rprintf("\n");
     }
   }
+
   void print_path(const char *text, const IntVector &path) const
   {
     Rprintf("%s:", text);
@@ -63,6 +71,7 @@ private:
     Rprintf("\n");
   }
 #endif
+
 public:
   TrophicChains(const std::vector<IntVector> &adjacency,
                 const IntVector &is_basal,
@@ -72,6 +81,7 @@ public:
          max_queue_(max_queue)
   {
   }
+
   void visit(Visitor &visitor) const
   {
     // Visits unique trophic chains the network represented by adjancency.
@@ -144,6 +154,8 @@ public:
     }
   }
 };
+
+
 class CollectChainsVisitor
 {
   // Collects chains
@@ -152,6 +164,7 @@ private:
     int ncols_;
     int nrows_;
     int n_chains_found_;
+
 public:
     CollectChainsVisitor(int *chains,  int ncols, int nrows) :
       chains_(chains),
@@ -160,6 +173,7 @@ public:
       n_chains_found_(0)
   {
   }
+
   void chain(const IntVector &path)
   {
     if(n_chains_found_ <= ncols_ && path.size()<=IntVector::size_type(nrows_))
@@ -179,6 +193,8 @@ public:
     }
   }
 };
+
+
 class PrintChainsVisitor
 {
   // Prints chains to stdout in the same format as Rob's solution8
@@ -194,12 +210,15 @@ public:
     Rprintf("\n");
   }
 };
+
+
 class CollectChainLengthsVisitor
 {
   // Records the number of chains and the length of the longest chain.
 public:
   int longest_;
   int n_chains_;
+
 public:
   CollectChainLengthsVisitor(bool test_overflow=false) : longest_(0),
                                                          n_chains_(0)
@@ -209,6 +228,7 @@ public:
       n_chains_ = INT_MAX;
     }
   }
+
   void chain(const IntVector &path)
   {
     longest_ = std::max(longest_, int(path.size()));
@@ -222,6 +242,8 @@ public:
     }
   }
 };
+
+
 class ChainStatsVisitor
 {
   // Records the length of each chains and the number of times that each node
@@ -230,6 +252,7 @@ public:
   typedef std::vector<IntVector> CountVector;
   CountVector counts_;
   IntVector chain_lengths_;    // A vector of chain lengths
+
 public:
   ChainStatsVisitor(int nodes, int longest) : counts_(nodes)
   {
@@ -238,6 +261,7 @@ public:
       it->resize(longest);
     }
   }
+
   void chain(const IntVector &path)
   {
     chain_lengths_.push_back(path.size()-1);
@@ -247,6 +271,7 @@ public:
       counts_[node][position] += 1;
     }
   }
+
 #ifdef DEBUG_TC
   void print() const
   {
@@ -264,6 +289,8 @@ public:
   }
 #endif
 };
+
+
 extern "C"
 {
 void trophic_chains_size(const int *adjacency,
@@ -333,6 +360,7 @@ adjacency_length: the number of ints in adjacency
     REprintf("Unexpected error in trophic_chains_size\n");
   }
 }
+
 void print_chains(const int *adjacency,
                   const int *adjacency_length,
                   const int *is_basal,
@@ -393,6 +421,7 @@ adjacency_length: the number of ints in adjacency
     REprintf("Unexpected error in print_chains\n");
   }
 }
+
 void trophic_chains(const int *adjacency,
                     const int *adjacency_length,
                     const int *is_basal,
@@ -460,6 +489,7 @@ adjacency_length: the number of ints in adjacency
     REprintf("Unexpected error in trophic_chains\n");
   }
 }
+
 void trophic_chains_stats(const int *adjacency,
                           const int *adjacency_length,
                           const int *is_basal,
@@ -562,4 +592,5 @@ node_pos_counts:  an array of n_chains * longest integers. Will contain
     REprintf("Unexpected error in trophic_chains_stats\n");
   }
 }
+
 }   // extern "c"

@@ -4,9 +4,13 @@
 #include <R.h>
 #include <Rmath.h>
 #include <vector>
+
+#include "cheddar.h"
+
 typedef std::vector<bool> BoolVector;
 typedef std::vector<int> IntVector;
 typedef std::vector<double> DoubleVector;
+
 /*#define DEBUG_DIJKSTRA*/
 #ifdef DEBUG_DIJKSTRA
 #define DEBUG(X) { X; }
@@ -14,6 +18,8 @@ typedef std::vector<double> DoubleVector;
 #define DEBUG(X)
 #endif
 #ifdef DEBUG_DIJKSTRA
+
+
 static void print_weights(const DoubleVector &weights, int n)
 {
   for(int row=0; row<n; ++row)
@@ -25,6 +31,7 @@ static void print_weights(const DoubleVector &weights, int n)
     Rprintf("\n");
   }
 }
+
 static void print_adjacency(const IntVector &adjacency, int n)
 {
   for(int i=0; i<n; ++i)
@@ -36,6 +43,7 @@ static void print_adjacency(const IntVector &adjacency, int n)
   }
 }
 #endif
+
 static DoubleVector dijkstra(const IntVector &consumers,
                              const IntVector &resources,
                              const DoubleVector &weights,
@@ -104,6 +112,7 @@ static DoubleVector dijkstra(const IntVector &consumers,
   }
   return (lengths);
 }
+
 extern "C"
 {
 void shortest_paths(const int *consumers, const int *consumers_length,
@@ -160,4 +169,5 @@ resources_length: the number of ints in resources
     REprintf("Unexpected error in shortest_paths\n");
   }
 }
+
 }   // extern C

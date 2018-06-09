@@ -4,3 +4,4 @@ src-x86_64
 releases
 build
 .directory
+.DS_Store
