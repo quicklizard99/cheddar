@@ -30,8 +30,6 @@
 \tableofcontents
 
 <<echo=FALSE>>=
-options(warn=2)
-
 library(cheddar)
 
 # Makes copy-paste much less painful

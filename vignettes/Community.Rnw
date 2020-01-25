@@ -30,8 +30,6 @@
 \tableofcontents
 
 <<echo=FALSE>>=
-options(warn=2)
-
 library(cheddar)
 
 # Makes copy-paste much less painful
@@ -570,7 +568,6 @@ The food web of the Bengula marine ecosystem \citep{Yodzis1998JAnimEcol} does
 not have any top-level nodes. All chains start with a basal node (by 
 definition) but, for this community, all chains end with an intermediate node.
 <<>>=
-data(Benguela)
 TopLevelNodes(Benguela)
 @
 <<>>=
@@ -731,7 +728,6 @@ The \code{Benguela} dataset contains empirical estimates of diet fraction for
 each trophic link \citep{Yodzis1998JAnimEcol}, available as the `diet.fraction' 
 property.
 <<>>=
-data(Benguela)
 head(TLPS(Benguela))
 @
 A binary predation matrix contains just '0' and '1'. 

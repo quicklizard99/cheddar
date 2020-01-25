@@ -1,7 +1,6 @@
 #!/usr/bin/env RScript
 # Example Cheddar plots
 library(cheddar)
-options(warning=2)
 
 data(TL84)
 

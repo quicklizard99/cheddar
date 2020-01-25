@@ -31,8 +31,6 @@
 \tableofcontents
 
 <<echo=FALSE>>=
-options(warn=2)
-
 library(cheddar)
 
 # Makes copy-paste much less painful
@@ -616,7 +614,6 @@ grey circle.
 \setkeys{Gin}{width=\textwidth}
 \begin{center}
 <<fig=TRUE>>=
-data(YthanEstuary)
 par(mfrow=c(1,2))
 PlotMvRankM(YthanEstuary)
 PlotMvRankM(YthanEstuary, show.na=TRUE)
@@ -836,7 +833,7 @@ figures.
 \setkeys{Gin}{width=\textwidth}
 \begin{center}
 <<fig=TRUE>>=
-data(TL84, TL86)
+data(TL86)
 par(mfrow=c(1,2))
 PlotMvN(TL84, show.nodes.as='both', cex=2, xlim=c(-2, 10), ylim=c(-14, 0), 
         highlight.nodes=NULL, highlight.links=NULL, main='')
@@ -1053,7 +1050,6 @@ lacking $M$ and/or $N$, cannibalistic links and isolated nodes from each
 community. The \code{data.frame} that it returns includes two sets of four 
 network statistics - both with and without these removals. 
 <<>>=
-data(TL84, TL86, YthanEstuary)
 collection <- CommunityCollection(list(TL84, TL86, YthanEstuary))
 table <- NvMTriTrophicTable(collection)
 print(round(table,2))
@@ -1097,7 +1093,6 @@ print(round(res,2))
 \setkeys{Gin}{width=6in}
 \begin{center}
 <<fig=TRUE>>=
-data(TL84, TL86, YthanEstuary)
 par(mfrow=c(3,2))
 for(community in list(TL84, TL86, YthanEstuary))
 {
@@ -1126,7 +1121,6 @@ print(round(res[1:6,],2))
 
 \subsubsection{\cite{BersierEtAl2002Ecology}, Table 2 (p 2402)}
 <<>>=
-data(ChesapeakeBay)
 res <- QuantitativeDescriptors(ChesapeakeBay, 'biomass.flow')
 print(round(res,3))
 @
