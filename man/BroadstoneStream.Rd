@@ -5,7 +5,6 @@
 \description{The community of Broadstone Stream.
 
 Taxonomic classification provided by Guy Woodward.}
-\usage{BroadstoneStream}
 \format{\code{Community}.}
 \source{Woodward et al, 2005.}
 \references{

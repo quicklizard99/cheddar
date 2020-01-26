@@ -6,7 +6,6 @@
 from a long-running study of the effects of drought on community structure.
 
 Taxonomic classification provided by Mark Ledger.}
-\usage{Millstream}
 \format{\code{CommunityCollection}.}
 \source{Ledger et al, 2011; Ledger et al, 2012; Woodward et al 2012.}
 \references{

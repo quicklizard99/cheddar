@@ -5,7 +5,6 @@
 \description{The food-web of Skipwith Pond. 
 
 Taxonomic classification provided by Guy Woodward.}
-\usage{SkipwithPond}
 \format{\code{Community}.}
 \source{Warren, 1989.}
 \references{

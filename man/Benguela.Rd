@@ -3,7 +3,6 @@
 \alias{Benguela}
 \title{Benguela}
 \description{The food-web of the Benguela ecosystem.}
-\usage{Benguela}
 \format{\code{Community}.}
 \source{Yodzis, 1988.}
 \references{
