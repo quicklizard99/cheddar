@@ -67,7 +67,7 @@ Community <- function(nodes, properties, trophic.links=NULL)
     CheckDF <- function(param, param.name, illegal.names)
     {
         # Helper that check a data.frame parameter
-        if(!class(param) %in% c('matrix', 'data.frame'))
+        if(!any(class(param) %in% c('matrix', 'data.frame')))
         {
             stop(paste("'", param.name, "' must be a matrix or data.frame", 
                        sep=''))
