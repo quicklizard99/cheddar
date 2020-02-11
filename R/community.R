@@ -150,7 +150,8 @@ Community <- function(nodes, properties, trophic.links=NULL)
              c(reserved.tl.names, reserved.node.names))
 
     # Title should be present. Must do this check before putting title first.
-    if(is.null(properties$title) || ''==properties$title)
+    if(is.null(properties$title) || 1!=length(properties$title) ||
+       ''==properties$title)
     {
         stop(paste("The 'properties' parameter must contain a character", 
                    "named 'title'"))
@@ -240,7 +241,7 @@ Community <- function(nodes, properties, trophic.links=NULL)
     if('M' %in% colnames(nodes))
     {
         M <- nodes[,'M']
-        if(!class(M) %in% c('numeric', 'integer'))
+        if(!any(class(M) %in% c('numeric', 'integer')))
         {
             stop('M must contain numbers')
         }
@@ -255,8 +256,9 @@ Community <- function(nodes, properties, trophic.links=NULL)
             stop('Not all values in M can be NA')
         }
 
-        if(is.null(properties$M.units) || ''==properties$M.units || 
-           'character'!=class(properties$M.units))
+        if(is.null(properties$M.units) || 1!=length(properties[['M.units']]) ||
+           ''==properties[['M.units']] ||
+           'character'!=class(properties[['M.units']]))
         {
             stop(paste("The 'properties' parameter must contain an entry", 
                        "named 'M.units'"))
@@ -267,7 +269,7 @@ Community <- function(nodes, properties, trophic.links=NULL)
     if('N' %in% colnames(nodes))
     {
         N <- nodes[,'N']
-        if(!class(N) %in% c('numeric', 'integer'))
+        if(!any(class(N) %in% c('numeric', 'integer')))
         {
             stop('N must contain numbers')
         }
@@ -282,8 +284,9 @@ Community <- function(nodes, properties, trophic.links=NULL)
             stop('Not all values in N can be NA')
         }
 
-        if(is.null(properties$N.units) || ''==properties$N.units || 
-           'character'!=class(properties$N.units))
+        if(is.null(properties$N.units) || 1!=length(properties[['N.units']]) ||
+           ''==properties[['N.units']] ||
+           'character'!=class(properties[['N.units']]))
         {
             stop(paste("The 'properties' parameter must contain an entry", 
                        "named 'N.units'"))
