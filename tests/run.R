@@ -1,6 +1,5 @@
 # Runs all of cheddar's tests. You must cd cheddar/tests before running 
 # Rscript run_all.R
-options(warn=2)
 library(cheddar)
 
 # Data for test plans

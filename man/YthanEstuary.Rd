@@ -11,7 +11,6 @@ invertebrates: Appeltans et al (2012),
 mammals: Wilson and Reeder (2005), 
 phytoplankton: Guiry and Guiry (2012).
 }
-\usage{YthanEstuary}
 \format{\code{Community}.}
 \source{Hall and Raffaelli, 1991; Emmerson and Raffaelli, 2004.}
 \references{

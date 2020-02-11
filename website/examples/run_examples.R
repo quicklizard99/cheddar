@@ -4,7 +4,6 @@
 # output/
 
 cat('Running examples\n')
-options(warn=2)
 
 output.dir <- 'output'
 

@@ -3,7 +3,6 @@
 \alias{ChesapeakeBay}
 \title{ChesapeakeBay}
 \description{The community of Chesapeake Bay sampled in the years 1983 to 1986.}
-\usage{ChesapeakeBay}
 \format{\code{Community}.}
 \source{Baird and Ulanowicz, 1989; Bersier et al, 2002.}
 \references{

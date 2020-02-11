@@ -30,8 +30,6 @@
 \tableofcontents
 
 <<echo=FALSE>>=
-options(warn=2)
-
 library(cheddar)
 
 # Makes copy-paste much less painful
@@ -313,13 +311,11 @@ install.packages("foodweb", repos="http://R-Forge.R-project.org")
 
 library(foodweb)    # Loads the dependency NetIndices
 
-data(TL84)
 TL84.ni <- PredationMatrix(TL84, weight='diet.fraction')
 
 # Plot the predation matrix
 foodweb::imageweb(TL84.ni)
 
-data(Benguela)
 # Use diet fraction to weight network
 Benguela.ni <- PredationMatrix(Benguela, weight='diet.fraction')
 
@@ -351,7 +347,6 @@ ExportToNetwork3D <- function(community, dir, fname_root=CP(community, 'title'))
                 row.names=FALSE, sep=' ')
 }
 
-data(TL84)
 ExportToNetwork3D(TL84, 'c:')
 @
 
@@ -362,8 +357,6 @@ CRAN. This package also creates 3D graphs of webs.
 install.packages("foodweb")
 
 library(foodweb)
-
-data(TL84)
 
 # Write the predation matrix to a csv file in the format required by foodweb.
 write.table(PredationMatrix(TL84), 'TL84.foodweb.csv', row.names=FALSE, 

@@ -11,8 +11,6 @@ fish: Froese and Pauly (2012),
 invertebrates: Smith (2001), 
 phytoplankton: Guiry and Guiry (2012).
 }
-\usage{TL84
-TL86}
 
 \format{\code{Community} objects.}
 \source{Carpenter and Kitchell, 1996; Cohen et al, 2003; Johnsson et al 2005.}

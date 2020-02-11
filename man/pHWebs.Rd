@@ -3,7 +3,6 @@
 \alias{pHWebs}
 \title{pHWebs}
 \description{Ten stream food webs sampled across a large pH gradient.}
-\usage{pHWebs}
 \format{\code{CommunityCollection}.}
 \source{Layer et al 2010.}
 \references{
