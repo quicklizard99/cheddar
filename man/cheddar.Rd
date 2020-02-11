@@ -21,7 +21,7 @@ release history:
     Package: \tab cheddar\cr
     Type: \tab Package\cr
     Version: \tab 0.1-634\cr
-    Date: \tab 2020-01-25\cr
+    Date: \tab 2020-02-11\cr
     License: \tab BSD 2 clause\cr
     }
 }
