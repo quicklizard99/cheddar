@@ -1,5 +1,10 @@
 #  Cheddar release history
 
+## Next release
+#### Bugs fixed
+* [Issue 44](https://github.com/quicklizard99/cheddar/issues/44)
+  Omnivory page has incorrect description
+
 ## 0.1-633 2018-06-09
 **Available on CRAN**
 #### Bugs fixed

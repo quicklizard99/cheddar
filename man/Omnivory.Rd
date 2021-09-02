@@ -4,7 +4,8 @@
 \alias{FractionOmnivorous}
 \alias{Omnivory}
 \title{Omnivory}
-\description{Nodes that consume themselves in the food web.}
+\description{Nodes that consume two or more species and have a non-integer
+trophic level.}
 
 \usage{
 IsOmnivore(community, level=PreyAveragedTrophicLevel)
