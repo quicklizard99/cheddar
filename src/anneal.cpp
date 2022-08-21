@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <climits>
 #include <vector>
 
 #include "cheddar.h"

@@ -1,6 +1,12 @@
 #  Cheddar release history
 
-## Next release
+## 0.1-637 2022-08-21
+#### Bugs fixed
+* [Issue ](https://github.com/quicklizard99/cheddar/issues/46)
+  Fix failing CRAN checks
+
+## 0.1.636 2020-02-13
+**Available on CRAN**
 #### Bugs fixed
 * [Issue 44](https://github.com/quicklizard99/cheddar/issues/44)
   Omnivory page has incorrect description

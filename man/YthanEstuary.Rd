@@ -17,7 +17,7 @@ phytoplankton: Guiry and Guiry (2012).
 Appeltans W., Bouchet P., Boxshall G.A., De Broyer C., de Voogd N.J., 
 Gordon D.P., Hoeksema B.W., Horton T., Kennedy M., Mees J., Poore G.C.B., 
 Read G., St\"{o}hr S., Walter T.C., Costello M.J. Editors. (2012) World 
-Register of Marine Species. Accessed at \url{http://www.marinespecies.org} on 
+Register of Marine Species. Accessed at \url{https://www.marinespecies.org} on
 2012-09-20.
 
 Dickinson, E.C., ed. (2003) The Howard and Moore complete checklist of the 
@@ -28,11 +28,11 @@ strength and the stability of a real food web. Journal of Animal Ecology
 \bold{73}, 3, 399--409.
 
 Froese, R. and Pauly, D., eds. 2012. FishBase. World Wide Web electronic 
-publication. \url{http://www.fishbase.org}, version (08/2012).
+publication. \url{https://www.fishbase.net.br}, version (08/2012).
 
 Guiry, M.D. and Guiry, G.M. (2012) AlgaeBase. World-wide electronic 
 publication, National University of Ireland, Galway. 
-\url{http://www.algaebase.org}; searched on 20 September 2012.
+\url{https://www.algaebase.org}; searched on 20 September 2012.
 
 Hall, S.J. and Raffaelli, D. (1991) Food-web patterns: lessons from a 
 species-rich web. Journal of Animal Ecology. \bold{60}, 3, 823--841.

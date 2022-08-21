@@ -24,11 +24,11 @@ of the National Academy of Sciences of the United States of America
 \bold{100}, 4, 1781--1786.
 
 Froese, R. and Pauly, D., eds. 2012. FishBase. World Wide Web electronic 
-publication. \url{http://www.fishbase.org}, version (08/2012).
+publication. \url{https://www.fishbase.org}, version (08/2012).
 
 Guiry, M.D. and Guiry, G.M. (2012) AlgaeBase. World-wide electronic 
 publication, National University of Ireland, Galway. 
-\url{http://www.algaebase.org}; searched on 20 September 2012.
+\url{https://www.algaebase.org}; searched on 20 September 2012.
 
 Jonsson, T. and Cohen, J.E. and Carpenter, S.R. (2005) Food webs, body size, 
 and species abundance in ecological community description. Advances in 
