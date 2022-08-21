@@ -10,4 +10,4 @@ of statistics and figures.
 McLaughlin et al (2013) Habitat Isolation Reduces the Temporal Stability of 
 Island Ecosystems in the Face of Flood Disturbance. 
 *Advances in Ecological Research*, 48 225--284. 
-[10.1016/B978-0-12-417199-2.00004-5](http://dx.doi.org/10.1016/B978-0-12-417199-2.00004-5)
+[10.1016/B978-0-12-417199-2.00004-5](https://dx.doi.org/10.1016/B978-0-12-417199-2.00004-5)

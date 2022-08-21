@@ -1,7 +1,8 @@
 .DS_Store
+.idea
 .travis.yml
+README.md
 bin
 build*
 release_history.md
 website
-README.md

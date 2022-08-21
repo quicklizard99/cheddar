@@ -1,5 +1,6 @@
 // visit unique chains in food webs.
 #include <R.h>
+#include <climits>
 #include <vector>
 #include <queue>
 #include <map>
@@ -54,7 +55,7 @@ private:
 #ifdef DEBUG_TC
   void print_adjacency() const
   {
-    for(int i=0; i<adjacency_.size(); ++i)
+    for(std::vector<IntVector>::size_type i=0; i<adjacency_.size(); ++i)
     {
       Rprintf("[%d] has [%d] consumers ->", i, adjacency_[i].size());
       for(int j=0; j<adjacency_[i].size(); ++j)
