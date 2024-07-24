@@ -20,8 +20,8 @@ release history:
     \tabular{ll}{
     Package: \tab cheddar\cr
     Type: \tab Package\cr
-    Version: \tab 0.1-637\cr
-    Date: \tab 2022-08-21\cr
+    Version: \tab 0.1-639\cr
+    Date: \tab 2024-07-24\cr
     License: \tab BSD 2 clause\cr
     }
 }

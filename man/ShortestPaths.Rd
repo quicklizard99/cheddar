@@ -2,6 +2,7 @@
 \alias{ShortestPaths}
 \alias{CharacteristicPathLength}
 \title{Path lengths}
+\encoding{utf8}
 \description{Functions that compute the shortest trophic paths between nodes.}
 \usage{ShortestPaths(community, weight.by=NULL)
 CharacteristicPathLength(community)}
@@ -22,7 +23,7 @@ a single number.}
 
 \seealso{\code{\link{PredationMatrix}}, \code{\link{NPS}}}
 
-\references{Williams, R.J. and Berlow, E.L. and Dunne, J.A. and Barab{\'a}si, 
+\references{Williams, R.J. and Berlow, E.L. and Dunne, J.A. and Barabási,
 A.L. and Martinez, N.D. (2002) Two degrees of separation in complex food webs. 
 Proceedings of the National Academy of Sciences of the United States of America 
 \bold{99}, 20, 12913--12916}

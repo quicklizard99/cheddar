@@ -4,7 +4,7 @@
 \title{Loading and saving CommunityCollection objects}
 \description{
 \code{LoadCollection} and \code{SaveCollection} are functions 
-for loading and saving code{CommunityCollection} objects to text files.
+for loading and saving \code{CommunityCollection} objects to text files.
 }
 \usage{
 LoadCollection(dir, \dots)

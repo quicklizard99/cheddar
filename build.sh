@@ -4,5 +4,5 @@ rm -rf build  && \
     mkdir build && \
     cd build && \
     /usr/bin/R CMD build --compact-vignettes=gs .. && \
-    /usr/local/bin/R CMD check --as-cran cheddar_${VERSION}.tar.gz && \
+    ~/build/R-devel/bin/R CMD check --as-cran cheddar_${VERSION}.tar.gz && \
     R CMD INSTALL --build --html cheddar_${VERSION}.tar.gz

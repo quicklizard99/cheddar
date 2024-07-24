@@ -2,6 +2,7 @@
 \docType{data}
 \alias{YthanEstuary}
 \title{Ythan Estuary}
+\encoding{utf8}
 \description{The community of Ythan Estuary. 
 
 Taxonomic classification for 
@@ -16,7 +17,7 @@ phytoplankton: Guiry and Guiry (2012).
 \references{
 Appeltans W., Bouchet P., Boxshall G.A., De Broyer C., de Voogd N.J., 
 Gordon D.P., Hoeksema B.W., Horton T., Kennedy M., Mees J., Poore G.C.B., 
-Read G., St\"{o}hr S., Walter T.C., Costello M.J. Editors. (2012) World 
+Read G., Stöhr S., Walter T.C., Costello M.J. Editors. (2012) World
 Register of Marine Species. Accessed at \url{https://www.marinespecies.org} on
 2012-09-20.
 
@@ -28,7 +29,7 @@ strength and the stability of a real food web. Journal of Animal Ecology
 \bold{73}, 3, 399--409.
 
 Froese, R. and Pauly, D., eds. 2012. FishBase. World Wide Web electronic 
-publication. \url{https://www.fishbase.net.br}, version (08/2012).
+publication. \url{https://fishbase.mnhn.fr}, version (08/2012).
 
 Guiry, M.D. and Guiry, G.M. (2012) AlgaeBase. World-wide electronic 
 publication, National University of Ireland, Galway. 

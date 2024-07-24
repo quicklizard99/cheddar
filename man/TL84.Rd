@@ -24,7 +24,7 @@ of the National Academy of Sciences of the United States of America
 \bold{100}, 4, 1781--1786.
 
 Froese, R. and Pauly, D., eds. 2012. FishBase. World Wide Web electronic 
-publication. \url{https://www.fishbase.org}, version (08/2012).
+publication. \url{https://fishbase.mnhn.fr}, version (08/2012).
 
 Guiry, M.D. and Guiry, G.M. (2012) AlgaeBase. World-wide electronic 
 publication, National University of Ireland, Galway. 
